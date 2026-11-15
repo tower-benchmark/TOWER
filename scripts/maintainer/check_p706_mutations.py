@@ -2699,11 +2699,17 @@ def main():
                     ] + (tests if owners else [])
             if name.startswith("policy-") or name == "baseline":
                 tests.append("src/tower-eval/tests/unit/test_ws_transport_parity.py")
+            if name == "policy-atomic-infer":
+                tests = [
+                    "src/tower-eval/tests/unit/test_ws_transport_parity.py::test_atomic_infer_prevents_interleaved_update"
+                ]
             result = subprocess.run(
                 [
                     sys.executable,
                     "-m",
                     "pytest",
+                    "-p",
+                    "no:cacheprovider",
                     *tests,
                     "-q",
                     "--tb=short",
