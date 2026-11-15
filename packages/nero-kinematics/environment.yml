@@ -12,7 +12,7 @@ dependencies:
   - gymnasium=1.3.0
   - pip
   - quadprog=0.1.13
-  # Quadprog depends on Cython; SciPy imports it at runtime.
+  # Quadprog depends on Cython; SciPy imports it through scipy._lib._testutils.
   # This version preserves compatibility with source receipts.
   - cython=0.29.37
   - pytest>=8,<9

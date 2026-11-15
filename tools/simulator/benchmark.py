@@ -107,7 +107,13 @@ def check_environment(python):
     )
     if result.returncode:
         raise RuntimeError(f"Isaac environment check failed:\n{result.stderr.strip()}")
-    identity = json.loads(result.stdout)
+    lines = [line for line in result.stdout.splitlines() if line.strip()]
+    try:
+        identity = json.loads(lines[-1])
+    except (IndexError, json.JSONDecodeError) as exc:
+        raise RuntimeError(
+            "Isaac environment check requires valid JSON on the last non-empty stdout line"
+        ) from exc
     if identity["isaacsim"] != "6.1.0.0" or not identity["python"].startswith("3.12."):
         raise ValueError(f"Requires Isaac 6.1.0.0 / Python 3.12; found {identity}")
     # Version metadata is necessary, not sufficient: the request's runtime

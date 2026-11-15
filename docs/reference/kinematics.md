@@ -11,12 +11,12 @@ references; hardware calibration and testing are incomplete.
 From the TOWER checkout root, create the native environment separately from Isaac:
 
 ```bash
+export PYTHONDONTWRITEBYTECODE=1
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
 micromamba create --prefix "$PWD/.venv-benchmark-ik" -f packages/nero-kinematics/environment.yml -y
 ik_python="$PWD/.venv-benchmark-ik/bin/python"
 "$ik_python" -m pip install --index-url https://pypi.org/simple --no-deps -r packages/nero-kinematics/requirements-pip.txt
 "$ik_python" -m pip install --index-url https://pypi.org/simple --no-deps ./packages/nero-kinematics ./packages/tower-sim ./src/tower-eval
-export PYTHONDONTWRITEBYTECODE=1
-export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
 export TOWER_REQUIRE_NATIVE_IK=1
 "$ik_python" packages/nero-kinematics/examples/offline_check.py
 "$ik_python" -m pytest packages/nero-kinematics/tests tests/characterization/test_ik.py -v

@@ -1,5 +1,9 @@
+import json
+from types import SimpleNamespace
+
 import pytest
 
+from tools.simulator import benchmark
 from tools.simulator import isaac_environment_probe as probe
 
 SUPPORTED_SDK = {"isaacsim": "6.1.0.0"}
@@ -33,7 +37,6 @@ def test_missing_plugin_fails():
 @pytest.fixture
 def sdk_metadata(monkeypatch, tmp_path):
     from importlib.metadata import PackagePath
-    from types import SimpleNamespace
 
     entries = [PackagePath(f"exts/materials/{name}") for name in probe.PLUGINS]
     entries.append(PackagePath("exts/materials/unrelated.so"))
@@ -101,3 +104,33 @@ def test_probe_missing_distribution_is_actionable(monkeypatch, sdk_metadata, mis
     assert "https://pypi.org/simple" in message
     assert "https://pypi.nvidia.com" in message
     assert "--index-strategy unsafe-best-match" in message
+
+
+def test_check_environment_parses_last_nonempty_line(monkeypatch):
+    identity = {"isaacsim": "6.1.0.0", "python": "3.12.3"}
+    result = SimpleNamespace(
+        returncode=0,
+        stdout='SDK diagnostic\n{"earlier": true}\n' + json.dumps(identity) + "\n \n",
+        stderr="",
+    )
+    monkeypatch.setattr(benchmark.subprocess, "run", lambda *a, **kw: result)
+    assert benchmark.check_environment("python") == identity
+
+
+@pytest.mark.parametrize(
+    "stdout", ["", " \n", "SDK diagnostic", '{"isaacsim": "6.1.0.0"}\ninvalid']
+)
+def test_check_environment_rejects_invalid_last_line(monkeypatch, stdout):
+    result = SimpleNamespace(returncode=0, stdout=stdout, stderr="")
+    monkeypatch.setattr(benchmark.subprocess, "run", lambda *a, **kw: result)
+    with pytest.raises(RuntimeError, match="valid JSON on the last non-empty stdout line"):
+        benchmark.check_environment("python")
+
+
+def test_check_environment_reports_failed_probe(monkeypatch):
+    result = SimpleNamespace(returncode=1, stdout="not JSON", stderr="missing native library\n")
+    monkeypatch.setattr(benchmark.subprocess, "run", lambda *a, **kw: result)
+    with pytest.raises(
+        RuntimeError, match="Isaac environment check failed:\nmissing native library"
+    ):
+        benchmark.check_environment("python")

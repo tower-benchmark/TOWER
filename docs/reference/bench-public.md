@@ -11,6 +11,7 @@ Run from the checkout root. Install [uv](https://docs.astral.sh/uv/) and
 Micromamba first (to create the separate conda-forge prefixes). Isaac uses Python 3.12:
 
 ```sh
+export PYTHONDONTWRITEBYTECODE=1
 uv venv --python 3.12 .venv-isaac61
 uv pip install --python .venv-isaac61/bin/python "isaacsim[all,extscache]==6.1.0" --default-index https://pypi.org/simple --index https://pypi.nvidia.com --index-strategy unsafe-best-match
 ```
@@ -19,8 +20,16 @@ Both public indexes and `unsafe-best-match` are required: first-index resolution
 can hide the required `mujoco-usd-converter==0.5.0` candidate on PyPI.
 Review and accept NVIDIA's license as described in the [Isaac guide](../isaac-sim.md).
 
+## X11 system libraries
+
 On Debian/Ubuntu, install the system prerequisite with `sudo apt-get install libxt6`.
 It supplies `libXt.so.6`, needed by the MaterialX/USD plugins even on headless hosts.
+After installing it, check the interpreter:
+
+```sh
+uv run python tools/simulator/benchmark.py check-environment --isaac-python .venv-isaac61/bin/python
+```
+
 Without root, install it in a separate conda-forge prefix:
 
 ```sh

@@ -45,6 +45,9 @@ checkout clean, then check the interpreter:
 uv run python tools/simulator/benchmark.py check-environment --isaac-python /path/to/isaac/python
 ```
 
+On hosts without root, follow the [X11 library recipe](../reference/bench-public.md#x11-system-libraries)
+and use its process-scoped library path for this check and benchmark commands.
+
 Use **one runtime process per policy server**. Start the XPolicyLab server in its policy environment, following
 [OpenWAM_TOWER deployment](https://github.com/tower-benchmark/XPolicyLab/blob/tower-1.0.3/policy/OpenWAM_TOWER/README.md):
 
