@@ -197,7 +197,34 @@ class XPolicyLabAdapter:
 
     def _call(self, name: str, payload: Any = None) -> Any:
         with contextlib.redirect_stdout(sys.stderr):
-            return self._client.call(name, payload)
+            if name != "get_identity":
+                return self._client.call(name, payload)
+            config = self._client._client.config
+            timeout = config.request_timeout_s
+            try:
+                if name == "get_identity":
+                    config.request_timeout_s = 30.0
+                return self._client.call(name, payload)
+            finally:
+                config.request_timeout_s = timeout
+
+    def infer(self, observation: Any) -> Any:
+        """Atomically update an observation and obtain its action rows."""
+        # WsModelClient has no sync INFER wrapper at XPolicyLab tower-1.0.1.
+        # Keep protocol access and diagnostics redirection at this boundary.
+        with contextlib.redirect_stdout(sys.stderr):
+            client = self._client
+            response = client._run(
+                client._client.infer(
+                    observation,
+                    trial_id=client.trial_id,
+                    action_case_id=client.action_case_id,
+                    repeat_index=client.repeat_index,
+                    step=client._step,
+                )
+            )
+            client._step += 1
+            return response.payload["actions"]
 
     def _end_episode(self) -> None:
         if self._episode_active:

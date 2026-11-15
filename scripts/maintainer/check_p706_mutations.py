@@ -2490,6 +2490,64 @@ MUTATIONS += (
 )
 
 
+MUTATIONS += (
+    (
+        "policy-timeout",
+        "../../../../../src/tower-eval/src/tower_eval/policies/runtime_ws.py",
+        "timeout_s=300.0",
+        "timeout_s=120.0",
+    ),
+    (
+        "policy-missing-prediction",
+        "../../../../../src/tower-eval/src/tower_eval/policies/runtime_ws.py",
+        'elif getattr(exc, "details", {}).get("exception_type") == "KeyError":',
+        "elif False:",
+    ),
+    (
+        "policy-row-metadata",
+        "../../../../../src/tower-eval/src/tower_eval/policies/runtime_ws.py",
+        "if key in row and row[key] != full[key]:",
+        "if False:",
+    ),
+    (
+        "policy-row-identity",
+        "../../../../../src/tower-eval/src/tower_eval/policies/runtime_ws.py",
+        'if row.get("identity") != result["identity"]:',
+        "if False:",
+    ),
+    (
+        "policy-png-format",
+        "../../../../../src/tower-eval/src/tower_eval/policies/runtime_ws.py",
+        'if image.format != "PNG":',
+        "if False:",
+    ),
+    (
+        "policy-transport-label",
+        "../../../../../src/tower-eval/src/tower_eval/policies/runtime_ws.py",
+        'transport="websocket"',
+        'transport="unknown"',
+    ),
+    (
+        "policy-aperture-type",
+        "../../../../../src/tower-eval/src/tower_eval/policies/runtime_ws.py",
+        'category == "ValueError" and message',
+        "message",
+    ),
+    (
+        "policy-identity-normalize",
+        "../../../../../src/tower-eval/src/tower_eval/policies/runtime_ws.py",
+        'normalize(self.bridge._call("get_identity"))',
+        'self.bridge._call("get_identity")',
+    ),
+    (
+        "policy-atomic-infer",
+        "../../../../../src/tower-eval/src/tower_eval/policies/runtime_ws.py",
+        "rows = self.bridge.infer(mapped)",
+        'self.bridge._call("update_obs", mapped)\n                    rows = self.bridge._call("get_action")',
+    ),
+)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)

@@ -113,7 +113,9 @@ def service(monkeypatch):
         loop.close()
 
 
-@pytest.mark.parametrize("case", ["valid", "aperture", "nonrigid", "anchor", "shape", "nan"])
+@pytest.mark.parametrize(
+    "case", ["valid", "aperture", "nonrigid", "anchor", "shape", "world", "nan"]
+)
 def test_base_decoded_data_equivalence(monkeypatch, tmp_path, case):
     golden = json.loads(FIXTURE.read_text())
     events = []
@@ -164,6 +166,7 @@ def test_base_decoded_data_equivalence(monkeypatch, tmp_path, case):
         "rpc_start",
         "rpc_end",
     ] * count
+    assert all(e["transport"] == "websocket" for e in events if e["event"] == "rpc_end")
     assert worker.metrics.stats["policy.rpc_elapsed_sum"][1] == count
 
 
@@ -174,6 +177,7 @@ def test_base_decoded_data_equivalence(monkeypatch, tmp_path, case):
         ("ValueError", "Negative gripper aperture", True),
         ("ValueError", "other input", False),
         ("RuntimeError", "unknown failure", False),
+        ("RuntimeError", "Negative gripper aperture", False),
     ],
 )
 def test_real_error_mapping(monkeypatch, category, message, action):
@@ -316,7 +320,7 @@ def test_missing_diagnostic_fields_are_explicit():
         right_ee_joint_state=[0.05],
         identity=IDENTITY,
     )
-    result = reconstruct([row], "joint_absolute", None, None)
+    result = reconstruct([row], "joint_absolute", None)
     for field in ("native_actions", "applied_j8", "units"):
         assert field not in result and field in result["missing_evidence"]
 
@@ -535,7 +539,7 @@ def test_two_clients_atomic_infer_and_mismatched_audit(monkeypatch):
                 assert rows[0]["left_ee_transform"][0, 3] == obs["eef_encoder"][0][0][3]
             original = adapters[0].bridge._call
 
-            def interleave(name, index):
+            def interleave(name, index=None):
                 if name == "get_prediction":
                     adapters[1].predict(observations[1])
                 return original(name, index)
@@ -545,6 +549,150 @@ def test_two_clients_atomic_infer_and_mismatched_audit(monkeypatch):
                 PolicyTransportError, match="different request; is it shared by another client"
             ):
                 adapters[0].predict(observations[0])
+        finally:
+            for adapter in adapters:
+                adapter.close()
+
+
+@pytest.mark.parametrize("category", ["PolicyOutputError", "ValueError", "KeyError"])
+def test_audit_errors_are_transport(monkeypatch, category):
+    with service(monkeypatch) as (server, model, calls):
+
+        def fail(index):
+            raise type(category, (Exception,), {})("Negative gripper aperture")
+
+        model.get_prediction = fail
+        adapter = RuntimePolicyAdapter(server.url, expected_identity=IDENTITY)
+        try:
+            with pytest.raises(PolicyTransportError) as caught:
+                adapter.predict(payload())
+            if category == "KeyError":
+                assert "missing prediction for env 0 (shared server or policy bug)" in str(
+                    caught.value
+                )
+            else:
+                assert caught.value.body["exception_type"] == category
+        finally:
+            adapter.close()
+
+
+@pytest.mark.parametrize("mode", ["joint_absolute", "eef_delta"])
+@pytest.mark.parametrize(
+    "field", ["mode", "coordinate_frame", "control_hz", "execute_steps", "j8_actuator_mask"]
+)
+def test_explicit_eef_and_standard_joint_contract(monkeypatch, mode, field):
+    from tower_eval.policies.runtime_ws import reconstruct
+
+    with service(monkeypatch) as (server, model, calls):
+        adapter = RuntimePolicyAdapter(server.url, expected_identity=IDENTITY)
+        adapter.health()
+        try:
+            adapter.predict(payload(0, 640 if mode == "eef_delta" else 0))
+            rows = model.get_action()
+            for row in rows:
+                del row[field]
+            if mode == "eef_delta":
+                with pytest.raises(ValueError, match="explicit"):
+                    reconstruct(rows, "joint_absolute", None)
+            else:
+                assert reconstruct(rows, mode, None)[field] == prediction(payload())[field]
+        finally:
+            adapter.close()
+
+
+@pytest.mark.parametrize("field", ["identity", "units"])
+def test_each_row_metadata_is_checked(monkeypatch, field):
+    with service(monkeypatch) as (server, model, calls):
+        adapter = RuntimePolicyAdapter(server.url, expected_identity=IDENTITY)
+        adapter.health()
+        original = adapter.bridge.infer
+
+        def corrupt(obs):
+            rows = original(obs)
+            rows[1][field] = {"changed": True}
+            return rows
+
+        adapter.bridge.infer = corrupt
+        if field == "identity":
+            model.get_prediction = None
+        try:
+            with pytest.raises(PolicyTransportError):
+                adapter.predict(payload())
+        finally:
+            adapter.close()
+
+
+def test_png_format_not_just_decodable_image(monkeypatch):
+    import base64
+    import io
+
+    from PIL import Image
+
+    stream = io.BytesIO()
+    Image.fromarray(pixels(0, 0)).save(stream, format="BMP")
+    with service(monkeypatch) as (server, model, calls):
+        adapter = RuntimePolicyAdapter(server.url, expected_identity=IDENTITY)
+        obs = payload()
+        obs["images"][CAMERAS[0]] = base64.b64encode(stream.getvalue()).decode()
+        try:
+            with pytest.raises(PolicyTransportError, match="must be PNG"):
+                adapter.predict(obs)
+        finally:
+            adapter.close()
+
+
+def test_timeouts_identity_normalization_and_reconnect_stdout(monkeypatch, capsys):
+    with service(monkeypatch) as (server, model, calls):
+        model.policy.identity["array"] = np.array([1.0, 2.0], dtype=np.float64)
+        adapter = RuntimePolicyAdapter(server.url, expected_identity=IDENTITY)
+        try:
+            assert adapter.health()["identity"]["array"] == [1.0, 2.0]
+            client = adapter.bridge._client
+            assert client._client.config.request_timeout_s == 300.0
+            original = client.call
+
+            def check(name, payload=None):
+                if name == "get_identity":
+                    assert client._client.config.request_timeout_s == 30.0
+                return original(name, payload)
+
+            monkeypatch.setattr(client, "call", check)
+            adapter.health()
+            capsys.readouterr()
+            client._run(client._client._reset_connection_state())
+            adapter.predict(payload())
+            captured = capsys.readouterr()
+            assert captured.out == ""
+            assert "CONNECT" in captured.err
+        finally:
+            adapter.close()
+
+
+def test_atomic_infer_prevents_interleaved_update(monkeypatch):
+    from tower_eval.policies.xpolicylab import observation_to_xpolicylab
+
+    with service(monkeypatch) as (server, model, calls):
+        adapters = [RuntimePolicyAdapter(server.url, expected_identity=IDENTITY) for _ in range(2)]
+        for adapter in adapters:
+            adapter.health()
+        other = dict(
+            payload(10, 640), images={name: pixels(10, 640) for name in CAMERAS}, env_idx=0
+        )
+        original = adapters[0].bridge._call
+        interleaved = []
+
+        def hook(name, value=None):
+            result = original(name, value)
+            if name == "update_obs":
+                adapters[1].bridge._call("update_obs", observation_to_xpolicylab(other))
+                interleaved.append(True)
+            return result
+
+        adapters[0].bridge._call = hook
+        try:
+            result = adapters[0].predict(payload(0, 640))
+            assert result["eef_encoder_targets"][0][0][0][3] == 0.0
+            assert not interleaved
         finally:
             for adapter in adapters:
                 adapter.close()

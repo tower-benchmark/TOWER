@@ -9,7 +9,9 @@
   and requires `ws://` or `wss://`; request schema remains `tower-public-benchmark-v2`.
 - Active environments use sequential atomic INFER/audit calls on one connection.
   Metrics cover that exchange; full-horizon response evidence remains exact.
-  The effective prediction timeout remains 300 seconds, matching the previous transport.
+  INFER and get_prediction each have a 300-second request timeout. get_identity
+  retains the old health timeout of 30 seconds. A failed exchange permits one
+  reconnect attempt with a 180-second connect budget.
 - MME-VLA authorization is unavailable pending an XPolicyLab history adapter.
   Benchmark, data, scene, coordinate, camera and hardware contracts are unchanged.
 

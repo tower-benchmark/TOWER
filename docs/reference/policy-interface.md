@@ -122,9 +122,10 @@ The Isaac runtime uses `RuntimePolicyAdapter`, a thin wrapper around
 `XPolicyLabAdapter`, on one WebSocket connection per process. `policy_url` and
 `--policy-url` accept only `ws://` and `wss://`. The unreleased request schema
 remains `tower-public-benchmark-v2`; benchmark, data and scene identities do not change.
-The runtime retains the previous 300-second prediction timeout. Connection
-settings use TOWER XPolicyLabAdapter defaults: 10 seconds per attempt and a
-180-second connection budget. Installed
+INFER and get_prediction each have a 300-second request timeout. get_identity
+retains the old health timeout of 30 seconds. A failed exchange permits one
+reconnect attempt with a 180-second connect budget; connection attempts within
+that budget use TOWER XPolicyLabAdapter’s 10-second attempt timeout. Installed
 runtimes receive the pinned checkout client path explicitly. Release verification
 binds its client source files and the installed transport dependency records.
 
@@ -175,3 +176,10 @@ MME-VLA packages fail authorization: an XPolicyLab MME adapter is not available
 in this release. Adding one with qualified history semantics is follow-up work.
 
 See the [control safety contract](../guides/eef-control.md#control-safety-contract).
+
+Untagged standard joint endpoints use the configured joint_absolute mode,
+encoder_arm_base frame, 10 Hz, row count as execute_steps, and a disabled J8 mask,
+matching decode_chunk defaults. EEF endpoints must explicitly supply mode, frame,
+control_hz, execute_steps and j8_actuator_mask; the runtime invents none of these.
+Audit-call failures are infrastructure failures, never observation rejections.
+Command replay retains its previous min(16, environment count) request-limit metadata.

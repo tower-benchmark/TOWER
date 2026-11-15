@@ -93,7 +93,7 @@ def numeric_equal(a, b):
     return np.float64(a).tobytes() == np.float64(b).tobytes()
 
 
-def reconstruct(rows, mode, anchor, full):
+def reconstruct(rows, mode, full):
     """Check wire structure and audit consistency; control owns action semantics."""
     if not isinstance(rows, list) or not rows or not all(isinstance(r, dict) for r in rows):
         raise ValueError("Policy rows must be a nonempty list of mappings")
@@ -117,11 +117,20 @@ def reconstruct(rows, mode, anchor, full):
             "chunk_anchor_encoder",
         }
     }
-    result.setdefault("mode", mode)
-    result.setdefault("coordinate_frame", "encoder_arm_base")
-    result.setdefault("control_hz", 10)
-    result.setdefault("execute_steps", len(rows))
-    result.setdefault("j8_actuator_mask", [False, False])
+    is_eef = any("left_ee_transform" in row or row.get("mode") == "eef_delta" for row in rows)
+    if is_eef:
+        for row in rows:
+            if "mode" not in row or "coordinate_frame" not in row:
+                raise ValueError("EEF targets require an explicit encoder frame and mode")
+        for key in ("control_hz", "execute_steps", "j8_actuator_mask"):
+            if key not in result:
+                raise ValueError(f"EEF targets require explicit {key}")
+    else:
+        result.setdefault("mode", mode)
+        result.setdefault("coordinate_frame", "encoder_arm_base")
+        result.setdefault("control_hz", 10)
+        result.setdefault("execute_steps", len(rows))
+        result.setdefault("j8_actuator_mask", [False, False])
     if "identity" not in result:
         raise ValueError("Policy response is missing identity")
     result["gripper_width_m"] = [
@@ -136,8 +145,6 @@ def reconstruct(rows, mode, anchor, full):
     for row in rows:
         if row.get("identity") != result["identity"]:
             raise ValueError("Endpoint identities differ within the chunk")
-    if result["coordinate_frame"] != "encoder_arm_base":
-        raise ValueError("Policy response requires encoder_arm_base frame")
     if full is None:
         result["missing_evidence"] = ["full_prediction", "unexecuted_horizon", "inference_seconds"]
         result["missing_evidence"].extend(
@@ -221,39 +228,36 @@ class RuntimePolicyAdapter:
             if rpc_observer:
                 rpc_observer("rpc_start")
             try:
-                client = self.bridge._client
-                response = client._run(
-                    client._client.infer(
-                        mapped,
-                        trial_id=client.trial_id,
-                        action_case_id=client.action_case_id,
-                        repeat_index=client.repeat_index,
-                        step=client._step,
-                    )
-                )
-                client._step += 1
-                rows = response.payload["actions"]
+                try:
+                    rows = self.bridge.infer(mapped)
+                except Exception as exc:
+                    raise map_error(exc, request_id) from exc
                 try:
                     full = self.bridge._call("get_prediction", int(observation.get("env_idx", 0)))
                 except Exception as exc:
                     if getattr(getattr(exc, "code", None), "value", None) == "invalid_frame":
                         full = None
                     elif getattr(exc, "details", {}).get("exception_type") == "KeyError":
-                        raise ValueError(SHARED_PREDICTION) from exc
+                        raise ValueError(
+                            f"missing prediction for env {observation.get('env_idx', 0)} "
+                            "(shared server or policy bug)"
+                        ) from exc
                     else:
-                        raise
+                        raise transport_error(exc, request_id) from exc
             finally:
                 if rpc_observer:
                     rpc_observer("rpc_end", transport="websocket")
-            result = reconstruct(rows, self.bridge.mode, mapped["state"]["eef_encoder"], full)
+            result = reconstruct(rows, self.bridge.mode, full)
             if (
                 result["identity"] != self._health_identity
                 or result["identity"] != self._latest_health_identity
             ):
                 raise ValueError("Policy full identity differs from the startup health identity")
             return result
+        except (PolicyOutputError, PolicyTransportError):
+            raise
         except Exception as exc:
-            raise map_error(exc, request_id) from exc
+            raise transport_error(exc, request_id) from exc
 
     def close(self):
         if self.bridge is not None:

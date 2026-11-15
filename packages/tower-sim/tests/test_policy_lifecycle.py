@@ -105,7 +105,7 @@ def test_shared_loop_policy_outcomes(simulation, case, tmp_path):
 
 
 @pytest.mark.parametrize(
-    "case", ["valid", "aperture", "nonrigid", "anchor", "shape", "nan", "ikreject"]
+    "case", ["valid", "aperture", "nonrigid", "anchor", "shape", "world", "nan", "ikreject"]
 )
 @pytest.mark.parametrize("cleanup_failure", [False, True])
 def test_real_ws_shared_loop_status_bytes(simulation, monkeypatch, tmp_path, case, cleanup_failure):
@@ -156,7 +156,7 @@ def test_real_ws_shared_loop_status_bytes(simulation, monkeypatch, tmp_path, cas
             solver=NS(identity={}, solve=solver(case == "ikreject").solve),
         )
         worker.authorize()
-        if case in {"nan", "shape"}:
+        if case in {"nan", "shape", "world"}:
             with pytest.raises(ValueError):
                 simulation.run(policy=worker)
         else:

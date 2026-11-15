@@ -62,7 +62,9 @@ def payload(index=0, tick=0):
 
 def variant(obs, case):
     result = prediction(obs)
-    if case == "aperture":
+    if case == "world":
+        result["coordinate_frame"] = "world"
+    elif case == "aperture":
         result["gripper_width_m"][0][0] = 0.2
     elif case == "nonrigid":
         result["eef_encoder_targets"][0][0][0][0] = 2.0
@@ -191,7 +193,16 @@ def generate_base(destination):
     statuses = {}
     loop_files = {}
     try:
-        for case in ("valid", "aperture", "nonrigid", "anchor", "shape", "nan", "ikreject"):
+        for case in (
+            "valid",
+            "aperture",
+            "nonrigid",
+            "anchor",
+            "shape",
+            "world",
+            "nan",
+            "ikreject",
+        ):
             with tempfile.TemporaryDirectory() as directory:
                 output = Path(directory)
                 worker = runtime.OrdinaryPolicy(
@@ -232,7 +243,16 @@ def generate_base(destination):
 
         simulation = import_module("test_replay_lifecycle").simulation
 
-        for case in ("valid", "aperture", "nonrigid", "anchor", "shape", "nan", "ikreject"):
+        for case in (
+            "valid",
+            "aperture",
+            "nonrigid",
+            "anchor",
+            "shape",
+            "world",
+            "nan",
+            "ikreject",
+        ):
             with tempfile.TemporaryDirectory() as directory, pytest.MonkeyPatch.context() as patch:
                 output = Path(directory)
                 sim = simulation.__wrapped__(output, patch, SimpleNamespace(param=1))

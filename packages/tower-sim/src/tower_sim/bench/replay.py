@@ -815,7 +815,7 @@ def execute(
                         simulated_seconds=tick / 400,
                         ended=ended,
                         serialized_neural_inference=policy is not None,
-                        concurrent_request_limit=1 if policy else 0,
+                        concurrent_request_limit=1 if policy else min(16, env.n),
                     ),
                 )
         metrics.end_loop()
