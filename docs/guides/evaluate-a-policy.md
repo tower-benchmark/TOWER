@@ -98,22 +98,26 @@ status with results. Use [offline scoring](offline-scoring.md) for saved recordi
 
 Benchmark workers enable render-completion synchronization on every start.
 A cold shader cache can still make concurrent startup unreliable. Warm a cache
-with one serial smoke start on the GPU and driver that will run evaluation:
+with one serial diagnostic run on the GPU and driver that will run evaluation.
+Use the configured policy service and simulator interpreter:
 
 ```sh
-python tools/simulator/benchmark_portable.py smoke \
+python tools/simulator/benchmark_diagnostic.py \
   --assets /path/to/assets --data-root /path/to/benchmark-2026.11.1 \
-  --task two-block-transfer-2 --seeds 0 --gpu 0 \
-  --output /path/to/new-smoke --shader-cache-warmup /path/to/new-cache
+  --task cross-transfer-2 --seed 0 --gpu 0 \
+  --package /path/to/policy-package.json --policy-url http://localhost:19000 \
+  --ik-python /path/to/ik/python --output /path/to/new-diagnostic \
+  --shader-cache-warmup /path/to/new-cache
 ```
 
-Use the configured simulator interpreter and the same license consent as for
-other simulator runs. Wait for a passing smoke result and process exit.
+Use the same license consent as for other simulator runs. Wait for complete
+diagnostic evidence and process exit before using the exported cache.
+The diagnostic remains subject to all existing image and runtime guards.
 The new cache directory contains `cache` and `digest.sha256`, a sorted
 SHA-256 list of its files. The complete Kit cache includes both application and
-driver shaders; the parent records its digest after the worker exits. Keep both unchanged. Cache files are specific to the
-GPU and driver: regenerate after either changes, and never distribute a cache
-with the benchmark.
+driver shaders; the parent records its digest after the worker exits. Keep both
+unchanged. Cache files are specific to the GPU and driver: regenerate after
+either changes, and never distribute a cache with the benchmark.
 
 Pass both options on each concurrent `benchmark.py run`,
 `benchmark_portable.py run` or `smoke`, or `benchmark_diagnostic.py` invocation:
