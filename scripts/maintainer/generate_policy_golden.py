@@ -7,7 +7,7 @@ read from git; no archived implementation is copied into the product tree.
 from __future__ import annotations
 
 import base64
-import importlib.util
+import contextlib
 import io
 import json
 import subprocess
@@ -17,7 +17,6 @@ import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from types import SimpleNamespace
-from typing import Any
 
 import numpy as np
 
@@ -28,22 +27,51 @@ IDENTITY = {"package_digest": "synthetic-package", "seed": 42, "horizon": 32, "e
 CAMERAS = ("right_front_camera", "left_back_camera", "left_wrist_camera", "back_wrist_camera")
 
 
-def observation(index, tick):
+def pixels(index, tick):
+    return (np.arange(36).reshape(3, 4, 3) + index + tick).astype(np.uint8)
+
+
+def images(index, tick):
     from PIL import Image
 
-    pixels = (np.arange(36).reshape(3, 4, 3) + index + tick).astype(np.uint8)
     stream = io.BytesIO()
-    Image.fromarray(pixels).save(stream, format="PNG")
+    Image.fromarray(pixels(index, tick)).save(stream, format="PNG")
+    return {name: base64.b64encode(stream.getvalue()).decode() for name in CAMERAS}
+
+
+def observation(index, tick):
     anchor = np.tile(np.eye(4), (2, 1, 1))
     anchor[:, 0, 3] = index / 100
     return dict(
-        coordinate_frame="encoder_arm_base",
-        prompt=f"synthetic {tick}",
         joint_encoder=np.zeros((2, 7)).tolist(),
         eef_encoder=anchor.tolist(),
         gripper_width_m=[-0.01 if index == 1 else 0.05, 0.05],
-        images={name: base64.b64encode(stream.getvalue()).decode() for name in CAMERAS},
     )
+
+
+def payload(index=0, tick=0):
+    return dict(
+        observation(index, tick),
+        images=images(index, tick),
+        coordinate_frame="encoder_arm_base",
+        prompt=f"synthetic {tick}",
+        env_idx=index,
+    )
+
+
+def variant(obs, case):
+    result = prediction(obs)
+    if case == "aperture":
+        result["gripper_width_m"][0][0] = 0.2
+    elif case == "nonrigid":
+        result["eef_encoder_targets"][0][0][0][0] = 2.0
+    elif case == "anchor":
+        result["chunk_anchor_encoder"][0][0][3] += 0.25
+    elif case == "shape":
+        result["eef_encoder_targets"][0][0] = [[1.0] * 3] * 3
+    elif case == "nan":
+        result["gripper_width_m"][0][0] = float("nan")
+    return result
 
 
 def prediction(obs):
@@ -78,46 +106,50 @@ def prediction(obs):
     return result
 
 
-def solver():
+def solver(reject=False):
     return SimpleNamespace(
         solve=lambda poses, seed, **kw: dict(
-            accepted=True, joints=np.zeros((16, 2, 7)).tolist(), diagnostics=[]
+            accepted=not reject,
+            joints=np.zeros((16, 2, 7)).tolist(),
+            diagnostics=[{"reason": "synthetic_ik_rejection"}] if reject else [],
         )
     )
 
 
-def base_module(relative, name) -> Any:
-    source = subprocess.check_output(["git", "show", f"{BASE}:{relative}"], cwd=ROOT)
-    spec = importlib.util.spec_from_loader(name, loader=None)
-    if spec is None:
-        raise RuntimeError("Cannot create historical module spec")
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[name] = module
-    exec(compile(source, relative, "exec"), module.__dict__)
-    return module
+def capture(worker, observations, archives, tick, directory):
+    from tower_sim.bench import control
+    from tower_sim.bench.evaluation import EvaluationContext
+    from tower_sim.bench.resources import save
+
+    pending = worker.prefetch(observations, archives, tick)
+    context = EvaluationContext.__new__(EvaluationContext)
+    context.health = worker.authorize()
+    records = []
+    for i, obs in observations.items():
+        dest = directory / str(i)
+        record = dict(tick=tick, env_idx=i)
+        try:
+            response = worker.prediction(pending, i, obs, tick)
+            context.verify_prediction(response["identity"])
+            save(
+                dest / "chunk.json",
+                dict(observation_time_s=tick / 400, observation=obs, response=response),
+            )
+            commands, diagnostics = control.encoder_endpoints(response, obs, solver=worker.solver)
+            record.update(commands=commands.tolist(), diagnostics=diagnostics)
+        except (ValueError, RuntimeError) as exc:
+            record["exception"] = type(exc).__name__
+            record["message"] = str(exc)
+        record["files"] = {p.name: json.loads(p.read_text()) for p in dest.glob("*.json")}
+        records.append(record)
+    return records
 
 
-def generate():
-    base_module(
-        "src/tower-eval/src/tower_eval/policies/legacy_predict.py",
-        "tower_eval.policies.legacy_predict",
-    )
-    base_module(
-        "packages/tower-sim/src/tower_sim/bench/mme_history.py", "tower_sim.bench.mme_history"
-    )
-    runtime = base_module(
-        "packages/tower-sim/src/tower_sim/bench/policy.py", "tower_sim.bench._golden_policy"
-    )
-    control = base_module(
-        "packages/tower-sim/src/tower_sim/bench/control.py", "tower_sim.bench._golden_control"
-    )
-    evaluation = base_module(
-        "packages/tower-sim/src/tower_sim/bench/evaluation.py", "tower_sim.bench._golden_evaluation"
-    )
-    resources = base_module(
-        "packages/tower-sim/src/tower_sim/bench/resources.py", "tower_sim.bench._golden_resources"
-    )
-    # Resolve the historical runtime's import without retaining historical code.
+def generate_base(destination):
+    from tower_sim.bench import policy as runtime
+    from tower_sim.bench.metrics import Metrics, TrialRequestID
+
+    case = "valid"
 
     class Handler(BaseHTTPRequestHandler):
         def log_message(self, *args):
@@ -135,7 +167,7 @@ def generate():
                 for name, value in obs["images"].items()
             }
             try:
-                self.reply(200, prediction(obs))
+                self.reply(200, variant(obs, case))
             except ValueError as exc:
                 self.reply(422, {"code": "invalid_observation", "error": str(exc)})
 
@@ -144,11 +176,6 @@ def generate():
             self.end_headers()
             self.wfile.write(json.dumps(body).encode())
 
-    server = ThreadingHTTPServer(("localhost", 0), Handler)
-    thread = threading.Thread(target=server.serve_forever)
-    thread.start()
-    from tower_sim.bench.metrics import Metrics, TrialRequestID
-
     class Sink:
         def emit(self, record):
             pass
@@ -156,74 +183,149 @@ def generate():
         def flush(self):
             pass
 
-    records = []
+    server = ThreadingHTTPServer(("localhost", 0), Handler)
+    thread = threading.Thread(target=server.serve_forever)
+    thread.start()
+    cases = {}
+    statuses = {}
+    loop_files = {}
     try:
-        with tempfile.TemporaryDirectory() as directory:
-            output = Path(directory)
-            worker = runtime.OrdinaryPolicy(
-                package=IDENTITY,
-                url=f"http://localhost:{server.server_port}",
-                prompt="synthetic 0",
-                task="synthetic",
-                metrics=Metrics(
-                    Sink(),
-                    TrialRequestID("synthetic"),
-                ),
-                solver=solver(),
-            )
-            health = worker.authorize()
-            worker.start(output)
-            rows = [{"candidate": {"seed": i}, "output": output / str(i)} for i in range(3)]
-            for row in rows:
-                row["output"].mkdir()
-            worker.initialize(rows, CAMERAS, health)
-            context = evaluation.EvaluationContext.__new__(evaluation.EvaluationContext)
-            context.health = health
-            try:
-                for tick in (0, 640):
-                    worker.prompt = f"synthetic {tick}"
-                    observations = {i: observation(i, tick) for i in range(3)}
-                    archives = [SimpleNamespace(latest=observations[i]["images"]) for i in range(3)]
-                    pending = worker.prefetch(observations, archives, tick)
-                    for i, obs in observations.items():
-                        try:
-                            response = worker.prediction(pending, i, obs, tick)
-                        except runtime.control.PolicyActionError:
-                            rejection = json.loads(
-                                (rows[i]["output"] / "policy-input-rejection.json").read_text()
-                            )
-                            records.append(dict(tick=tick, env_idx=i, rejection=rejection))
-                            continue
-                        context.verify_prediction(response["identity"])
-                        commands, diagnostics = control.encoder_endpoints(
-                            response, obs, solver=solver()
-                        )
-                        evidence = dict(
-                            observation_time_s=tick / 400, observation=obs, response=response
-                        )
-                        resources.save(output / "evidence.json", evidence)
-                        records.append(
-                            dict(
-                                tick=tick,
-                                env_idx=i,
-                                response=response,
-                                verified_identity=response["identity"],
-                                commands=commands.tolist(),
-                                diagnostics=diagnostics,
-                                evidence=json.loads((output / "evidence.json").read_text()),
+        for case in ("valid", "aperture", "nonrigid", "anchor", "shape", "nan", "ikreject"):
+            with tempfile.TemporaryDirectory() as directory:
+                output = Path(directory)
+                worker = runtime.OrdinaryPolicy(
+                    package=dict(IDENTITY, checkpoint_sha256="synthetic-checkpoint"),
+                    url=f"http://localhost:{server.server_port}",
+                    prompt="synthetic 0",
+                    task="synthetic",
+                    metrics=Metrics(Sink(), TrialRequestID("synthetic")),
+                    solver=solver(case == "ikreject"),
+                )
+                health = worker.authorize()
+                worker.start(output)
+                rows = [{"candidate": {"seed": i}, "output": output / str(i)} for i in range(3)]
+                for row in rows:
+                    row["output"].mkdir()
+                worker.initialize(rows, CAMERAS, health)
+                records = []
+                try:
+                    for tick in (0, 640) if case == "valid" else (640,):
+                        worker.prompt = f"synthetic {tick}"
+                        obs = {i: observation(i, tick) for i in range(3)}
+                        records.extend(
+                            capture(
+                                worker,
+                                obs,
+                                [SimpleNamespace(latest=images(i, tick)) for i in range(3)],
+                                tick,
+                                output,
                             )
                         )
-            finally:
-                worker.close()
+                finally:
+                    worker.close()
+                cases[case] = records
+        # Run the historical shared loop, preserving its actual status serialization.
+        import pytest
+        from test_replay_lifecycle import simulation
+
+        for case in ("valid", "aperture", "nonrigid", "anchor", "shape", "nan", "ikreject"):
+            with tempfile.TemporaryDirectory() as directory, pytest.MonkeyPatch.context() as patch:
+                output = Path(directory)
+                sim = simulation.__wrapped__(output, patch, SimpleNamespace(param=1))
+                sim.camera.names = {name: str(i) for i, name in enumerate(CAMERAS)}
+                sim.factories.observation = lambda *a: observation(0, 640)
+                worker = runtime.OrdinaryPolicy(
+                    package=dict(IDENTITY, checkpoint_sha256="synthetic-checkpoint"),
+                    url=f"http://localhost:{server.server_port}",
+                    prompt="synthetic 640",
+                    task="synthetic",
+                    metrics=Metrics(Sink(), TrialRequestID("synthetic")),
+                    solver=SimpleNamespace(identity={}, solve=solver(case == "ikreject").solve),
+                )
+                worker.authorize()
+                with contextlib.suppress(ValueError, RuntimeError):
+                    sim.run(policy=worker)
+                statuses[case] = (sim.row["output"] / "status.json").read_text()
+                loop_files[case] = {
+                    p.relative_to(sim.row["output"]).as_posix(): json.loads(p.read_text())
+                    for p in sim.row["output"].rglob("*.json")
+                    if p.parent.name == "chunks"
+                    or p.name
+                    in {
+                        "status.json",
+                        "policy-action-failure.json",
+                        "policy-input-rejection.json",
+                        "policy-error.json",
+                    }
+                }
+        # Assert every imported product/test module came from the base worktree.
+        base = Path.cwd().resolve()
+        for name, module in sys.modules.items():
+            if (
+                name.startswith(("tower_sim", "tower_eval", "nero_kinematics", "scripts."))
+                or name == "test_replay_lifecycle"
+            ):
+                source = getattr(module, "__file__", None)
+                if source is not None and not Path(source).resolve().is_relative_to(base):
+                    raise RuntimeError(f"Non-base module imported: {name}")
     finally:
         server.shutdown()
         server.server_close()
         thread.join()
-    FIXTURE.parent.mkdir(parents=True, exist_ok=True)
-    FIXTURE.write_text(
-        json.dumps(dict(base=BASE, health=health, records=records), separators=(",", ":")) + "\n"
+    destination.write_text(
+        json.dumps(
+            dict(
+                base=BASE,
+                health=health,
+                cases=cases,
+                statuses=statuses,
+                loop_files=loop_files,
+                pixels={
+                    str(tick): [pixels(i, tick).tolist() for i in range(3)] for tick in (0, 640)
+                },
+            ),
+            separators=(",", ":"),
+        )
+        + "\n"
     )
 
 
+def generate():
+    import os
+
+    with tempfile.TemporaryDirectory(prefix="tower-golden-") as directory:
+        checkout = Path(directory) / "base"
+        subprocess.run(
+            ["git", "worktree", "add", "--detach", str(checkout), BASE], cwd=ROOT, check=True
+        )
+        try:
+            roots = [
+                checkout,
+                checkout / "src/tower-eval/src",
+                checkout / "packages/tower-sim/src",
+                checkout / "packages/nero-kinematics/src",
+                checkout / "packages/tower-sim/tests",
+            ]
+            env = dict(
+                os.environ,
+                PYTHONPATH=os.pathsep.join(map(str, roots)),
+                PYTHONDONTWRITEBYTECODE="1",
+                NO_PROXY="*",
+            )
+            subprocess.run(
+                [sys.executable, str(Path(__file__).resolve()), "--base-output", str(FIXTURE)],
+                cwd=checkout,
+                env=env,
+                check=True,
+            )
+        finally:
+            subprocess.run(
+                ["git", "worktree", "remove", "--force", str(checkout)], cwd=ROOT, check=True
+            )
+
+
 if __name__ == "__main__":
-    generate()
+    if len(sys.argv) == 3 and sys.argv[1] == "--base-output":
+        generate_base(Path(sys.argv[2]))
+    else:
+        generate()

@@ -1,4 +1,8 @@
-"""Benchmark response contract over XPolicyLab's WebSocket transport."""
+"""Benchmark response contract over XPolicyLab's WebSocket transport.
+
+Deploy one runtime process per policy server. INFER is atomic, but a server's
+optional prediction cache is shared between clients.
+"""
 
 from __future__ import annotations
 
@@ -10,19 +14,21 @@ from urllib.parse import urlsplit
 
 import numpy as np
 
-from .xpolicylab import CAMERAS, XPolicyLabAdapter, decode_chunk, observation_to_xpolicylab
+from .xpolicylab import CAMERAS, XPolicyLabAdapter, observation_to_xpolicylab
+
+SHARED_PREDICTION = (
+    "policy server returned a prediction for a different request; is it shared by another client?"
+)
 
 
 class _PolicyError(RuntimeError):
-    """Connection, protocol, or policy input failure."""
-
     def __init__(self, message: str, *, body: Any = None, body_is_json: bool = True):
         super().__init__(message)
         self.body, self.body_is_json = body, body_is_json
 
 
 class PolicyTransportError(_PolicyError):
-    """Connection, protocol, or policy input failure."""
+    """Connection, protocol, structural response, or policy input failure."""
 
 
 class PolicyOutputError(_PolicyError):
@@ -35,10 +41,21 @@ def validate_url(url: str) -> None:
         raise ValueError("policy_url must use ws:// or wss:// with a hostname")
 
 
-def map_error(exc: Exception) -> PolicyTransportError | PolicyOutputError:
+def transport_error(exc: Exception, request_id=None) -> PolicyTransportError:
+    return PolicyTransportError(
+        str(exc),
+        body={
+            "code": getattr(getattr(exc, "code", None), "value", "transport_error"),
+            "message": str(exc),
+            "exception_type": getattr(exc, "details", {}).get("exception_type", type(exc).__name__),
+            "request_id": request_id,
+        },
+    )
+
+
+def map_error(exc: Exception, request_id=None) -> PolicyTransportError | PolicyOutputError:
     code = getattr(getattr(exc, "code", None), "value", None)
-    details = getattr(exc, "details", {})
-    category = details.get("exception_type") if isinstance(details, dict) else None
+    category = getattr(exc, "details", {}).get("exception_type")
     message = str(exc)
     if code in {"call_failed", "infer_failed"}:
         if category == "PolicyOutputError":
@@ -49,12 +66,41 @@ def map_error(exc: Exception) -> PolicyTransportError | PolicyOutputError:
             return PolicyOutputError(
                 message, body={"code": "invalid_observation", "error": message}
             )
-    return PolicyTransportError(message)
+    return transport_error(exc, request_id)
 
 
-def reconstruct(rows: list[dict], mode: str, anchor: Any, full: dict | None) -> dict:
-    """Validate every endpoint and retain all optional full-horizon evidence verbatim."""
-    decode_chunk(rows, mode, expected_anchor=anchor)
+def normalize(value):
+    """Retain scalar types and float64 bits; never silently widen floating arrays."""
+    if isinstance(value, (np.ndarray, np.generic)):
+        if value.dtype.kind == "f" and value.dtype != np.dtype("float64"):
+            raise ValueError("Policy floating arrays must have float64 dtype")
+        return normalize(value.tolist())
+    if isinstance(value, dict):
+        return {k: normalize(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [normalize(v) for v in value]
+    return value
+
+
+def numeric_equal(a, b):
+    if isinstance(a, list) or isinstance(b, list):
+        return (
+            isinstance(a, list)
+            and isinstance(b, list)
+            and len(a) == len(b)
+            and all(numeric_equal(x, y) for x, y in zip(a, b))
+        )
+    return np.float64(a).tobytes() == np.float64(b).tobytes()
+
+
+def reconstruct(rows, mode, anchor, full):
+    """Check wire structure and audit consistency; control owns action semantics."""
+    if not isinstance(rows, list) or not rows or not all(isinstance(r, dict) for r in rows):
+        raise ValueError("Policy rows must be a nonempty list of mappings")
+    rows = normalize(rows)
+    full = normalize(full)
+    if full is not None and not isinstance(full, dict):
+        raise ValueError("Policy prediction must be a mapping")
     result = {
         k: copy.deepcopy(v)
         for k, v in rows[0].items()
@@ -76,36 +122,33 @@ def reconstruct(rows: list[dict], mode: str, anchor: Any, full: dict | None) -> 
     result.setdefault("control_hz", 10)
     result.setdefault("execute_steps", len(rows))
     result.setdefault("j8_actuator_mask", [False, False])
+    if "identity" not in result:
+        raise ValueError("Policy response is missing identity")
     result["gripper_width_m"] = [
         [r[f"{arm}_ee_joint_state"][0] for arm in ("left", "right")] for r in rows
     ]
-    field = "joint_encoder_targets" if mode == "joint_absolute" else "eef_encoder_targets"
-    suffix = "arm_joint_state" if mode == "joint_absolute" else "ee_transform"
+    field = "joint_encoder_targets" if result["mode"] == "joint_absolute" else "eef_encoder_targets"
+    suffix = "arm_joint_state" if result["mode"] == "joint_absolute" else "ee_transform"
     result[field] = [[r[f"{arm}_{suffix}"] for arm in ("left", "right")] for r in rows]
     if all("native_action" in r for r in rows):
         result["native_actions"] = [r["native_action"] for r in rows]
-    arrays = {field, "gripper_width_m", "native_actions"}
-    for key in arrays | {"chunk_anchor_encoder"}:
-        if key in result:
-            result[key] = np.asarray(result[key], dtype=np.float64).tolist()
+    arrays = {field, "gripper_width_m", "native_actions", "chunk_anchor_encoder"}
     for row in rows:
-        if row.get("identity", {}) != result.get("identity", {}):
+        if row.get("identity") != result["identity"]:
             raise ValueError("Endpoint identities differ within the chunk")
+    if result["coordinate_frame"] != "encoder_arm_base":
+        raise ValueError("Policy response requires encoder_arm_base frame")
     if full is None:
         result["missing_evidence"] = ["full_prediction", "unexecuted_horizon", "inference_seconds"]
         result["missing_evidence"].extend(
-            key for key in ("native_actions", "applied_j8", "units") if key not in result
+            k for k in ("native_actions", "applied_j8", "units") if k not in result
         )
         return result
     for key, value in result.items():
-        expected = full[key][: len(rows)] if key in arrays else full[key]
-        if key in arrays | {"chunk_anchor_encoder"}:
-            a, b = np.asarray(value, dtype=np.float64), np.asarray(expected, dtype=np.float64)
-            equal = a.shape == b.shape and a.tobytes() == b.tobytes()
-        else:
-            equal = value == expected
+        expected = full[key][: len(rows)] if key in arrays - {"chunk_anchor_encoder"} else full[key]
+        equal = numeric_equal(value, expected) if key in arrays else value == expected
         if not equal:
-            raise ValueError(f"Endpoint rows differ from full prediction: {key}")
+            raise ValueError(SHARED_PREDICTION)
     for row in rows:
         for key in (
             "identity",
@@ -118,11 +161,9 @@ def reconstruct(rows: list[dict], mode: str, anchor: Any, full: dict | None) -> 
             "j8_actuator_mask",
         ):
             if key in row and row[key] != full[key]:
-                raise ValueError(f"Endpoint metadata differs from full prediction: {key}")
-    # Replace only the executed rows with the checked endpoint values; retain the
-    # exact key set and the untouched suffix and auxiliary evidence fields.
+                raise ValueError(SHARED_PREDICTION)
     response = copy.deepcopy(full)
-    for key in arrays & result.keys():
+    for key in (arrays - {"chunk_anchor_encoder"}) & result.keys():
         response[key] = result[key] + full[key][len(rows) :]
     return response
 
@@ -133,25 +174,17 @@ class RuntimePolicyAdapter:
         if not expected_identity.get("package_digest"):
             raise ValueError("Expected identity must include package_digest")
         self.url, self.package_digest = url, expected_identity["package_digest"]
-        self.bridge = bridge
-        self.root = root
+        self.bridge, self.root = bridge, root
         self._health_identity = self._latest_health_identity = None
-
-    def _call(self, name, payload=None):
-        if self.bridge is None:
-            raise PolicyTransportError("Policy connection has not been authorized")
-        try:
-            return self.bridge._call(name, payload)
-        except Exception as exc:
-            raise map_error(exc) from exc
+        self.cleanup_errors = []
 
     def health(self):
-        if self.bridge is None:
-            try:
-                self.bridge = XPolicyLabAdapter(self.url, root=self.root)
-            except Exception as exc:
-                raise map_error(exc) from exc
-        identity = self._call("get_identity")
+        try:
+            if self.bridge is None:
+                self.bridge = XPolicyLabAdapter(self.url, root=self.root, timeout_s=300.0)
+            identity = normalize(self.bridge._call("get_identity"))
+        except Exception as exc:
+            raise transport_error(exc) from exc
         if identity["package_digest"] != self.package_digest:
             raise ValueError("Policy is not ready for the authorized package")
         if self._health_identity is None:
@@ -160,60 +193,71 @@ class RuntimePolicyAdapter:
         return dict(ready=True, identity=identity)
 
     def reset(self, *, seed=None, metadata=None):
-        if self.bridge is None:
-            raise PolicyTransportError("Policy connection has not been authorized")
         try:
+            if self.bridge is None:
+                raise ValueError("Policy connection has not been authorized")
             self.bridge.reset(seed=seed, metadata=metadata)
         except Exception as exc:
-            raise map_error(exc) from exc
+            raise transport_error(exc) from exc
 
     def predict(self, observation, *, headers=None, rpc_observer=None):
         from PIL import Image
 
+        request_id = (headers or {}).get("X-Baseline-Request-ID")
         if self._health_identity is None:
             self.health()
-        if self.bridge is None:
-            raise PolicyTransportError("Policy connection has not been authorized")
         try:
+            if self.bridge is None:
+                raise ValueError("Policy connection has not been authorized")
             payload = dict(observation, images={})
             for name in CAMERAS:
-                encoded = observation["images"][name]
-                with Image.open(io.BytesIO(base64.b64decode(encoded, validate=True))) as image:
+                with Image.open(
+                    io.BytesIO(base64.b64decode(observation["images"][name], validate=True))
+                ) as image:
+                    if image.format != "PNG":
+                        raise ValueError("Policy archive image must be PNG")
                     payload["images"][name] = np.asarray(image.convert("RGB")).copy()
             mapped = observation_to_xpolicylab(payload)
-        except (ValueError, OSError, KeyError, TypeError) as exc:
-            raise PolicyTransportError(str(exc)) from exc
-        if rpc_observer:
-            rpc_observer("rpc_start")
-        try:
-            self._call("update_obs", mapped)
-            rows = self._call("get_action")
-            try:
-                full = self.bridge._call("get_prediction")
-            except Exception as exc:
-                if (
-                    getattr(getattr(exc, "code", None), "value", None) == "invalid_frame"
-                    and str(exc) == "no model method named 'get_prediction'"
-                ):
-                    full = None
-                else:
-                    raise map_error(exc) from exc
-        finally:
             if rpc_observer:
-                rpc_observer("rpc_end", transport="websocket")
-        try:
-            result = reconstruct(
-                rows, rows[0].get("mode", self.bridge.mode), mapped["state"]["eef_encoder"], full
-            )
-        except (ValueError, KeyError, TypeError, IndexError) as exc:
-            raise PolicyTransportError(str(exc)) from exc
-        if (
-            result["identity"] != self._health_identity
-            or result["identity"] != self._latest_health_identity
-        ):
-            raise ValueError("Policy full identity differs from the startup health identity")
-        return result
+                rpc_observer("rpc_start")
+            try:
+                client = self.bridge._client
+                response = client._run(
+                    client._client.infer(
+                        mapped,
+                        trial_id=client.trial_id,
+                        action_case_id=client.action_case_id,
+                        repeat_index=client.repeat_index,
+                        step=client._step,
+                    )
+                )
+                client._step += 1
+                rows = response.payload["actions"]
+                try:
+                    full = self.bridge._call("get_prediction", int(observation.get("env_idx", 0)))
+                except Exception as exc:
+                    if getattr(getattr(exc, "code", None), "value", None) == "invalid_frame":
+                        full = None
+                    elif getattr(exc, "details", {}).get("exception_type") == "KeyError":
+                        raise ValueError(SHARED_PREDICTION) from exc
+                    else:
+                        raise
+            finally:
+                if rpc_observer:
+                    rpc_observer("rpc_end", transport="websocket")
+            result = reconstruct(rows, self.bridge.mode, mapped["state"]["eef_encoder"], full)
+            if (
+                result["identity"] != self._health_identity
+                or result["identity"] != self._latest_health_identity
+            ):
+                raise ValueError("Policy full identity differs from the startup health identity")
+            return result
+        except Exception as exc:
+            raise map_error(exc, request_id) from exc
 
     def close(self):
         if self.bridge is not None:
-            self.bridge.close()
+            try:
+                self.bridge.close()  # closes the socket even if trial_end fails
+            except Exception as exc:  # noqa: BLE001 -- cleanup must preserve recorded outcomes
+                self.cleanup_errors.append(transport_error(exc).body)

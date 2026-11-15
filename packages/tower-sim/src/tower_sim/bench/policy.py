@@ -12,6 +12,7 @@ from tower_eval.policies.runtime_ws import (
     PolicyOutputError,
     PolicyTransportError,
     RuntimePolicyAdapter,
+    transport_error,
 )
 
 from . import control
@@ -33,6 +34,7 @@ class OrdinaryPolicy:
             root=client_root,
         )
         self.rows = []
+        self.output = None
 
     def authorize(self):
         """Startup package authorization and first full-identity snapshot (C21)."""
@@ -40,6 +42,7 @@ class OrdinaryPolicy:
 
     def start(self, output):
         # Entry and worker share one connection and pin both full identity snapshots.
+        self.output = output
         health = self.adapter.health()
         save(output / "policy-health.json", health)
         return health
@@ -60,7 +63,13 @@ class OrdinaryPolicy:
         pass
 
     def payload(self, index, observation, archive, tick):
-        return dict(observation, images=archive.latest, prompt=self.prompt, env_idx=index)
+        return dict(
+            observation,
+            coordinate_frame="encoder_arm_base",
+            images=archive.latest,
+            prompt=self.prompt,
+            env_idx=index,
+        )
 
     def prefetch(self, observations, archives, tick):
         # Materialize validated PNGs before sequential exchanges.
@@ -80,8 +89,14 @@ class OrdinaryPolicy:
                         headers=self.metrics.headers(self.rows[index]["candidate"]["seed"], tick),
                     )
                 )
-            except (PolicyOutputError, PolicyTransportError, ValueError, OSError) as exc:
+            except PolicyOutputError as exc:
                 future.set_exception(exc)
+            except Exception as exc:  # noqa: BLE001 -- defer infrastructure failure until prior evidence is written
+                future.set_exception(
+                    exc if isinstance(exc, PolicyTransportError) else transport_error(exc)
+                )
+                pending[index] = future
+                break
             pending[index] = future
         return pending
 
@@ -120,6 +135,8 @@ class OrdinaryPolicy:
 
     def close(self):
         self.adapter.close()
+        if self.output is not None and getattr(self.adapter, "cleanup_errors", []):
+            save(self.output / "policy-cleanup-errors.json", self.adapter.cleanup_errors)
 
 
 class MMEPolicy(OrdinaryPolicy):

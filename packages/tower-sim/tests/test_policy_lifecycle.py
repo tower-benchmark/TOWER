@@ -102,3 +102,144 @@ def test_shared_loop_policy_outcomes(simulation, case, tmp_path):
     assert status["evidence_complete"] == (case not in ("transport", "identity"))
     assert status["policy_action_failure"] == (case in ("output", "aperture"))
     assert calls == ["reset", "close"]
+
+
+@pytest.mark.parametrize(
+    "case", ["valid", "aperture", "nonrigid", "anchor", "shape", "nan", "ikreject"]
+)
+@pytest.mark.parametrize("cleanup_failure", [False, True])
+def test_real_ws_shared_loop_status_bytes(simulation, monkeypatch, tmp_path, case, cleanup_failure):
+    import json
+    import runpy
+
+    from scipy.spatial.transform import Rotation
+    from tower_sim.bench import policy
+    from tower_sim.bench.metrics import Metrics, TrialRequestID
+    from tower_sim.bench.observation import encoder_observation
+
+    from scripts.maintainer.generate_policy_golden import (
+        CAMERAS,
+        FIXTURE,
+        IDENTITY,
+        ROOT,
+        solver,
+        variant,
+    )
+
+    service = runpy.run_path(str(ROOT / "src/tower-eval/tests/unit/test_ws_transport_parity.py"))[
+        "service"
+    ]
+    with service(monkeypatch) as (server, model, calls):
+        model.policy.predict = lambda obs: variant(obs, case)
+        if cleanup_failure:
+
+            def fail(metadata):
+                raise RuntimeError("synthetic trial_end failure")
+
+            model.on_trial_end = fail
+        simulation.camera.names = {name: str(i) for i, name in enumerate(CAMERAS)}
+        simulation.factories.observation = lambda qpos, *args: encoder_observation(
+            qpos,
+            NS(encoder_from_physical=lambda q, *a: q),
+            Rotation.identity(),
+            np.zeros(3),
+            fk=lambda *args: {"gripper_base": np.eye(4)},
+        )
+        worker = policy.OrdinaryPolicy(
+            package=dict(IDENTITY, checkpoint_sha256="synthetic-checkpoint"),
+            url=server.url,
+            prompt="synthetic 640",
+            task="synthetic",
+            metrics=Metrics(
+                NS(emit=lambda r: None, flush=lambda: None), TrialRequestID("synthetic")
+            ),
+            solver=NS(identity={}, solve=solver(case == "ikreject").solve),
+        )
+        worker.authorize()
+        if case in {"nan", "shape"}:
+            with pytest.raises(ValueError):
+                simulation.run(policy=worker)
+        else:
+            assert simulation.run(policy=worker) == 0
+        actual = (simulation.row["output"] / "status.json").read_text()
+        golden = json.loads(FIXTURE.read_text())
+        assert actual == golden["statuses"][case]
+        output = simulation.row["output"]
+        files = {
+            p.relative_to(output).as_posix(): p.read_text()
+            for p in output.rglob("*.json")
+            if p.parent.name == "chunks"
+            or p.name
+            in {
+                "status.json",
+                "policy-action-failure.json",
+                "policy-input-rejection.json",
+                "policy-error.json",
+            }
+        }
+        assert files == {
+            name: json.dumps(value, indent=2, allow_nan=False) + "\n"
+            for name, value in golden["loop_files"][case].items()
+        }
+        if cleanup_failure:
+            errors = json.loads((tmp_path / "policy-cleanup-errors.json").read_text())
+            assert errors[0]["message"] == "synthetic trial_end failure"
+
+
+def test_worker_status_records_sequential_policy(tmp_path):
+    import ast
+    from pathlib import Path
+
+    from tower_sim.bench import replay
+    from tower_sim.bench.resources import save
+
+    tree = ast.parse(Path(replay.__file__).read_text())
+    call = next(
+        n
+        for n in ast.walk(tree)
+        if isinstance(n, ast.Call)
+        and isinstance(n.func, ast.Name)
+        and n.func.id == "save"
+        and "worker-status.json" in ast.unparse(n)
+    )
+    eval(
+        compile(ast.Expression(call), "worker-status", "eval"),
+        dict(
+            save=save,
+            context=NS(output=tmp_path),
+            policy=NS(stage="synthetic"),
+            tick=400,
+            ended=[False] * 3,
+            env=NS(n=3),
+        ),
+    )
+    import json
+
+    result = json.loads((tmp_path / "worker-status.json").read_text())
+    assert result["serialized_neural_inference"] is True
+    assert result["concurrent_request_limit"] == 1
+
+
+def test_nonjson_error_body_is_not_written(tmp_path):
+    from concurrent.futures import Future
+
+    from tower_eval.policies.runtime_ws import PolicyOutputError
+    from tower_sim.bench import policy
+    from tower_sim.bench.metrics import Metrics, TrialRequestID
+
+    worker = policy.OrdinaryPolicy(
+        package={"package_digest": "synthetic"},
+        url="ws://localhost",
+        prompt="synthetic",
+        task="synthetic",
+        solver=None,
+        metrics=Metrics(NS(emit=lambda r: None, flush=lambda: None), TrialRequestID("synthetic")),
+    )
+    worker.rows = [{"output": tmp_path}]
+    pending = Future()
+    pending.set_exception(
+        PolicyOutputError("synthetic", body={"message": "not structured"}, body_is_json=False)
+    )
+    with pytest.raises(control.PolicyActionError):
+        worker.prediction({0: pending}, 0, {}, 0)
+    assert not (tmp_path / "policy-error.json").exists()
