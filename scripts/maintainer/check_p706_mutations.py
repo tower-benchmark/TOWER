@@ -37,8 +37,8 @@ MUTATIONS = (
     (
         "startup-sdk-completion-argv",
         "app.py",
-        "for flag in RENDER_COMPLETION_ARGS",
-        "for flag in ()",
+        "            for flag in RENDER_COMPLETION_ARGS\n            if flag in config.get",
+        "            for flag in ()\n            if flag in config.get",
     ),
     (
         "startup-parent-evaluation-finalize",
