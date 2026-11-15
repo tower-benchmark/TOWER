@@ -93,6 +93,9 @@ def reconstruct(rows: list[dict], mode: str, anchor: Any, full: dict | None) -> 
             raise ValueError("Endpoint identities differ within the chunk")
     if full is None:
         result["missing_evidence"] = ["full_prediction", "unexecuted_horizon", "inference_seconds"]
+        result["missing_evidence"].extend(
+            key for key in ("native_actions", "applied_j8", "units") if key not in result
+        )
         return result
     for key, value in result.items():
         expected = full[key][: len(rows)] if key in arrays else full[key]
@@ -127,6 +130,8 @@ def reconstruct(rows: list[dict], mode: str, anchor: Any, full: dict | None) -> 
 class RuntimePolicyAdapter:
     def __init__(self, url: str, *, expected_identity: dict[str, Any], bridge=None, root=None):
         validate_url(url)
+        if not expected_identity.get("package_digest"):
+            raise ValueError("Expected identity must include package_digest")
         self.url, self.package_digest = url, expected_identity["package_digest"]
         self.bridge = bridge
         self.root = root
@@ -169,12 +174,15 @@ class RuntimePolicyAdapter:
             self.health()
         if self.bridge is None:
             raise PolicyTransportError("Policy connection has not been authorized")
-        payload = dict(observation, images={})
-        for name in CAMERAS:
-            encoded = observation["images"][name]
-            with Image.open(io.BytesIO(base64.b64decode(encoded, validate=True))) as image:
-                payload["images"][name] = np.asarray(image.convert("RGB")).copy()
-        mapped = observation_to_xpolicylab(payload)
+        try:
+            payload = dict(observation, images={})
+            for name in CAMERAS:
+                encoded = observation["images"][name]
+                with Image.open(io.BytesIO(base64.b64decode(encoded, validate=True))) as image:
+                    payload["images"][name] = np.asarray(image.convert("RGB")).copy()
+            mapped = observation_to_xpolicylab(payload)
+        except (ValueError, OSError, KeyError, TypeError) as exc:
+            raise PolicyTransportError(str(exc)) from exc
         if rpc_observer:
             rpc_observer("rpc_start")
         try:

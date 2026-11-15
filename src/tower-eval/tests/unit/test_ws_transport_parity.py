@@ -342,3 +342,37 @@ def test_request_anchor_checked_before_control(monkeypatch):
                 adapter.predict(observation(0, 640))
         finally:
             adapter.close()
+
+
+@pytest.mark.parametrize("identity", [{}, {"package_digest": ""}, {"package_digest": None}])
+def test_package_digest_required(identity):
+    with pytest.raises(ValueError, match="package_digest"):
+        RuntimePolicyAdapter("ws://localhost:19000", expected_identity=identity)
+
+
+def test_missing_diagnostic_fields_are_explicit():
+    from tower_eval.policies.runtime_ws import reconstruct
+
+    row = dict(
+        left_arm_joint_state=np.zeros(7),
+        right_arm_joint_state=np.zeros(7),
+        left_ee_joint_state=[0.05],
+        right_ee_joint_state=[0.05],
+        identity=IDENTITY,
+    )
+    result = reconstruct([row], "joint_absolute", None, None)
+    for field in ("native_actions", "applied_j8", "units"):
+        assert field not in result and field in result["missing_evidence"]
+
+
+def test_invalid_png_is_infrastructure(monkeypatch):
+    with service(monkeypatch) as (server, model, calls):
+        adapter = RuntimePolicyAdapter(server.url, expected_identity=IDENTITY)
+        obs = observation(0, 0)
+        obs["images"][CAMERAS[0]] = "not a png"
+        try:
+            with pytest.raises(PolicyTransportError):
+                adapter.predict(obs)
+            assert calls == ["get_identity"]
+        finally:
+            adapter.close()

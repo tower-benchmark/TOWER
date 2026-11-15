@@ -119,6 +119,10 @@ The Isaac runtime uses `RuntimePolicyAdapter`, a thin wrapper around
 `XPolicyLabAdapter`, on one WebSocket connection per process. `policy_url` and
 `--policy-url` accept only `ws://` and `wss://`. The unreleased request schema
 remains `tower-public-benchmark-v2`; benchmark, data and scene identities do not change.
+The runtime uses the XPolicyLab client defaults: 120 seconds per request, 10
+seconds per connection attempt, and a 180-second connection budget. Installed
+runtimes receive the pinned checkout client path explicitly. Release verification
+binds its client source files and the installed transport dependency records.
 
 Before simulator startup, `get_identity` authorizes the package digest. Startup
 writes `policy-health.json` with `ready: true` and the full identity. Each prediction
