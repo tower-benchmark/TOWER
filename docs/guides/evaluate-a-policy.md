@@ -161,3 +161,10 @@ under the worker's portable root at `<output>-kit/cache`; the simulator's
 `CUDA_CACHE_PATH` points to `<output>-kit/cuda-cache`. File counts are evidence,
 not readiness criteria. Exposure initialization has a bounded render-only wait
 and writes `capture/renderer-readiness.json`; a timeout remains a startup failure.
+
+Startup-only validation with four processes on each of two cards passed 8/8
+starts when both caches were seeded. Concurrent starts with both caches empty
+passed 0/8; a fresh Kit cache with a retained CUDA cache also passed 0/8. A serial
+start with a seeded Kit cache but an empty CUDA cache passed 0/1. The last two
+controls reached and failed the unchanged all-zero initial-image check. These
+checks supplied no policy actions; warm-up is not an accepted evaluation trial.
