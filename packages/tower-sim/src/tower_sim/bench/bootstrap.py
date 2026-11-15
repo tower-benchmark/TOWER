@@ -258,9 +258,11 @@ def bootstrap(
             MKL_NUM_THREADS="1",
         )
         stack.enter_context(startup.process_environment(values, unset=("CUDA_VISIBLE_DEVICES",)))
+        cache_args = []
         if shader_cache is not None:
             receipt = stack.enter_context(startup.private_shader_cache(**shader_cache))
             save(output / "private-shader-cache.json", receipt)
+            cache_args = receipt["kit_args"]
         native = stack.enter_context(
             startup.native_render_initialization(
                 factories.app, lambda: factories.renderer(resources)
@@ -273,12 +275,19 @@ def bootstrap(
 
         launch = stack.enter_context(
             startup.grouped_runtime(
-                native, (gpu,), output, sdk=sdk, experience=factories.experience, model_setup=setup
+                native,
+                (gpu,),
+                output,
+                sdk=sdk,
+                zero_delay=True,
+                experience=factories.experience,
+                model_setup=setup,
             )
         )
         app = launch(
             dict(
                 headless=True,
+                extra_args=cache_args,
                 active_gpu=gpu,
                 physics_gpu=gpu,
                 multi_gpu=False,

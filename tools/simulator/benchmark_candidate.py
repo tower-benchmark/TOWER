@@ -321,10 +321,13 @@ def prepare(args, *, diagnostic=False):
     return path
 
 
-def launch(path, python, *, diagnostic=False):
+def launch(path, python, *, diagnostic=False, cache_options=None):
     request = preflight(path, diagnostic=diagnostic)
     benchmark.check_environment(python)
     command = [str(python), "-u", str(Path(__file__).resolve()), "--request", str(path)]
+    from tower_sim.bench.shader_cache import child_arguments
+
+    command.extend(child_arguments(cache_options))
     if diagnostic:
         command.append("--diagnostic")
     with benchmark.runtime_request(path, request) as normalized:
@@ -397,7 +400,7 @@ def command(args):
             )
         else:
             benchmark.require_eula(args.accept_eula)
-            return launch(args.request, args.isaac_python)
+            return launch(args.request, args.isaac_python, cache_options=args)
     return 0
 
 
@@ -407,7 +410,7 @@ def portable(args):
         return 0
     benchmark.require_eula(args.accept_eula)
     if args.command == "run":
-        return launch(args.request, sys.executable)
+        return launch(args.request, sys.executable, cache_options=args)
     return smoke(args)
 
 
@@ -423,7 +426,7 @@ def diagnostic(args):
         Path(sys.executable),
     )
     path = prepare(inputs, diagnostic=True)
-    code = launch(path, sys.executable, diagnostic=True)
+    code = launch(path, sys.executable, diagnostic=True, cache_options=args)
     result = benchmark.read(args.output / "diagnostic-result.json")
     result.pop("prefix_only", None)
     result.pop("benchmark_deadline_s", None)
@@ -450,6 +453,9 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
     parser.add_argument("--request", type=Path, required=True)
     parser.add_argument("--diagnostic", action="store_true")
+    from tower_sim.bench.shader_cache import add_arguments, configuration
+
+    add_arguments(parser)
     args = parser.parse_args()
     request = preflight(args.request, diagnostic=args.diagnostic)
     sys.path.insert(0, str(ROOT))
@@ -460,16 +466,18 @@ def main():
     )
     args.ik_python = Path(request["ik_python"])
     args.private_kit_root = Path(request["output"]).with_name(Path(request["output"]).name + "-kit")
+    runner = create_runner(
+        benchmark_version=request["public"]["benchmark"],
+        data_root=request.get("data_root"),
+        v1_root=request.get("v1_root"),
+    )
+    runner.shader_cache = configuration(args, Path(request["output"]))
     with benchmark.runtime_request(args.request, request) as normalized:
         args.request = normalized
         worker(
             args,
             verification=verification,
-            runner=create_runner(
-                benchmark_version=request["public"]["benchmark"],
-                data_root=request.get("data_root"),
-                v1_root=request.get("v1_root"),
-            ),
+            runner=runner,
         )
     return 0
 

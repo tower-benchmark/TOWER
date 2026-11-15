@@ -93,3 +93,39 @@ through `scene-049` within the task. Preparation resolves these released scenes;
 it does not create new scenes. Use each command's `--help` for all flags.
 Keep resolved configuration, input identities, complete recordings and failure
 status with results. Use [offline scoring](offline-scoring.md) for saved recordings.
+
+## Warm the renderer cache before concurrent starts
+
+Benchmark workers enable render-completion synchronization on every start.
+A cold shader cache can still make concurrent startup unreliable. Warm a cache
+with one serial smoke start on the GPU and driver that will run evaluation:
+
+```sh
+python tools/simulator/benchmark_portable.py smoke \
+  --assets /path/to/assets --data-root /path/to/benchmark-2026.11.1 \
+  --task two-block-transfer-2 --seeds 0 --gpu 0 \
+  --output /path/to/new-smoke --shader-cache-warmup /path/to/new-cache
+```
+
+Use the configured simulator interpreter and the same license consent as for
+other simulator runs. Wait for a passing smoke result and process exit.
+The new cache directory contains `nv_shadercache` and `digest.sha256`, a sorted
+SHA-256 list of its files. Keep both unchanged. Cache files are specific to the
+GPU and driver: regenerate after either changes, and never distribute a cache
+with the benchmark.
+
+Pass both options on each concurrent `benchmark.py run`,
+`benchmark_portable.py run` or `smoke`, or `benchmark_diagnostic.py` invocation:
+
+```sh
+--shader-cache-seed /path/to/new-cache/nv_shadercache \
+--shader-cache-digest /path/to/new-cache/digest.sha256
+```
+
+Each worker copies the seed into its own directory, verifies every file against
+the digest before starting the renderer, and removes its private copy on exit.
+Use separate output directories and available GPUs for concurrent workers.
+A digest mismatch rejects startup. Warm-up directories must be new; retain only
+a cache from a successful serial run. Completion flags and cache seeding do not
+relax image validation: the all-zero initial-image guard remains strict, with
+no fallback. Concurrent cold starts are not a substitute for serial warm-up.

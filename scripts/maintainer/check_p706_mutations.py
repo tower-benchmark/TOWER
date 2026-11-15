@@ -16,6 +16,44 @@ ROOT = Path(__file__).resolve().parents[2]
 BENCH = ROOT / "packages/tower-sim/src/tower_sim/bench"
 # Removed alias/layout mutations are documented in the purge evidence inventory.
 MUTATIONS = (
+    ("renderer-completion", "bootstrap.py", "zero_delay=True", "zero_delay=False"),
+    (
+        "renderer-replay-cache",
+        "../../../../../scripts/maintainer/candidate_replay.py",
+        "shader_cache=self.shader_cache",
+        "shader_cache=None",
+    ),
+    (
+        "renderer-cache-copy-config",
+        "shader_cache.py",
+        "seed=Path(seed).resolve(),",
+        "seed=Path(output).resolve(),",
+    ),
+    (
+        "renderer-worker-cache",
+        "../../../../../tools/simulator/benchmark_candidate.py",
+        'runner.shader_cache = configuration(args, Path(request["output"]))',
+        "runner.shader_cache = None",
+    ),
+    (
+        "renderer-smoke-cache",
+        "../../../../../scripts/maintainer/public_smoke.py",
+        "runner.shader_cache = configuration(args, work)",
+        "runner.shader_cache = None",
+    ),
+    (
+        "renderer-child-cache",
+        "../../../../../tools/simulator/benchmark_candidate.py",
+        "command.extend(child_arguments(cache_options))",
+        "command.extend([])",
+    ),
+    (
+        "renderer-smoke-child-cache",
+        "../../../../../scripts/maintainer/public_smoke.py",
+        "command.extend(child_arguments(args))",
+        "command.extend([])",
+    ),
+) + (
     (
         "public-smoke-entry-registration",
         "verification.py",
@@ -2659,6 +2697,8 @@ def main():
                 "config-retained-tasks-guard",
             }:
                 tests = ["packages/tower-sim/tests/test_config_split.py"]
+            elif name.startswith("renderer-"):
+                tests = ["packages/tower-sim/tests/test_renderer_startup.py"]
             elif name.startswith("scene-"):
                 tests = [
                     "packages/tower-sim/tests/test_scene_v2.py::" + test

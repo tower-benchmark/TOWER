@@ -198,7 +198,9 @@ def digest_tree(root):
 
 
 @contextmanager
-def private_shader_cache(*, seed, seed_sha, private_root, name, argv=None, clock=time.time):
+def private_shader_cache(
+    *, seed, seed_sha, private_root, name, argv=None, clock=time.time, warmup=False
+):
     """Append Kit flags to real argv before launch; remove owned files/flags on exit."""
     argv = sys.argv if argv is None else argv
     if not name or name in (".", "..") or Path(name).name != name:
@@ -210,10 +212,14 @@ def private_shader_cache(*, seed, seed_sha, private_root, name, argv=None, clock
     flags = []
     original = list(argv)
     try:
-        expected = Path(seed_sha).read_text()
-        shutil.copytree(seed, target)
-        if digest_tree(target) != expected:
-            raise RuntimeError("Private shader cache copy differs from the verified seed")
+        if warmup:
+            target.mkdir()
+            expected = ""
+        else:
+            expected = Path(seed_sha).read_text()
+            shutil.copytree(seed, target)
+            if digest_tree(target) != expected:
+                raise RuntimeError("Private shader cache copy differs from the verified seed")
         flags = [
             f"--/rtx/shaderDb/driverAppShaderCachePath={target}",
             f"--/rtx/shaderDb/driverShaderCachePath={target}",
@@ -234,7 +240,10 @@ def private_shader_cache(*, seed, seed_sha, private_root, name, argv=None, clock
         )
     finally:
         argv[:] = original
-        shutil.rmtree(directory, ignore_errors=True)
+        if warmup:
+            (directory / "digest.sha256").write_text(digest_tree(target))
+        else:
+            shutil.rmtree(directory, ignore_errors=True)
 
 
 @contextmanager

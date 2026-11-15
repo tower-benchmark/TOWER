@@ -53,11 +53,15 @@ def worker(args):
     request = SimpleNamespace(
         task=args.task, assets=args.assets, output=work, gpu=args.gpu, frozen_components=()
     )
-    prepared = public.create_runner(
+    from tower_sim.bench.shader_cache import configuration
+
+    runner = public.create_runner(
         benchmark_version=getattr(args, "benchmark", "2026.11.1"),
         data_root=getattr(args, "data_root", None),
         v1_root=getattr(args, "v1_root", None),
-    ).setup(request, rows=rows)
+    )
+    runner.shader_cache = configuration(args, work)
+    prepared = runner.setup(request, rows=rows)
     camera = None
     try:
         verify(kit)
@@ -157,6 +161,9 @@ def run(args):
     ]
     for key in ("assets", "task", "output", "gpu"):
         command.extend(["--" + key, str(getattr(args, key))])
+    from tower_sim.bench.shader_cache import child_arguments
+
+    command.extend(child_arguments(args))
     command.extend(["--seeds", *map(str, args.seeds)])
     command.extend(["--benchmark", getattr(args, "benchmark", "2026.11.1")])
     if getattr(args, "data_root", None) is not None:
