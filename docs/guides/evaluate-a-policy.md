@@ -121,7 +121,8 @@ Warm-up exports compilation output even after such a failure: `cache/kit` and
 recording whether the run passed. An exported cache is not a passing scene result.
 
 If the first pass failed, make one defined second serial pass using both
-exported caches. Both the run output and the new export destination must be new directories:
+exported caches. Both the run output and the new export destination must be new
+directories:
 
 ```sh
 /path/to/isaac/python tools/simulator/benchmark_portable.py smoke \
@@ -139,6 +140,12 @@ failed is rejected unless another warm-up export is explicitly requested. If the
 fails, stop and retain both failures for investigation. Every pass uses the
 original camera and image checks; no failed result becomes an accepted trial.
 
+One verified seed per GPU/driver combination covers all 12 task variants in
+this benchmark. A seed exported from a successful `cross-transfer-2` warm-up
+passed initial-image validation for all 12 variants concurrently, with six
+starts on each of two cards. Every subsequent run still performs its own strict
+image checks.
+
 Use the successful pass's export for concurrent `benchmark.py run`,
 `benchmark_portable.py run` or `smoke`, or `benchmark_diagnostic.py` commands.
 For example, after the second pass:
@@ -151,7 +158,9 @@ For example, after the second pass:
 Each worker copies and hash-checks the complete Kit and CUDA seed before
 renderer startup. Its CUDA cache is private to that worker. The parent records
 warm-up digests after worker exit and removes the worker's private copies of
-both caches after a completed export, as well as after ordinary seeded runs. Use separate output directories and available GPUs. A digest mismatch rejects startup. The invalid-image guard,
+both caches after a completed export, as well as after ordinary seeded runs.
+Use separate output directories and available GPUs. A digest mismatch rejects
+startup. The invalid-image guard,
 including the all-zero initial-image rejection, stays strict with no image
 fallback.
 
