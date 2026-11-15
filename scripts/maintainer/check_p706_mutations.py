@@ -52,7 +52,18 @@ MUTATIONS = (
         "finalize(args, args.output, passed=passed)",
         "pass",
     ),
-    ("startup-warmup-success", "shader_cache.py", "        if passed:", "        if True:"),
+    (
+        "startup-warmup-result",
+        "shader_cache.py",
+        "source_run_passed=bool(passed)",
+        "source_run_passed=True",
+    ),
+    (
+        "startup-warmup-seed",
+        "app.py",
+        "if warmup and seed is None:",
+        "if warmup:",
+    ),
     (
         "startup-parent-cleanup",
         "shader_cache.py",
@@ -69,8 +80,8 @@ MUTATIONS = (
     (
         "startup-cache-copy-config",
         "shader_cache.py",
-        "seed=Path(seed).resolve(),",
-        "seed=Path(output).resolve(),",
+        "seed=Path(seed).resolve() if seed else None,",
+        "seed=Path(output).resolve() if seed else None,",
     ),
     (
         "startup-worker-cache",

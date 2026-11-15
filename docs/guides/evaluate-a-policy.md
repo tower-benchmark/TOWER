@@ -97,42 +97,62 @@ status with results. Use [offline scoring](offline-scoring.md) for saved recordi
 ## Warm the renderer cache before concurrent starts
 
 Benchmark workers enable render-completion synchronization on every start.
-A cold shader cache can still make concurrent startup unreliable. Warm a cache
-with one serial diagnostic run on the GPU and driver that will run evaluation.
-Use the configured policy service and simulator interpreter:
+A first-time start also needs two different caches: the Kit renderer shader
+cache and the SDK CUDA kernel cache. Keep the latter at an explicit local path
+throughout warm-up and evaluation. Cache files are specific to the GPU and
+driver; rebuild both after either changes, and never distribute them with the
+benchmark.
+
+Use the configured simulator interpreter and the same license consent as for
+other simulator runs. Start serially, with new output and export directories:
 
 ```sh
-python tools/simulator/benchmark_diagnostic.py \
+export CUDA_CACHE_PATH=/path/to/gpu-kernel-cache
+mkdir -p "$CUDA_CACHE_PATH"
+python tools/simulator/benchmark_portable.py smoke \
   --assets /path/to/assets --data-root /path/to/benchmark-2026.11.1 \
-  --task cross-transfer-2 --seed 0 --gpu 0 \
-  --package /path/to/policy-package.json --policy-url http://localhost:19000 \
-  --ik-python /path/to/ik/python --output /path/to/new-diagnostic \
-  --shader-cache-warmup /path/to/new-cache
+  --task cross-transfer-2 --seeds 0 --gpu 0 \
+  --output /path/to/warmup-1 --shader-cache-warmup /path/to/cache-pass-1
 ```
 
-Use the same license consent as for other simulator runs. Wait for complete
-diagnostic evidence and process exit before using the exported cache.
-The diagnostic remains subject to all existing image and runtime guards.
-The new cache directory contains `cache` and `digest.sha256`, a sorted
-SHA-256 list of its files. The complete Kit cache includes both application and
-driver shaders; the parent records its digest after the worker exits. Keep both
-unchanged. Cache files are specific to the GPU and driver: regenerate after
-either changes, and never distribute a cache with the benchmark.
+The first fully cold pass can fail during camera initialization. Its command
+still fails, and `error.json` preserves the error before native shutdown.
+Warm-up exports compilation output even after such a failure: `cache`, a sorted
+SHA-256 file list in `digest.sha256`, and `warmup.json` recording whether the run
+passed. An exported cache is not a passing scene result.
 
-Pass both options on each concurrent `benchmark.py run`,
-`benchmark_portable.py run` or `smoke`, or `benchmark_diagnostic.py` invocation:
+If the first pass failed, keep the same `CUDA_CACHE_PATH` and make one defined
+second serial pass using its shader cache. Both the run output and the new
+export destination must be new directories:
 
 ```sh
---shader-cache-seed /path/to/new-cache/cache \
---shader-cache-digest /path/to/new-cache/digest.sha256
+python tools/simulator/benchmark_portable.py smoke \
+  --assets /path/to/assets --data-root /path/to/benchmark-2026.11.1 \
+  --task cross-transfer-2 --seeds 0 --gpu 0 \
+  --output /path/to/warmup-2 \
+  --shader-cache-seed /path/to/cache-pass-1/cache \
+  --shader-cache-digest /path/to/cache-pass-1/digest.sha256 \
+  --shader-cache-warmup /path/to/cache-pass-2
 ```
 
-Each worker copies the seed into its own directory, verifies every file against
-the digest before starting the renderer, and removes its private copy on exit.
-Use separate output directories and available GPUs for concurrent workers.
-A digest mismatch rejects startup. Warm-up directories must be new; retain only
-a cache from a successful serial run. A failed warm-up exports no seed; retain
-its failure evidence and resolve startup before attempting concurrent runs.
-Completion flags and cache seeding do not
-relax image validation: the all-zero initial-image guard remains strict, with
-no fallback. Concurrent cold starts are not a substitute for serial warm-up.
+Proceed only after a serial pass exits successfully with a passing smoke result
+and `source_run_passed: true` in its exported `warmup.json`. If the second pass
+fails, stop and retain both failures for investigation. Every pass uses the
+original camera and image checks; no failed result becomes an accepted trial.
+
+Use the successful pass's export for concurrent `benchmark.py run`,
+`benchmark_portable.py run` or `smoke`, or `benchmark_diagnostic.py` commands.
+For example, after the second pass:
+
+```sh
+--shader-cache-seed /path/to/cache-pass-2/cache \
+--shader-cache-digest /path/to/cache-pass-2/digest.sha256
+```
+
+Keep `CUDA_CACHE_PATH` pointing to the warmed kernel cache. Each worker copies
+and hash-checks the Kit seed in its own private directory before renderer
+startup. The parent records warm-up digests after worker exit and removes
+ordinary seeded workers' private copies. Use separate output directories and
+available GPUs. A digest mismatch rejects startup. The invalid-image guard,
+including the all-zero initial-image rejection, stays strict with no image
+fallback.

@@ -252,7 +252,7 @@ def private_shader_cache(
     flags = []
     original = list(argv)
     try:
-        if warmup:
+        if warmup and seed is None:
             target.mkdir()
             expected = ""
         else:

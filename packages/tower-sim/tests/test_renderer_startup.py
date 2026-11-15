@@ -62,27 +62,55 @@ def test_seed_roundtrip_and_corruption(tmp_path):
         (target / "shadercache/shader").write_bytes(b"compiled")
     (output / "simulation").mkdir(parents=True)
     (output / "simulation/private-shader-cache.json").write_text(json.dumps(receipt))
+    (output / "result.json").write_text(json.dumps(dict(passed=False)))
     shader_cache.finalize(options, output, passed=False)
-    assert not warm.exists()
-    shader_cache.finalize(options, output, passed=True)
+    assert json.loads((warm / "warmup.json").read_text())["source_run_passed"] is False
+    assert json.loads((output / "result.json").read_text())["passed"] is False
+
+    # A fresh second process consumes the first pass's verified compilation
+    # output; its own result must pass before its cache is used concurrently.
     parser = argparse.ArgumentParser()
     shader_cache.add_arguments(parser)
-    args = parser.parse_args(
+    options = parser.parse_args(
         [
             "--shader-cache-seed",
             str(warm / "cache"),
             "--shader-cache-digest",
             str(warm / "digest.sha256"),
+            "--shader-cache-warmup",
+            str(tmp_path / "complete"),
         ]
     )
-    copied = parser.parse_args(shader_cache.child_arguments(args))
-    config = shader_cache.configuration(copied, tmp_path / "run")
+    copied = parser.parse_args(shader_cache.child_arguments(options))
+    second = tmp_path / "second"
+    config = shader_cache.configuration(copied, second)
+    with app.private_shader_cache(
+        **config, argv=["worker", "--portable-root", str(tmp_path / "second-kit")]
+    ) as receipt:
+        target = Path(receipt["private_cache"])
+        assert (target / "shadercache/shader").read_bytes() == b"compiled"
+        (target / "shadercache/remaining").write_bytes(b"completed")
+    (second / "simulation").mkdir(parents=True)
+    (second / "simulation/private-shader-cache.json").write_text(json.dumps(receipt))
+    shader_cache.finalize(copied, second, passed=True)
+    complete = tmp_path / "complete"
+    assert json.loads((complete / "warmup.json").read_text())["source_run_passed"] is True
+    args = parser.parse_args(
+        [
+            "--shader-cache-seed",
+            str(complete / "cache"),
+            "--shader-cache-digest",
+            str(complete / "digest.sha256"),
+        ]
+    )
+    config = shader_cache.configuration(args, tmp_path / "run")
     with app.private_shader_cache(
         **config, argv=["worker", "--portable-root", str(tmp_path / "run-kit")]
     ) as receipt:
-        assert (Path(receipt["private_cache"]) / "shadercache/shader").read_bytes() == b"compiled"
+        target = Path(receipt["private_cache"])
+        assert (target / "shadercache/remaining").read_bytes() == b"completed"
     assert not (tmp_path / "run-kit/cache").exists()
-    (warm / "cache/shadercache/shader").write_bytes(b"changed")
+    (complete / "cache/shadercache/shader").write_bytes(b"changed")
     with (
         pytest.raises(RuntimeError, match="differs"),
         app.private_shader_cache(
@@ -97,14 +125,6 @@ def test_seed_roundtrip_and_corruption(tmp_path):
     [
         ["--shader-cache-seed", "seed"],
         ["--shader-cache-digest", "digest"],
-        [
-            "--shader-cache-seed",
-            "seed",
-            "--shader-cache-digest",
-            "digest",
-            "--shader-cache-warmup",
-            "warm",
-        ],
     ],
 )
 def test_invalid_cache_options(arguments):

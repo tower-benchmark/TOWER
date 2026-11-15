@@ -12,7 +12,9 @@ def add_arguments(parser):
     )
     parser.add_argument("--shader-cache-digest", type=Path, help="Seed digest_tree file")
     parser.add_argument(
-        "--shader-cache-warmup", type=Path, help="Create a cache with one serial start"
+        "--shader-cache-warmup",
+        type=Path,
+        help="Export compiled cache files and the serial start status",
     )
 
 
@@ -22,8 +24,8 @@ def child_arguments(options):
     seed = getattr(options, "shader_cache_seed", None)
     digest = getattr(options, "shader_cache_digest", None)
     warmup = getattr(options, "shader_cache_warmup", None)
-    if bool(seed) != bool(digest) or (warmup and seed):
-        raise ValueError("Supply both shader-cache seed and digest, or warmup alone")
+    if bool(seed) != bool(digest):
+        raise ValueError("Supply both shader-cache seed and digest")
     result = []
     for name, path in (("seed", seed), ("digest", digest), ("warmup", warmup)):
         if path is not None:
@@ -36,26 +38,18 @@ def configuration(options, output) -> dict[str, Any] | None:
     output = Path(output).resolve()
     warmup = getattr(options, "shader_cache_warmup", None)
     seed = getattr(options, "shader_cache_seed", None)
+    if not warmup and not seed:
+        return None
+    config = dict(
+        seed=Path(seed).resolve() if seed else None,
+        seed_sha=Path(options.shader_cache_digest).resolve() if seed else None,
+        private_root=output.parent,
+        name=output.name + "-kit",
+        portable=True,
+    )
     if warmup:
-        path = Path(warmup).resolve()
-        return dict(
-            seed=None,
-            seed_sha=None,
-            private_root=output.parent,
-            name=output.name + "-kit",
-            warmup=True,
-            portable=True,
-            warmup_destination=path,
-        )
-    if seed:
-        return dict(
-            seed=Path(seed).resolve(),
-            seed_sha=Path(options.shader_cache_digest).resolve(),
-            private_root=output.parent,
-            name=output.name + "-kit",
-            portable=True,
-        )
-    return None
+        config.update(warmup=True, warmup_destination=Path(warmup).resolve())
+    return config
 
 
 def finalize(options, output, *, passed):
@@ -72,13 +66,17 @@ def finalize(options, output, *, passed):
     if receipt.get("private_cache") != str(target):
         raise ValueError("Shader cache receipt differs from worker configuration")
     if config.get("warmup"):
-        if passed:
-            from .app import digest_tree
+        from .app import digest_tree
 
-            destination = Path(config["warmup_destination"])
-            destination.mkdir(parents=True, exist_ok=False)
-            exported = destination / "cache"
-            shutil.copytree(target, exported)
-            (destination / "digest.sha256").write_text(digest_tree(exported))
+        # Compilation output is useful to a second warm-up pass even when the
+        # scene failed. Preserve that failure; cache bytes never qualify a run.
+        destination = Path(config["warmup_destination"])
+        destination.mkdir(parents=True, exist_ok=False)
+        exported = destination / "cache"
+        shutil.copytree(target, exported)
+        (destination / "digest.sha256").write_text(digest_tree(exported))
+        (destination / "warmup.json").write_text(
+            json.dumps(dict(source_run_passed=bool(passed)), indent=2) + "\n"
+        )
     else:
         shutil.rmtree(target, ignore_errors=True)
