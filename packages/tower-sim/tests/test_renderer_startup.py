@@ -53,6 +53,14 @@ def test_shared_production_bootstrap_launch_record(tmp_path, monkeypatch):
             settings=SimpleNamespace(get_settings=lambda: SimpleNamespace(get=settings.get))
         ),
     )
+    writes = []
+    save = app.save
+
+    def record_save(path, value):
+        writes.append(Path(path).name)
+        save(path, value)
+
+    monkeypatch.setattr(app, "save", record_save)
     original = list(sys.argv)
     with eval(compile(ast.Expression(call), "bootstrap", "eval"), scope) as launch:
         assert sys.argv == original
@@ -62,7 +70,10 @@ def test_shared_production_bootstrap_launch_record(tmp_path, monkeypatch):
     record = json.loads((output / "launch.json").read_text())
     assert set(record["extra_args"]) >= FLAGS
     assert all(record["extra_args"].count(flag) == 1 for flag in FLAGS)
-    assert record["render_completion_readback"] == settings
+    assert writes.count("launch.json") == 1
+    assert "render_completion_readback" not in record
+    readback = json.loads((output / "render-completion-readback.json").read_text())
+    assert readback == dict(expected=settings, actual=settings, passed=True)
 
 
 @pytest.mark.parametrize("corrupt", ["kit/shadercache/shader", "cuda/kernel"])
@@ -85,7 +96,7 @@ def test_seed_roundtrip_and_corruption(tmp_path, monkeypatch, corrupt):
     (output / "simulation").mkdir(parents=True)
     (output / "simulation/private-shader-cache.json").write_text(json.dumps(receipt))
     (output / "result.json").write_text(json.dumps(dict(passed=False)))
-    shader_cache.finalize(options, output, passed=False)
+    shader_cache.finalize(config, output, passed=False)
     assert json.loads((warm / "warmup.json").read_text())["source_run_passed"] is False
     assert json.loads((output / "result.json").read_text())["passed"] is False
 
@@ -117,7 +128,7 @@ def test_seed_roundtrip_and_corruption(tmp_path, monkeypatch, corrupt):
         assert receipt["cuda_kernel_cache_before"]["size_bytes"] == 6
     (second / "simulation").mkdir(parents=True)
     (second / "simulation/private-shader-cache.json").write_text(json.dumps(receipt))
-    shader_cache.finalize(copied, second, passed=True)
+    shader_cache.finalize(config, second, passed=True)
     complete = tmp_path / "complete"
     assert json.loads((complete / "warmup.json").read_text())["source_run_passed"] is True
     assert not (second.with_name("second-kit") / "cache").exists()
@@ -236,6 +247,7 @@ def test_public_cli_cache_options(entry, arguments, handler, monkeypatch, tmp_pa
         )
         == 0
     )
+    (tmp_path / "warmup.json").write_text(json.dumps(dict(source_run_passed=True)))
     config = shader_cache.configuration(seen[0], tmp_path / "output")
     assert config["seed"] == tmp_path / "seed"
     assert config["seed_sha"] == tmp_path / "digest"
@@ -293,28 +305,30 @@ def test_parent_removes_only_receipted_private_cache(tmp_path, caplog):
     options = SimpleNamespace(
         shader_cache_seed=tmp_path / "seed", shader_cache_digest=tmp_path / "digest"
     )
+    (tmp_path / "warmup.json").write_text(json.dumps(dict(source_run_passed=True)))
+    config = shader_cache.configuration(options, output)
     directory = tmp_path / "output-kit"
     target = directory / "cache"
     target.mkdir(parents=True)
     cuda = directory / "cuda-cache"
     cuda.mkdir()
-    shader_cache.finalize(options, output, passed=False)
+    shader_cache.finalize(config, output, passed=False)
     assert target.exists()
     assert "Skipping cache finalization: no worker ownership receipt" in caplog.text
     (output / "simulation").mkdir(parents=True)
     receipt = output / "simulation/private-shader-cache.json"
     receipt.write_text(json.dumps({"private_cache": str(tmp_path / "unowned")}))
     with pytest.raises(ValueError, match="differs"):
-        shader_cache.finalize(options, output, passed=False)
+        shader_cache.finalize(config, output, passed=False)
     assert target.exists()
     receipt.write_text(
         json.dumps({"private_cache": str(target), "private_cuda_cache": str(tmp_path / "unowned")})
     )
     with pytest.raises(ValueError, match="CUDA cache receipt differs"):
-        shader_cache.finalize(options, output, passed=False)
+        shader_cache.finalize(config, output, passed=False)
     assert target.exists() and cuda.exists()
     receipt.write_text(json.dumps({"private_cache": str(target), "private_cuda_cache": str(cuda)}))
-    shader_cache.finalize(options, output, passed=False)
+    shader_cache.finalize(config, output, passed=False)
     assert not target.exists()
     assert not cuda.exists()
     assert directory.is_dir()
@@ -511,17 +525,141 @@ def test_completion_readback_mismatch_closes_app_and_records_values(
     assert record["passed"] is False and record["actual"] == values
 
 
-@pytest.mark.parametrize("passed", [False, True])
-def test_failed_seed_requires_explicit_second_warmup(tmp_path, passed):
+@pytest.mark.parametrize(
+    "status", ["missing", "false", "true", "one", "empty", "malformed", "list"]
+)
+def test_seed_requires_positive_status_unless_warming(tmp_path, status):
     export = tmp_path / "export"
     seed = export / "cache"
     seed.mkdir(parents=True)
-    (export / "warmup.json").write_text(json.dumps(dict(source_run_passed=passed)))
+    contents = {
+        "false": '{"source_run_passed": false}',
+        "true": '{"source_run_passed": true}',
+        "one": '{"source_run_passed": 1}',
+        "empty": "{}",
+        "malformed": "invalid JSON",
+        "list": "[]",
+    }
+    if status != "missing":
+        (export / "warmup.json").write_text(contents[status])
     options = SimpleNamespace(shader_cache_seed=seed, shader_cache_digest=export / "digest.sha256")
-    if passed:
+    if status == "true":
         assert shader_cache.configuration(options, tmp_path / "run")["seed"] == seed
     else:
-        with pytest.raises(ValueError, match="Failed warm-up seed"):
+        with pytest.raises(ValueError, match="source_run_passed: true.*--shader-cache-warmup"):
             shader_cache.configuration(options, tmp_path / "run")
     options.shader_cache_warmup = tmp_path / "next-export"
     assert shader_cache.configuration(options, tmp_path / "run")["seed"] == seed
+
+
+@pytest.mark.parametrize("entry", ["evaluation", "smoke", "diagnostic"])
+@pytest.mark.parametrize("status", ["missing", "false"])
+def test_parent_rejects_seed_before_starting_any_child(tmp_path, monkeypatch, entry, status):
+    import importlib
+
+    from scripts.maintainer import public_smoke
+
+    monkeypatch.syspath_prepend(str(ROOT / "tools/simulator"))
+    public = importlib.import_module("benchmark_candidate")
+    benchmark = importlib.import_module("benchmark")
+    options = SimpleNamespace(
+        shader_cache_seed=tmp_path / "cache",
+        shader_cache_digest=tmp_path / "digest.sha256",
+        output=tmp_path / "output",
+        assets=tmp_path / "assets",
+        task="cross-transfer-2",
+        gpu=0,
+        seeds=[0],
+        accept_eula=True,
+        _worker=False,
+    )
+    if status == "false":
+        (tmp_path / "warmup.json").write_text(json.dumps(dict(source_run_passed=False)))
+    started = []
+
+    def child(*args, **kwargs):
+        started.append(True)
+        raise AssertionError("Child started before seed validation")
+
+    monkeypatch.setattr(public, "preflight", lambda *a, **kw: dict(output=str(options.output)))
+    monkeypatch.setattr(public.subprocess, "run", child)
+    monkeypatch.setattr(benchmark, "check_environment", child)
+    monkeypatch.setattr(benchmark, "require_eula", lambda *a: None)
+    monkeypatch.setattr(public, "prepare", child)
+    with pytest.raises(ValueError, match="source_run_passed: true"):
+        if entry == "evaluation":
+            public.launch(tmp_path / "request.json", "python", cache_options=options)
+        elif entry == "smoke":
+            public_smoke.run(options)
+        else:
+            public.diagnostic(options)
+    assert started == []
+
+
+@pytest.mark.parametrize("finish_fails", [False, True])
+def test_parent_finalizes_validated_config_and_preserves_finish_error(
+    tmp_path, monkeypatch, finish_fails
+):
+    import importlib
+    from contextlib import nullcontext
+
+    from scripts.maintainer import candidate_policy
+
+    monkeypatch.syspath_prepend(str(ROOT / "tools/simulator"))
+    public = importlib.import_module("benchmark_candidate")
+    benchmark = importlib.import_module("benchmark")
+    output = tmp_path / "output"
+    path = tmp_path / "request.json"
+    status = tmp_path / "warmup.json"
+    status.write_text(json.dumps(dict(source_run_passed=True)))
+    options = SimpleNamespace(
+        shader_cache_seed=tmp_path / "cache", shader_cache_digest=tmp_path / "digest.sha256"
+    )
+    request = dict(output=str(output))
+    monkeypatch.setattr(public, "preflight", lambda *a, **kw: request)
+    monkeypatch.setattr(benchmark, "check_environment", lambda *a: None)
+    monkeypatch.setattr(benchmark, "runtime_request", lambda *a: nullcontext(path))
+    validations = []
+    configuration = shader_cache.configuration
+
+    def validate(*args):
+        validations.append(True)
+        return configuration(*args)
+
+    monkeypatch.setattr(shader_cache, "configuration", validate)
+    private = tmp_path / "output-kit"
+
+    def child(*args, **kwargs):
+        (private / "cache").mkdir(parents=True)
+        (private / "cuda-cache").mkdir()
+        (output / "simulation").mkdir(parents=True)
+        (output / "simulation/private-shader-cache.json").write_text(
+            json.dumps(
+                dict(
+                    private_cache=str(private / "cache"),
+                    private_cuda_cache=str(private / "cuda-cache"),
+                )
+            )
+        )
+        # Finalization must use its validated config even if seed status changes.
+        status.write_text(json.dumps(dict(source_run_passed=False)))
+        return SimpleNamespace(returncode=1 if finish_fails else 0)
+
+    original = ValueError("Original finish failure")
+
+    def finish(*args, **kwargs):
+        if finish_fails:
+            raise original
+        return 0
+
+    monkeypatch.setattr(public.subprocess, "run", child)
+    monkeypatch.setattr(candidate_policy, "finish", finish)
+    if finish_fails:
+        with pytest.raises(ValueError) as caught:
+            public.launch(path, "python", diagnostic=True, cache_options=options)
+        assert caught.value is original
+    else:
+        assert public.launch(path, "python", diagnostic=True, cache_options=options) == 0
+    assert validations == [True]
+    assert not (private / "cache").exists()
+    assert not (private / "cuda-cache").exists()

@@ -147,11 +147,7 @@ def grouped_runtime(
         session = factory(configured)
         try:
             if zero_delay:
-                actual = completion_readback(output)
-                save(
-                    Path(output) / "launch.json",
-                    dict(configured, render_completion_readback=actual),
-                )
+                completion_readback(output)
             model_setup(session)
             save(
                 Path(output) / "startup.json",

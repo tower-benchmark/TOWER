@@ -45,8 +45,15 @@ def configuration(options, output) -> dict[str, Any] | None:
         return None
     if seed and not warmup:
         status = Path(seed).resolve().parent / "warmup.json"
-        if status.is_file() and json.loads(status.read_text()).get("source_run_passed") is False:
-            raise ValueError("Failed warm-up seed requires another --shader-cache-warmup pass")
+        try:
+            metadata = json.loads(status.read_text())
+        except (OSError, ValueError):
+            metadata = {}
+        if not isinstance(metadata, dict) or metadata.get("source_run_passed") is not True:
+            raise ValueError(
+                "Shader-cache seed requires warmup.json with source_run_passed: true; "
+                "complete a serial --shader-cache-warmup pass before concurrent use"
+            )
     config = dict(
         seed=Path(seed).resolve() if seed else None,
         seed_sha=Path(options.shader_cache_digest).resolve() if seed else None,
@@ -59,9 +66,8 @@ def configuration(options, output) -> dict[str, Any] | None:
     return config
 
 
-def finalize(options, output, *, passed):
-    """Finalize after worker exit: native fast shutdown can bypass Python finally."""
-    config = configuration(options, output)
+def finalize(config, output, *, passed):
+    """Finalize a prevalidated config after native worker exit without revalidating."""
     if config is None:
         return
     receipt_path = Path(output) / "simulation/private-shader-cache.json"

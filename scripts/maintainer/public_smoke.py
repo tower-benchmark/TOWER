@@ -157,6 +157,9 @@ def run(args):
         return 0
     if args.output.exists():
         raise ValueError("Smoke output must be a new directory")
+    from tower_sim.bench.shader_cache import child_arguments, configuration, finalize
+
+    cache_config = configuration(args, args.output)
     command = [
         sys.executable,
         "-u",
@@ -166,8 +169,6 @@ def run(args):
     ]
     for key in ("assets", "task", "output", "gpu"):
         command.extend(["--" + key, str(getattr(args, key))])
-    from tower_sim.bench.shader_cache import child_arguments
-
     command.extend(child_arguments(args))
     command.extend(["--seeds", *map(str, args.seeds)])
     command.extend(["--benchmark", getattr(args, "benchmark", "2026.11.1")])
@@ -179,8 +180,6 @@ def run(args):
         command.append("--accept-eula")
     result = subprocess.run(command, env=public.child_environment(), check=False)
     receipt = args.output / "result.json"
-    from tower_sim.bench.shader_cache import finalize
-
     passed = False
     try:
         passed = (
@@ -189,7 +188,7 @@ def run(args):
             and benchmark.read(receipt).get("passed") is True
         )
     finally:
-        finalize(args, args.output, passed=passed)
+        finalize(cache_config, args.output, passed=passed)
     if not passed:
         raise RuntimeError(
             f"Smoke worker did not produce a passing receipt (exit {result.returncode})"

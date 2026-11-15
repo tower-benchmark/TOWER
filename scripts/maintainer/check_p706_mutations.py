@@ -17,6 +17,54 @@ BENCH = ROOT / "packages/tower-sim/src/tower_sim/bench"
 # Removed alias/layout mutations are documented in the purge evidence inventory.
 MUTATIONS = (
     (
+        "startup-seed-status-missing",
+        "shader_cache.py",
+        "            metadata = {}",
+        '            metadata = {"source_run_passed": True}',
+    ),
+    (
+        "startup-seed-status-positive-boolean",
+        "shader_cache.py",
+        'metadata.get("source_run_passed") is not True',
+        'not metadata.get("source_run_passed")',
+    ),
+    (
+        "startup-parent-evaluation-seed-admission",
+        "../../../../../tools/simulator/benchmark_candidate.py",
+        'cache_config = configuration(cache_options, Path(request["output"]))',
+        "cache_config = None",
+    ),
+    (
+        "startup-parent-smoke-seed-admission",
+        "../../../../../scripts/maintainer/public_smoke.py",
+        "cache_config = configuration(args, args.output)",
+        "cache_config = None",
+    ),
+    (
+        "startup-parent-diagnostic-seed-admission",
+        "../../../../../tools/simulator/benchmark_candidate.py",
+        "    configuration(args, args.output)",
+        "    pass",
+    ),
+    (
+        "startup-parent-seed-before-environment-child",
+        "../../../../../tools/simulator/benchmark_candidate.py",
+        '    cache_config = configuration(cache_options, Path(request["output"]))\n    benchmark.check_environment(python)',
+        '    benchmark.check_environment(python)\n    cache_config = configuration(cache_options, Path(request["output"]))',
+    ),
+    (
+        "startup-parent-finalize-preserves-finish-error",
+        "../../../../../tools/simulator/benchmark_candidate.py",
+        'finalize(cache_config, Path(request["output"]), passed=code == 0)',
+        'finalize(configuration(cache_options, Path(request["output"])), Path(request["output"]), passed=code == 0)',
+    ),
+    (
+        "startup-launch-single-write",
+        "app.py",
+        "                completion_readback(output)",
+        '                completion_readback(output)\n                save(Path(output) / "launch.json", configured)',
+    ),
+    (
         "startup-completion-readback-native",
         "app.py",
         "actual = {key: controls.get(key) for key in expected}",
@@ -37,8 +85,8 @@ MUTATIONS = (
     (
         "startup-completion-readback-call",
         "app.py",
-        "actual = completion_readback(output)",
-        "actual = {}",
+        "                completion_readback(output)",
+        "                pass",
     ),
     (
         "startup-completion-readback-rejection",
@@ -49,13 +97,13 @@ MUTATIONS = (
     (
         "startup-completion-readback-evidence",
         "app.py",
-        "render_completion_readback=actual",
-        "render_completion_readback={}",
+        "dict(expected=expected, actual=actual, passed=passed)",
+        "dict(expected=expected, actual={}, passed=passed)",
     ),
     (
         "startup-failed-seed-rejection",
         "shader_cache.py",
-        'if status.is_file() and json.loads(status.read_text()).get("source_run_passed") is False:',
+        'if not isinstance(metadata, dict) or metadata.get("source_run_passed") is not True:',
         "if False:",
     ),
     ("startup-failed-seed-second-pass", "shader_cache.py", "if seed and not warmup:", "if seed:"),
@@ -135,13 +183,13 @@ MUTATIONS = (
     (
         "startup-parent-evaluation-finalize",
         "../../../../../tools/simulator/benchmark_candidate.py",
-        'finalize(cache_options, Path(request["output"]), passed=code == 0)',
+        'finalize(cache_config, Path(request["output"]), passed=code == 0)',
         "pass",
     ),
     (
         "startup-parent-smoke-finalize",
         "../../../../../scripts/maintainer/public_smoke.py",
-        "finalize(args, args.output, passed=passed)",
+        "finalize(cache_config, args.output, passed=passed)",
         "pass",
     ),
     (

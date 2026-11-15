@@ -323,25 +323,24 @@ def prepare(args, *, diagnostic=False):
 
 def launch(path, python, *, diagnostic=False, cache_options=None):
     request = preflight(path, diagnostic=diagnostic)
+    from tower_sim.bench.shader_cache import child_arguments, configuration, finalize
+
+    cache_config = configuration(cache_options, Path(request["output"]))
     benchmark.check_environment(python)
     command = [str(python), "-u", str(Path(__file__).resolve()), "--request", str(path)]
-    from tower_sim.bench.shader_cache import child_arguments
-
     command.extend(child_arguments(cache_options))
     if diagnostic:
         command.append("--diagnostic")
     with benchmark.runtime_request(path, request) as normalized:
         command[command.index("--request") + 1] = str(normalized)
         result = subprocess.run(command, env=child_environment(), check=False)
-    from tower_sim.bench.shader_cache import finalize
-
     from scripts.maintainer.candidate_policy import finish
 
     code = None
     try:
         code = finish(request, result.returncode, diagnostic=diagnostic)
     finally:
-        finalize(cache_options, Path(request["output"]), passed=code == 0)
+        finalize(cache_config, Path(request["output"]), passed=code == 0)
     if not diagnostic:
         # Preserve the historical public seed paths without moving hash-bound
         # evidence or changing the candidate's internal recording layout.
@@ -424,6 +423,9 @@ def diagnostic(args):
     benchmark.require_eula(args.accept_eula)
     if args.output.exists():
         raise ValueError("Diagnostic output must be a new directory")
+    from tower_sim.bench.shader_cache import configuration
+
+    configuration(args, args.output)
     inputs = SimpleNamespace(**vars(args))
     inputs.output = args.output / "inputs"
     inputs.run_output, inputs.seeds, inputs.isaac_python = (

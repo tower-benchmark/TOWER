@@ -98,10 +98,11 @@ status with results. Use [offline scoring](offline-scoring.md) for saved recordi
 
 Benchmark workers enable render-completion synchronization on every start.
 A first-time start also needs two different caches: the Kit renderer shader
-cache and the SDK CUDA kernel cache. Warm-up and seeding cover both. When seed or warm-up options are given, each
-simulator uses a private CUDA cache selected by its own `CUDA_CACHE_PATH`;
-the parent process and policy service environment are unchanged. Cache files
-are specific to the GPU and driver; rebuild both after either changes.
+cache and the SDK CUDA kernel cache. Warm-up and seeding cover both. When seed
+or warm-up options are given, each simulator uses a private CUDA cache selected
+by its own `CUDA_CACHE_PATH`; the parent process and policy service environment
+are unchanged. Cache files are specific to the GPU and driver; rebuild both
+after either changes.
 TOWER ships no cache.
 
 Use the configured simulator interpreter and the same license consent as for
@@ -135,16 +136,17 @@ directories:
 ```
 
 Proceed only after a serial pass exits successfully with a passing smoke result
-and `source_run_passed: true` in its exported `warmup.json`. A seed marked as
-failed is rejected unless another warm-up export is explicitly requested. If the second pass
-fails, stop and retain both failures for investigation. Every pass uses the
-original camera and image checks; no failed result becomes an accepted trial.
+and `source_run_passed: true` in its exported `warmup.json`. A seed without this
+positive status is rejected before a child starts, unless another warm-up export
+is explicitly requested. If the second pass fails, stop and retain both failures
+for investigation. Every pass uses the original camera and image checks; no
+failed result becomes an accepted trial.
 
-One verified seed per GPU/driver combination covers all 12 task variants in
-this benchmark. A seed exported from a successful `cross-transfer-2` warm-up
-passed initial-image validation for all 12 variants concurrently, with six
-starts on each of two cards. Every subsequent run still performs its own strict
-image checks.
+In verification on one GPU/driver combination, a seed from a passing
+`cross-transfer-2` warm-up passed initial-image validation for all 12 task
+variants concurrently, with six starts on each of two cards. Warm up on each
+GPU/driver combination you use. Every subsequent run still performs its own
+strict image checks.
 
 Use the successful pass's export for concurrent `benchmark.py run`,
 `benchmark_portable.py run` or `smoke`, or `benchmark_diagnostic.py` commands.
@@ -160,9 +162,8 @@ renderer startup. Its CUDA cache is private to that worker. The parent records
 warm-up digests after worker exit and removes the worker's private copies of
 both caches after a completed export, as well as after ordinary seeded runs.
 Use separate output directories and available GPUs. A digest mismatch rejects
-startup. The invalid-image guard,
-including the all-zero initial-image rejection, stays strict with no image
-fallback.
+startup. The invalid-image guard, including the all-zero initial-image
+rejection, stays strict with no image fallback.
 
 For troubleshooting, `simulation/private-shader-cache.json` records the private
 Kit and CUDA paths, seed digest, and CUDA cache size and file count before
