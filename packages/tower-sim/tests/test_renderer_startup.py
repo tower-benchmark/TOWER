@@ -41,8 +41,12 @@ def test_production_launch_record(entry, tmp_path, monkeypatch):
         factories=SimpleNamespace(experience=None),
         setup=lambda session: None,
     )
+    original = list(sys.argv)
     with eval(compile(ast.Expression(call), "bootstrap", "eval"), scope) as launch:
+        assert set(sys.argv) >= FLAGS
         launch(dict(headless=True, experience="provided.kit"))
+        assert set(sys.argv) >= FLAGS
+    assert sys.argv == original
     assert set(json.loads((output / "launch.json").read_text())["extra_args"]) >= FLAGS
 
 

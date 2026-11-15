@@ -169,7 +169,16 @@ def grouped_runtime(
             raise
         return session
 
-    yield launch
+    if not zero_delay:
+        yield launch
+        return
+    original = list(sys.argv)
+    try:
+        # Keep completion arguments available through deferred SDK initialization.
+        sys.argv.extend(flag for flag in RENDER_COMPLETION_ARGS if flag not in sys.argv)
+        yield launch
+    finally:
+        sys.argv[:] = original
 
 
 def gpu_readback(group):
