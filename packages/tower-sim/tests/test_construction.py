@@ -470,7 +470,7 @@ def test_frozen_bootstrap_and_new_factory_sequence(
     # Frozen bootstrap intentionally changes sys.path and environment; isolate them.
     monkeypatch.setattr(sys, "path", list(sys.path))
     # Only the SDK double is used; test interpreter rejection separately.
-    monkeypatch.setattr(bootstrap.startup, "sys", NS(version_info=(3, 12)))
+    monkeypatch.setattr(bootstrap.startup, "sys", NS(version_info=(3, 12), argv=list(sys.argv)))
     import os
 
     monkeypatch.setattr(os, "environ", os.environ.copy())
