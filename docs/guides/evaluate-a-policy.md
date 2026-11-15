@@ -131,6 +131,8 @@ Each worker copies the seed into its own directory, verifies every file against
 the digest before starting the renderer, and removes its private copy on exit.
 Use separate output directories and available GPUs for concurrent workers.
 A digest mismatch rejects startup. Warm-up directories must be new; retain only
-a cache from a successful serial run. Completion flags and cache seeding do not
+a cache from a successful serial run. A failed warm-up exports no seed; retain
+its failure evidence and resolve startup before attempting concurrent runs.
+Completion flags and cache seeding do not
 relax image validation: the all-zero initial-image guard remains strict, with
 no fallback. Concurrent cold starts are not a substitute for serial warm-up.
