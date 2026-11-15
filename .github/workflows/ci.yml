@@ -108,18 +108,10 @@ jobs:
           environment-file: packages/nero-kinematics/environment.yml
           cache-environment: true
           init-shell: bash
-      - uses: astral-sh/setup-uv@d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86 # v5.4.2
-        with:
-          version: "0.13.7"
-      - name: Build and install reviewed packages
+      - name: Install source packages with the documented native recipe
         run: |
-          python -c 'import pinocchio.casadi, casadi'
-          uv build --package tower-eval --out-dir dist/tower
-          uv build --package nero-kinematics --out-dir dist/nero
-          uv build --package tower-sim --out-dir dist/sim
-          python -m pip install dist/tower/*.whl dist/nero/*.whl dist/sim/*.whl 'pytest>=8,<9' 'h5py>=3.11,<4' 'pyyaml>=6,<7' 'pillow>=10,<13' 'qpsolvers==4.8.1' 'quadprog==0.1.13' 'loop-rate-limiters==1.2.0'
-          # Keep conda's pinned Pinocchio with CasADi bindings; Pink's PyPI pin dependency is a different build.
-          python -m pip install --no-deps -r packages/nero-kinematics/requirements-pink.txt
+          python -m pip install --index-url https://pypi.org/simple --no-deps -r packages/nero-kinematics/requirements-pip.txt
+          python -m pip install --index-url https://pypi.org/simple --no-deps ./packages/nero-kinematics ./packages/tower-sim ./src/tower-eval
       - name: Fetch pinned public test inputs
         run: |
           python -m scripts.maintainer.fetch_golden
@@ -160,9 +152,8 @@ jobs:
           init-shell: bash
       - name: Install test harness without replacing frozen solver dependencies
         run: |
-          python -m pip install 'pytest>=8,<9' 'h5py>=3.11,<4' 'pyyaml>=6,<7' 'pillow>=10,<13' 'loop-rate-limiters==1.2.0'
-          python -m pip install --no-deps -r packages/nero-kinematics/requirements-pink.txt
-          python -m pip install --no-deps ./packages/nero-kinematics ./src/tower-eval ./packages/tower-sim
+          python -m pip install --index-url https://pypi.org/simple --no-deps -r packages/nero-kinematics/requirements-pip.txt
+          python -m pip install --index-url https://pypi.org/simple --no-deps ./packages/nero-kinematics ./packages/tower-sim ./src/tower-eval
       - name: Fetch pinned public test inputs
         run: |
           python -m scripts.maintainer.fetch_golden

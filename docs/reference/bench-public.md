@@ -7,7 +7,7 @@ The three wheels are `tower-sim==0.1.0`, `tower-eval==0.1.0`, and
 
 ## Install the pinned SDK
 
-Run from the checkout root. Install [uv](https://docs.astral.sh/uv/) and a
+Run from the checkout root. Install [uv](https://docs.astral.sh/uv/) and
 Micromamba first (to create the separate conda-forge prefixes). Isaac uses Python 3.12:
 
 ```sh
@@ -25,11 +25,22 @@ Without root, install it in a separate conda-forge prefix:
 
 ```sh
 micromamba create --prefix "$PWD/.isaac-system-libs" --override-channels -c conda-forge xorg-libxt -y
-LD_LIBRARY_PATH="$PWD/.isaac-system-libs/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" uv run python tools/simulator/benchmark.py check-environment --isaac-python .venv-isaac61/bin/python
+mkdir -p .isaac-x11
+ln -sfn "$PWD/.isaac-system-libs/lib/libXt.so.6" .isaac-x11/libXt.so.6
+LD_LIBRARY_PATH="$PWD/.isaac-x11" ldd .isaac-x11/libXt.so.6
+LD_LIBRARY_PATH="$PWD/.isaac-x11" uv run python tools/simulator/benchmark.py check-environment --isaac-python .venv-isaac61/bin/python
 ```
 
-Use that same process-scoped `LD_LIBRARY_PATH` prefix for each Isaac benchmark
-invocation. Do not add it globally to shell startup files or to the IK environment.
+If `ldd` reports missing X11 dependencies, add only those libraries as symlinks
+from `.isaac-system-libs/lib` into `.isaac-x11`, then repeat `ldd` and the check.
+For example, a missing `libSM.so.6` needs
+`ln -sfn "$PWD/.isaac-system-libs/lib/libSM.so.6" .isaac-x11/libSM.so.6`.
+Do not expose the entire conda library directory: it also contains compiler
+runtimes such as libgcc and libgomp that can override Isaac libraries.
+
+Use this X11-only, process-scoped `LD_LIBRARY_PATH` for benchmark invocations.
+The IK child inherits it too; validate the native acceptance tests and release
+identity probe with this same value. Do not add it to shell startup files.
 The check loads `libMaterialXRenderHw.so`, `libMaterialXRenderGlsl.so` and
 `libusd_usdBakeMtlx.so` without starting Kit or creating GPU contexts.
 A metadata-only version match is insufficient.
@@ -83,7 +94,7 @@ Conda distributions are checked against their installed package manifests.
 
 ```sh
 python tools/simulator/benchmark_assets.py download --assets /path/to/assets
-python tools/simulator/benchmark.py verify --assets /path/to/assets --data-root /path/to/benchmark-2026.11.1
+python tools/simulator/benchmark.py verify --assets /path/to/assets
 python tools/simulator/benchmark.py describe
 python tools/simulator/benchmark_portable.py prepare-request --help
 python tools/simulator/benchmark.py run --help
@@ -92,7 +103,10 @@ python tools/simulator/benchmark.py run --help
 Each task has fifty fixed scenes, `scene-000` through `scene-049`. The request
 field `seeds` selects integer case numbers 0 through 49. It does not create scenes.
 The default data directory is `<assets>/benchmark-2026.11.1`. Downloads use the anonymous pinned TOWER-Assets revision in the release lock.
-Use `--data-root` only to verify an existing evaluation-data directory.
+`benchmark.py verify` checks physical assets and evaluation data at that default
+location. In contrast, `benchmark_assets.py verify --assets ...` checks only
+physical assets unless `--data-root` is supplied. Use `--data-root` to select
+an existing evaluation-data directory at a different location.
 CPU verification without assets checks metadata and reports zero verified payloads.
 
 Every trial records its benchmark, data version, request schema, package versions,

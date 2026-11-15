@@ -23,4 +23,4 @@ eef-to-joint = "nero_eef_ik.__main__:main"
 packages = ["src/nero_kinematics", "src/nero_eef_ik"]
 
 [tool.hatch.build.targets.sdist]
-include = ["src/**", "examples/**", "tests/**", "README.md", "PROVENANCE.json", "environment.yml", "requirements-pink.txt", "pyproject.toml", "LICENSE*", "NOTICE", "THIRD_PARTY_NOTICES.md"]
+include = ["src/**", "examples/**", "tests/**", "README.md", "PROVENANCE.json", "environment.yml", "requirements-pip.txt", "pyproject.toml", "LICENSE*", "NOTICE", "THIRD_PARTY_NOTICES.md"]

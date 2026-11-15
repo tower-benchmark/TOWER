@@ -26,9 +26,11 @@ uv run python tools/simulator/benchmark.py verify --benchmark 2026.11.1 --assets
 
 With `--data-root`, download fetches physical assets and verifies the existing
 complete evaluation-data directory rather than downloading its contents.
-Verification checks `MANIFEST.json`, the exact file set, sizes and hashes.
-After downloading through a pinned locator, use the default data directory as
-`--data-root` in these verification commands and in the request below.
+The first verification command checks physical assets only. The second also
+verifies evaluation data at `<assets>/benchmark-2026.11.1`, including
+`MANIFEST.json`, the exact file set, sizes and hashes. No `--data-root` is needed
+for that default location; supply it to verify a different existing data directory.
+The request below passes the evaluation-data directory explicitly.
 A checksum mismatch is an error. See [asset terms](../../LICENSE-ASSETS).
 
 ## Check the environment and prepare a request
@@ -75,7 +77,7 @@ The same file must also contain the policy's `package_digest`, a
 
 ```sh
 uv run python tools/simulator/benchmark_portable.py prepare-request \
-  --benchmark 2026.11.1 --data-root /path/to/benchmark-2026.11.1 \
+  --benchmark 2026.11.1 --data-root /path/to/assets/benchmark-2026.11.1 \
   --assets /path/to/assets --task two-block-transfer-2 \
   --seeds 0 --gpu 0 --package /path/to/policy-package.json \
   --pilot-review /path/to/posture-review.json --policy-url ws://localhost:19000 \

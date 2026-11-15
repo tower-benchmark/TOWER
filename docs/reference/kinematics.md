@@ -13,7 +13,7 @@ From the TOWER checkout root, create the native environment separately from Isaa
 ```bash
 micromamba create --prefix "$PWD/.venv-benchmark-ik" -f packages/nero-kinematics/environment.yml -y
 ik_python="$PWD/.venv-benchmark-ik/bin/python"
-"$ik_python" -m pip install --index-url https://pypi.org/simple --no-deps -r packages/nero-kinematics/requirements-pink.txt
+"$ik_python" -m pip install --index-url https://pypi.org/simple --no-deps -r packages/nero-kinematics/requirements-pip.txt
 "$ik_python" -m pip install --index-url https://pypi.org/simple --no-deps ./packages/nero-kinematics ./packages/tower-sim ./src/tower-eval
 export PYTHONDONTWRITEBYTECODE=1
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
@@ -22,15 +22,19 @@ export TOWER_REQUIRE_NATIVE_IK=1
 "$ik_python" -m pytest packages/nero-kinematics/tests tests/characterization/test_ik.py -v
 ```
 
-The environment file provisions Pink's dependencies through conda-forge. The
-second installation step pins `pin-pink==3.4.0` with `--no-deps`: ordinary pip
+The environment file provisions native dependencies, including Quadprog, through
+conda-forge. The pip requirements pin Pink, QPsolvers and loop-rate-limiters with
+`--no-deps`, avoiding optional solver backends. Ordinary pip
 resolution can install a conflicting `pin==2.7.0`. Keep conda Pinocchio 3.8.0
 and its CasADi bindings; do not install the pip `pin` distribution.
-The alternative `configs/benchmark-ik.yml` uses the same two-step Pink recipe.
+These acceptance tests use the source packages installed into the native prefix.
+The alternative `configs/benchmark-ik.yml` uses the same two-step recipe; replace
+the environment-file argument above to test that prefix.
 
 After the [release build](bench-public.md#build-and-verify), install the three
 wheels into a fresh shared package directory and run the release identity probe
-with the native interpreter:
+with the native interpreter. This probe uses the wheel installation in
+`runtime-packages` selected by `PYTHONPATH`, rather than the source installation:
 
 ```bash
 "$ik_python" -m pip install --index-url https://pypi.org/simple --no-deps --target "$PWD/runtime-packages" dist/*.whl

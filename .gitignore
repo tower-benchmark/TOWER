@@ -42,3 +42,7 @@ hf-assets/**/*.jpeg
 *.safetensors
 /simulator-assets/
 /simulator-runs/
+
+.isaac-system-libs/
+.isaac-x11/
+runtime-packages/

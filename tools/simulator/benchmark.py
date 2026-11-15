@@ -125,7 +125,8 @@ def main(argv=None):
     inventory.add_argument("--data-root", type=Path)
     commands.add_parser("describe", help="Print the explicit benchmark settings")
     environment = commands.add_parser(
-        "check-environment", help="Check Isaac metadata without GPU use"
+        "check-environment",
+        help="Check Isaac metadata and load native material plugins without GPU use",
     )
     environment.add_argument("--isaac-python", type=Path, required=True)
     score = commands.add_parser("score", help="Score a recording into a new file")
