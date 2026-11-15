@@ -3,6 +3,7 @@
 import argparse
 import ast
 import json
+import sys
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -49,8 +50,15 @@ def test_seed_roundtrip_and_corruption(tmp_path):
     warm = tmp_path / "warm"
     with app.private_shader_cache(
         seed=None, seed_sha=None, private_root=tmp_path, name="warm", warmup=True, argv=[]
-    ):
+    ) as receipt:
         (warm / "nv_shadercache" / "shader").write_bytes(b"compiled")
+    output = tmp_path / "warm-run"
+    (output / "simulation").mkdir(parents=True)
+    (output / "simulation/private-shader-cache.json").write_text(json.dumps(receipt))
+    options = SimpleNamespace(shader_cache_warmup=warm)
+    shader_cache.finalize(options, output, passed=False)
+    assert not (warm / "digest.sha256").exists()
+    shader_cache.finalize(options, output, passed=True)
     parser = argparse.ArgumentParser()
     shader_cache.add_arguments(parser)
     args = parser.parse_args(
@@ -195,6 +203,12 @@ def test_public_worker_cache_plumbing():
             and n.func.id == "child_arguments"
         ]
         assert len(calls) == 1
+        finalizers = [
+            n
+            for n in ast.walk(tree)
+            if isinstance(n, ast.Call) and isinstance(n.func, ast.Name) and n.func.id == "finalize"
+        ]
+        assert len(finalizers) == 1
     tree = ast.parse((ROOT / "tools/simulator/benchmark_candidate.py").read_text())
     calls = [
         n
@@ -209,3 +223,49 @@ def test_public_worker_cache_plumbing():
         )
         for call in calls
     )
+
+
+def test_parent_removes_only_receipted_private_cache(tmp_path):
+    output = tmp_path / "output"
+    options = SimpleNamespace(
+        shader_cache_seed=tmp_path / "seed", shader_cache_digest=tmp_path / "digest"
+    )
+    directory = tmp_path / "output-shader-cache"
+    target = directory / "nv_shadercache"
+    target.mkdir(parents=True)
+    shader_cache.finalize(options, output, passed=False)
+    assert target.exists()
+    (output / "simulation").mkdir(parents=True)
+    receipt = output / "simulation/private-shader-cache.json"
+    receipt.write_text(json.dumps({"private_cache": str(tmp_path / "unowned")}))
+    with pytest.raises(ValueError, match="differs"):
+        shader_cache.finalize(options, output, passed=False)
+    assert target.exists()
+    receipt.write_text(json.dumps({"private_cache": str(target)}))
+    shader_cache.finalize(options, output, passed=False)
+    assert not directory.exists()
+
+
+@pytest.mark.parametrize("fails", [False, True])
+def test_sdk_completion_argv_is_scoped(monkeypatch, fails):
+    monkeypatch.setattr(app, "require_python312", lambda: None)
+    seen = []
+
+    def launch(config):
+        seen.append(set(sys.argv))
+        if fails:
+            raise RuntimeError("constructor failed")
+        return object()
+
+    monkeypatch.setitem(sys.modules, "isaacsim", SimpleNamespace(SimulationApp=launch))
+    original = list(sys.argv)
+    if fails:
+        with pytest.raises(RuntimeError, match="constructor failed"):
+            app.simulation_app({"extra_args": sorted(FLAGS)})
+    else:
+        app.simulation_app({"extra_args": sorted(FLAGS)})
+    assert seen[0] >= FLAGS
+    assert sys.argv == original
+    if not fails:
+        app.simulation_app({})
+        assert not FLAGS & seen[1]

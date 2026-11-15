@@ -14,6 +14,12 @@ from pathlib import Path
 from .experience import local_stock_experience, omit_viewport_overlays
 from .resources import save, sha
 
+RENDER_COMPLETION_ARGS = (
+    "--/app/updateOrder/checkForHydraRenderComplete=1000",
+    "--/app/renderer/waitIdle=true",
+    "--/app/hydraEngine/waitIdle=true",
+)
+
 
 def require_python312():
     if sys.version_info[:2] != (3, 12):
@@ -24,7 +30,17 @@ def simulation_app(config):
     require_python312()
     import isaacsim  # pyright: ignore[reportMissingImports]
 
-    return isaacsim.SimulationApp(config)
+    # Deliver requested completion settings through the SDK argv boundary too.
+    original = list(sys.argv)
+    try:
+        sys.argv.extend(
+            flag
+            for flag in RENDER_COMPLETION_ARGS
+            if flag in config.get("extra_args", []) and flag not in sys.argv
+        )
+        return isaacsim.SimulationApp(config)
+    finally:
+        sys.argv[:] = original
 
 
 def native_renderer(resources, base):
@@ -123,13 +139,7 @@ def grouped_runtime(
             ],
         }
         if zero_delay:
-            configured["extra_args"].extend(
-                [
-                    "--/app/updateOrder/checkForHydraRenderComplete=1000",
-                    "--/app/renderer/waitIdle=true",
-                    "--/app/hydraEngine/waitIdle=true",
-                ]
-            )
+            configured["extra_args"].extend(RENDER_COMPLETION_ARGS)
         if startup == "headless" and configured.get("headless", True):
             if not configured.get("experience"):
                 import isaacsim  # pyright: ignore[reportMissingImports]
@@ -240,9 +250,7 @@ def private_shader_cache(
         )
     finally:
         argv[:] = original
-        if warmup:
-            (directory / "digest.sha256").write_text(digest_tree(target))
-        else:
+        if not warmup:
             shutil.rmtree(directory, ignore_errors=True)
 
 

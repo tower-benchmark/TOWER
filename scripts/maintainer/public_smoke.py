@@ -174,11 +174,18 @@ def run(args):
         command.append("--accept-eula")
     result = subprocess.run(command, env=public.child_environment(), check=False)
     receipt = args.output / "result.json"
-    if (
-        result.returncode
-        or not receipt.is_file()
-        or benchmark.read(receipt).get("passed") is not True
-    ):
+    from tower_sim.bench.shader_cache import finalize
+
+    passed = False
+    try:
+        passed = (
+            result.returncode == 0
+            and receipt.is_file()
+            and benchmark.read(receipt).get("passed") is True
+        )
+    finally:
+        finalize(args, args.output, passed=passed)
+    if not passed:
         raise RuntimeError(
             f"Smoke worker did not produce a passing receipt (exit {result.returncode})"
         )
