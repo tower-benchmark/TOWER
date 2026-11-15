@@ -17,6 +17,7 @@ import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from types import SimpleNamespace
+from typing import Any
 
 import numpy as np
 
@@ -74,7 +75,7 @@ def variant(obs, case):
     return result
 
 
-def prediction(obs):
+def prediction(obs) -> dict[str, Any]:
     if obs["gripper_width_m"][0] < 0:
         raise ValueError("Negative gripper aperture")
     tick = int(obs["prompt"].split()[-1])
@@ -225,8 +226,11 @@ def generate_base(destination):
                     worker.close()
                 cases[case] = records
         # Run the historical shared loop, preserving its actual status serialization.
+        from importlib import import_module
+
         import pytest
-        from test_replay_lifecycle import simulation
+
+        simulation = import_module("test_replay_lifecycle").simulation
 
         for case in ("valid", "aperture", "nonrigid", "anchor", "shape", "nan", "ikreject"):
             with tempfile.TemporaryDirectory() as directory, pytest.MonkeyPatch.context() as patch:

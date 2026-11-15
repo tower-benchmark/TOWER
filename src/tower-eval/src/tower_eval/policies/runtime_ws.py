@@ -69,7 +69,7 @@ def map_error(exc: Exception, request_id=None) -> PolicyTransportError | PolicyO
     return transport_error(exc, request_id)
 
 
-def normalize(value):
+def normalize(value: Any) -> Any:
     """Retain scalar types and float64 bits; never silently widen floating arrays."""
     if isinstance(value, (np.ndarray, np.generic)):
         if value.dtype.kind == "f" and value.dtype != np.dtype("float64"):
