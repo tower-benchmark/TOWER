@@ -2548,6 +2548,28 @@ MUTATIONS += (
 )
 
 
+MUTATIONS += (
+    (
+        "policy-adapter-infer-wire",
+        "../../../../../src/tower-eval/src/tower_eval/policies/xpolicylab.py",
+        '        with contextlib.redirect_stdout(sys.stderr):\n            client = self._client\n            response = client._run(\n                client._client.infer(\n                    observation,\n                    trial_id=client.trial_id,\n                    action_case_id=client.action_case_id,\n                    repeat_index=client.repeat_index,\n                    step=client._step,\n                )\n            )\n            client._step += 1\n            return response.payload["actions"]\n',
+        '        self._call("update_obs", observation)\n        return self._call("get_action")\n',
+    ),
+    (
+        "policy-adapter-infer-step",
+        "../../../../../src/tower-eval/src/tower_eval/policies/xpolicylab.py",
+        "            client._step += 1",
+        "            pass",
+    ),
+    (
+        "policy-replay-request-limit",
+        "replay.py",
+        "concurrent_request_limit=1 if policy else min(16, env.n)",
+        "concurrent_request_limit=1 if policy else 0",
+    ),
+)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)

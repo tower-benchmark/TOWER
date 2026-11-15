@@ -186,7 +186,9 @@ def test_real_ws_shared_loop_status_bytes(simulation, monkeypatch, tmp_path, cas
             assert errors[0]["message"] == "synthetic trial_end failure"
 
 
-def test_worker_status_records_sequential_policy(tmp_path):
+@pytest.mark.parametrize("has_policy", [False, True])
+@pytest.mark.parametrize("count", [3, 20])
+def test_worker_status_records_sequential_policy(tmp_path, has_policy, count):
     import ast
     from pathlib import Path
 
@@ -207,17 +209,17 @@ def test_worker_status_records_sequential_policy(tmp_path):
         dict(
             save=save,
             context=NS(output=tmp_path),
-            policy=NS(stage="synthetic"),
+            policy=NS(stage="synthetic") if has_policy else None,
             tick=400,
-            ended=[False] * 3,
-            env=NS(n=3),
+            ended=[False] * count,
+            env=NS(n=count),
         ),
     )
     import json
 
     result = json.loads((tmp_path / "worker-status.json").read_text())
-    assert result["serialized_neural_inference"] is True
-    assert result["concurrent_request_limit"] == 1
+    assert result["serialized_neural_inference"] is has_policy
+    assert result["concurrent_request_limit"] == (1 if has_policy else min(16, count))
 
 
 def test_nonjson_error_body_is_not_written(tmp_path):

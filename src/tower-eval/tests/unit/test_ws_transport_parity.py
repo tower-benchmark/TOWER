@@ -696,3 +696,28 @@ def test_atomic_infer_prevents_interleaved_update(monkeypatch):
         finally:
             for adapter in adapters:
                 adapter.close()
+
+
+def test_adapter_infer_wire_frames_and_steps(monkeypatch):
+    from tower_eval.policies.xpolicylab import XPolicyLabAdapter, observation_to_xpolicylab
+
+    with service(monkeypatch) as (server, model, calls):
+        received = []
+        dispatch = server._dispatch_frame
+
+        async def record(frame):
+            if frame.message_type.name in {"INFER", "CALL"}:
+                received.append((frame.message_type.name, frame.step))
+            return await dispatch(frame)
+
+        monkeypatch.setattr(server, "_dispatch_frame", record)
+        adapter = XPolicyLabAdapter(server.url)
+        observation = dict(payload(), images={name: pixels(0, 0) for name in CAMERAS})
+        try:
+            for step in range(2):
+                rows = adapter.infer(observation_to_xpolicylab(observation))
+                assert len(rows) == IDENTITY["execute_steps"]
+                # Observe decoded wire frames at the server, below either client wrapper.
+                assert received == [("INFER", index) for index in range(step + 1)]
+        finally:
+            adapter.close()
