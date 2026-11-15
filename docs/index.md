@@ -12,5 +12,5 @@ Choose a starting point:
 - [Policy author](getting-started/quickstart-policy-author.md): connect a model.
 - [Contributor](getting-started/quickstart-contributor.md): develop and validate changes.
 
-Weights are not bundled. [Model cards](model-cards/index.md) are drafts pending
-owner review and publication. CPU smoke checks validate integration, not physics.
+Weights are not bundled. Model cards will be published with the checkpoints.
+CPU smoke checks validate integration, not physics.

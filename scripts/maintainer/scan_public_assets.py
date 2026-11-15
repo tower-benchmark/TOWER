@@ -39,7 +39,12 @@ PERSONAL_TOKEN_SHA256 = frozenset(
         "662ec0bb5f98f162414ec1972b613445b61099e34ecf1fdacb427a7fa6d44176",
     }
 )
-ALLOWED_EMAILS = {"fixture@example.test", "maintainers@tower-benchmark.invalid"}
+# Exact public contact published in SECURITY.md and CODE_OF_CONDUCT.md.
+ALLOWED_EMAILS = {
+    "fixture@example.test",
+    "maintainers@tower-benchmark.invalid",
+    "admin@tower-benchmark.com",
+}
 ALLOWED_IDENTITIES = ["USD jenga:* attribute names", "jenga01 and other numbered asset names"]
 IPV6 = re.compile(r"(?<![\w:])(?:[0-9a-f]{0,4}:){2,}[0-9a-f]{0,4}(?:%[\w.-]+)?(?![\w:])", re.I)
 

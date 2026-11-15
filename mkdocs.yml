@@ -1,5 +1,5 @@
 site_name: TOWER
-site_url: https://tower-benchmark.github.io/TOWER/
+site_url: https://docs.tower-benchmark.com/
 repo_url: https://github.com/tower-benchmark/TOWER
 theme:
   name: material
@@ -57,8 +57,3 @@ nav:
       - Adding a task: contributing/adding-a-task.md
       - Adding a policy plugin: contributing/adding-a-policy-plugin.md
       - Release: contributing/release.md
-  - Model cards:
-      - Index: model-cards/index.md
-      - OpenWAM: model-cards/openwam.md
-      - MME: model-cards/mme.md
-      - PI0.5: model-cards/pi05.md
