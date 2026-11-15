@@ -1,5 +1,5 @@
 site_name: TOWER
-site_url: https://tower-benchmark.github.io/TOWER/
+site_url: https://docs.tower-benchmark.com/
 repo_url: https://github.com/tower-benchmark/TOWER
 theme:
   name: material
