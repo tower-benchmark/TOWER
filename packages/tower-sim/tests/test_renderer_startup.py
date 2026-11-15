@@ -48,34 +48,43 @@ def test_production_launch_record(entry, tmp_path, monkeypatch):
 
 def test_seed_roundtrip_and_corruption(tmp_path):
     warm = tmp_path / "warm"
-    with app.private_shader_cache(
-        seed=None, seed_sha=None, private_root=tmp_path, name="warm", warmup=True, argv=[]
-    ) as receipt:
-        (warm / "nv_shadercache" / "shader").write_bytes(b"compiled")
     output = tmp_path / "warm-run"
+    options = SimpleNamespace(shader_cache_warmup=warm)
+    config = shader_cache.configuration(options, output)
+    argv = ["worker", "--portable-root", str(tmp_path / "warm-run-kit")]
+    with app.private_shader_cache(**config, argv=argv) as receipt:
+        target = Path(receipt["private_cache"])
+        (target / "shadercache").mkdir()
+        (target / "shadercache/shader").write_bytes(b"compiled")
     (output / "simulation").mkdir(parents=True)
     (output / "simulation/private-shader-cache.json").write_text(json.dumps(receipt))
-    options = SimpleNamespace(shader_cache_warmup=warm)
     shader_cache.finalize(options, output, passed=False)
-    assert not (warm / "digest.sha256").exists()
+    assert not warm.exists()
     shader_cache.finalize(options, output, passed=True)
     parser = argparse.ArgumentParser()
     shader_cache.add_arguments(parser)
     args = parser.parse_args(
         [
             "--shader-cache-seed",
-            str(warm / "nv_shadercache"),
+            str(warm / "cache"),
             "--shader-cache-digest",
             str(warm / "digest.sha256"),
         ]
     )
     copied = parser.parse_args(shader_cache.child_arguments(args))
     config = shader_cache.configuration(copied, tmp_path / "run")
-    with app.private_shader_cache(**config, argv=[]) as receipt:
-        assert (Path(receipt["private_cache"]) / "shader").read_bytes() == b"compiled"
-    assert not (tmp_path / "run-shader-cache").exists()
-    (warm / "nv_shadercache" / "shader").write_bytes(b"changed")
-    with pytest.raises(RuntimeError, match="differs"), app.private_shader_cache(**config, argv=[]):
+    with app.private_shader_cache(
+        **config, argv=["worker", "--portable-root", str(tmp_path / "run-kit")]
+    ) as receipt:
+        assert (Path(receipt["private_cache"]) / "shadercache/shader").read_bytes() == b"compiled"
+    assert not (tmp_path / "run-kit/cache").exists()
+    (warm / "cache/shadercache/shader").write_bytes(b"changed")
+    with (
+        pytest.raises(RuntimeError, match="differs"),
+        app.private_shader_cache(
+            **config, argv=["worker", "--portable-root", str(tmp_path / "run-kit")]
+        ),
+    ):
         pytest.fail("Corrupt seed accepted")
 
 
@@ -230,8 +239,8 @@ def test_parent_removes_only_receipted_private_cache(tmp_path):
     options = SimpleNamespace(
         shader_cache_seed=tmp_path / "seed", shader_cache_digest=tmp_path / "digest"
     )
-    directory = tmp_path / "output-shader-cache"
-    target = directory / "nv_shadercache"
+    directory = tmp_path / "output-kit"
+    target = directory / "cache"
     target.mkdir(parents=True)
     shader_cache.finalize(options, output, passed=False)
     assert target.exists()
@@ -243,7 +252,8 @@ def test_parent_removes_only_receipted_private_cache(tmp_path):
     assert target.exists()
     receipt.write_text(json.dumps({"private_cache": str(target)}))
     shader_cache.finalize(options, output, passed=False)
-    assert not directory.exists()
+    assert not target.exists()
+    assert directory.is_dir()
 
 
 @pytest.mark.parametrize("fails", [False, True])
@@ -269,3 +279,27 @@ def test_sdk_completion_argv_is_scoped(monkeypatch, fails):
     if not fails:
         app.simulation_app({})
         assert not FLAGS & seen[1]
+
+
+@pytest.mark.parametrize("matching", [False, True])
+def test_portable_cache_admission_preserves_existing_files(tmp_path, matching):
+    directory = tmp_path / "run-kit"
+    target = directory / "cache"
+    target.mkdir(parents=True)
+    marker = target / "existing"
+    marker.write_text("retain")
+    actual = directory if matching else tmp_path / "other-kit"
+    error = FileExistsError if matching else ValueError
+    with (
+        pytest.raises(error),
+        app.private_shader_cache(
+            seed=tmp_path / "seed",
+            seed_sha=tmp_path / "digest",
+            private_root=tmp_path,
+            name="run-kit",
+            portable=True,
+            argv=["worker", "--portable-root", str(actual)],
+        ),
+    ):
+        pytest.fail("Existing or mismatched worker cache accepted")
+    assert marker.read_text() == "retain"

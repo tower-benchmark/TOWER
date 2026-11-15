@@ -109,8 +109,9 @@ python tools/simulator/benchmark_portable.py smoke \
 
 Use the configured simulator interpreter and the same license consent as for
 other simulator runs. Wait for a passing smoke result and process exit.
-The new cache directory contains `nv_shadercache` and `digest.sha256`, a sorted
-SHA-256 list of its files. Keep both unchanged. Cache files are specific to the
+The new cache directory contains `cache` and `digest.sha256`, a sorted
+SHA-256 list of its files. The complete Kit cache includes both application and
+driver shaders; the parent records its digest after the worker exits. Keep both unchanged. Cache files are specific to the
 GPU and driver: regenerate after either changes, and never distribute a cache
 with the benchmark.
 
@@ -118,7 +119,7 @@ Pass both options on each concurrent `benchmark.py run`,
 `benchmark_portable.py run` or `smoke`, or `benchmark_diagnostic.py` invocation:
 
 ```sh
---shader-cache-seed /path/to/new-cache/nv_shadercache \
+--shader-cache-seed /path/to/new-cache/cache \
 --shader-cache-digest /path/to/new-cache/digest.sha256
 ```
 

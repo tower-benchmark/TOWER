@@ -17,6 +17,18 @@ BENCH = ROOT / "packages/tower-sim/src/tower_sim/bench"
 # Removed alias/layout mutations are documented in the purge evidence inventory.
 MUTATIONS = (
     (
+        "startup-complete-cache",
+        "app.py",
+        'target = directory / ("cache" if portable else "nv_shadercache")',
+        'target = directory / "nv_shadercache"',
+    ),
+    (
+        "startup-portable-root",
+        "app.py",
+        "if actual is None or Path(actual).resolve() != directory.resolve():",
+        "if False:",
+    ),
+    (
         "startup-sdk-completion-argv",
         "app.py",
         "for flag in RENDER_COMPLETION_ARGS",
@@ -38,7 +50,7 @@ MUTATIONS = (
     (
         "startup-parent-cleanup",
         "shader_cache.py",
-        "        shutil.rmtree(directory, ignore_errors=True)",
+        "        shutil.rmtree(target, ignore_errors=True)",
         "        pass",
     ),
     ("startup-completion", "bootstrap.py", "zero_delay=True", "zero_delay=False"),

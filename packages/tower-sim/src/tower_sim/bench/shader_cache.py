@@ -38,13 +38,22 @@ def configuration(options, output) -> dict[str, Any] | None:
     seed = getattr(options, "shader_cache_seed", None)
     if warmup:
         path = Path(warmup).resolve()
-        return dict(seed=None, seed_sha=None, private_root=path.parent, name=path.name, warmup=True)
+        return dict(
+            seed=None,
+            seed_sha=None,
+            private_root=output.parent,
+            name=output.name + "-kit",
+            warmup=True,
+            portable=True,
+            warmup_destination=path,
+        )
     if seed:
         return dict(
             seed=Path(seed).resolve(),
             seed_sha=Path(options.shader_cache_digest).resolve(),
-            private_root=Path(output).parent,
-            name=Path(output).name + "-shader-cache",
+            private_root=output.parent,
+            name=output.name + "-kit",
+            portable=True,
         )
     return None
 
@@ -59,13 +68,17 @@ def finalize(options, output, *, passed):
         return  # No proof that this worker created the directory.
     receipt = json.loads(receipt_path.read_text())
     directory = Path(config["private_root"]) / config["name"]
-    target = directory / "nv_shadercache"
+    target = directory / "cache"
     if receipt.get("private_cache") != str(target):
         raise ValueError("Shader cache receipt differs from worker configuration")
     if config.get("warmup"):
         if passed:
             from .app import digest_tree
 
-            (directory / "digest.sha256").write_text(digest_tree(target))
+            destination = Path(config["warmup_destination"])
+            destination.mkdir(parents=True, exist_ok=False)
+            exported = destination / "cache"
+            shutil.copytree(target, exported)
+            (destination / "digest.sha256").write_text(digest_tree(exported))
     else:
-        shutil.rmtree(directory, ignore_errors=True)
+        shutil.rmtree(target, ignore_errors=True)

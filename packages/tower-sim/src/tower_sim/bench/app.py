@@ -209,15 +209,36 @@ def digest_tree(root):
 
 @contextmanager
 def private_shader_cache(
-    *, seed, seed_sha, private_root, name, argv=None, clock=time.time, warmup=False
+    *,
+    seed,
+    seed_sha,
+    private_root,
+    name,
+    argv=None,
+    clock=time.time,
+    warmup=False,
+    portable=False,
+    warmup_destination=None,
 ):
     """Append Kit flags to real argv before launch; remove owned files/flags on exit."""
     argv = sys.argv if argv is None else argv
     if not name or name in (".", "..") or Path(name).name != name:
         raise ValueError("Private cache name must be one path component")
     directory = Path(private_root) / name
-    target = directory / "nv_shadercache"
-    directory.mkdir(parents=True, exist_ok=False)
+    target = directory / ("cache" if portable else "nv_shadercache")
+    if portable:
+        from .verification import portable_root
+
+        actual = portable_root(argv)
+        if actual is None or Path(actual).resolve() != directory.resolve():
+            raise ValueError("Shader cache requires the worker portable root")
+        if target.exists():
+            raise FileExistsError("Worker cache must be new")
+        if warmup_destination is not None and Path(warmup_destination).exists():
+            raise FileExistsError("Warm-up destination must be new")
+        directory.mkdir(parents=True, exist_ok=True)
+    else:
+        directory.mkdir(parents=True, exist_ok=False)
     started = clock()
     flags = []
     original = list(argv)
@@ -230,11 +251,15 @@ def private_shader_cache(
             shutil.copytree(seed, target)
             if digest_tree(target) != expected:
                 raise RuntimeError("Private shader cache copy differs from the verified seed")
-        flags = [
-            f"--/rtx/shaderDb/driverAppShaderCachePath={target}",
-            f"--/rtx/shaderDb/driverShaderCachePath={target}",
-            "--/renderer/shadercache/driverDiskCache/sizeInMB=12000",
-        ]
+        flags = (
+            []
+            if portable
+            else [
+                f"--/rtx/shaderDb/driverAppShaderCachePath={target}",
+                f"--/rtx/shaderDb/driverShaderCachePath={target}",
+                "--/renderer/shadercache/driverDiskCache/sizeInMB=12000",
+            ]
+        )
         argv.extend(flags)
         import hashlib
 
@@ -244,14 +269,14 @@ def private_shader_cache(
             files=expected.count("\n"),
             private_cache=str(target),
             copy_and_verify_s=clock() - started,
-            driver_cache_size_mb=12000,
+            driver_cache_size_mb=None if portable else 12000,
             kit_args=flags,
             pid=os.getpid(),
         )
     finally:
         argv[:] = original
         if not warmup:
-            shutil.rmtree(directory, ignore_errors=True)
+            shutil.rmtree(target if portable else directory, ignore_errors=True)
 
 
 @contextmanager
