@@ -1,0 +1,8 @@
+{
+  "name": "legacy-clearance",
+  "source": "simulator/benchmark-202611/runtime/support/task2_fixed/joint_limits.py",
+  "command_margin_deg": 4.0,
+  "measured_margin_deg": 3.0,
+  "storage_roundoff_deg": 1e-05,
+  "scope": "Historical metadata only; not command bounds or simulation observation tolerance. No live non-frozen reader of the old JENGA margin variables exists."
+}

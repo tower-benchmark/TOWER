@@ -1,0 +1,427 @@
+{
+  "application": "Native6.1 refined standalone station; appearance/controller production qualification pending",
+  "cameras": {
+    "right_front_camera": {
+      "classification": "Static native camera response fit to whole real Task2-3 RGB frames",
+      "ev": -0.6977024745548388,
+      "exposure_time_s": 0.012331065739282242,
+      "prim": "/PNP_DUALD1200_STATION/CameraAlignment/high_camera",
+      "whitepoint": [
+        1.112660101024756,
+        1.0,
+        1.0647637586008454
+      ],
+      "calibration_reference": {
+        "path": "redacted",
+        "sha256": "5664e1d600c237341c66b5235ac14c7cb0606eaae39e52e534010d801d348b58",
+        "episode_id": "6c6718a2933049a9ad99b477001e90ab",
+        "frames": 2513,
+        "duration_s": 84.326383179
+      },
+      "calibration_regions": [],
+      "calibration_environments": 10,
+      "calibration_fit_frames": [
+        0,
+        5,
+        10
+      ],
+      "calibration_metric": "Full native RGB MAE, 0-255, no masks or pixel grading"
+    },
+    "left_back_camera": {
+      "classification": "Static native camera response fit to whole real Task2-3 RGB frames",
+      "ev": -0.7038080243727901,
+      "exposure_time_s": 0.012278990388916224,
+      "prim": "/PNP_DUALD1200_STATION/CameraAlignment/low_camera",
+      "whitepoint": [
+        1.0777941728054306,
+        1.0,
+        1.0573285930140952
+      ],
+      "calibration_reference": {
+        "path": "redacted",
+        "sha256": "5664e1d600c237341c66b5235ac14c7cb0606eaae39e52e534010d801d348b58",
+        "episode_id": "6c6718a2933049a9ad99b477001e90ab",
+        "frames": 2513,
+        "duration_s": 84.326383179
+      },
+      "calibration_regions": [],
+      "calibration_environments": 10,
+      "calibration_fit_frames": [
+        0,
+        5,
+        10
+      ],
+      "calibration_metric": "Full native RGB MAE, 0-255, no masks or pixel grading"
+    },
+    "left_wrist_camera": {
+      "classification": "Static native camera response fit to whole real Task2-3 RGB frames",
+      "ev": -0.7651741584926536,
+      "exposure_time_s": 0.011767646462894712,
+      "prim": "/PNP_DUALD1200_STATION/StationModel/InstalledRobots/StandA_Robot/NeroRobotWithWristCamera/gripper_base/WristCameraMount/camera_stand_link/d435_camera_link/camera_link/camera_color_frame/camera_color_optical_frame/wrist_camera",
+      "whitepoint": [
+        1.0703481421441796,
+        1.0,
+        1.0549780751727034
+      ],
+      "calibration_reference": {
+        "path": "redacted",
+        "sha256": "5664e1d600c237341c66b5235ac14c7cb0606eaae39e52e534010d801d348b58",
+        "episode_id": "6c6718a2933049a9ad99b477001e90ab",
+        "frames": 2513,
+        "duration_s": 84.326383179
+      },
+      "calibration_regions": [],
+      "calibration_environments": 10,
+      "calibration_fit_frames": [
+        0,
+        5,
+        10
+      ],
+      "calibration_metric": "Full native RGB MAE, 0-255, no masks or pixel grading"
+    },
+    "back_wrist_camera": {
+      "classification": "Static native camera response fit to whole real Task2-3 RGB frames",
+      "ev": -2.032965767784145,
+      "exposure_time_s": 0.004887044681066714,
+      "prim": "/PNP_DUALD1200_STATION/StationModel/InstalledRobots/StandB_Robot/NeroRobotWithWristCamera/gripper_base/WristCameraMount/camera_stand_link/d435_camera_link/camera_link/camera_color_frame/camera_color_optical_frame/wrist_camera",
+      "whitepoint": [
+        1.0946036386542204,
+        1.0,
+        1.0912098195014253
+      ],
+      "calibration_reference": {
+        "path": "redacted",
+        "sha256": "5664e1d600c237341c66b5235ac14c7cb0606eaae39e52e534010d801d348b58",
+        "episode_id": "6c6718a2933049a9ad99b477001e90ab",
+        "frames": 2513,
+        "duration_s": 84.326383179
+      },
+      "calibration_regions": [],
+      "calibration_environments": 10,
+      "calibration_fit_frames": [
+        0,
+        5,
+        10
+      ],
+      "calibration_metric": "Full native RGB MAE, 0-255, no masks or pixel grading"
+    }
+  },
+  "capture": {
+    "camera_order": [
+      "right_front_camera",
+      "left_back_camera",
+      "left_wrist_camera",
+      "back_wrist_camera"
+    ],
+    "fixed_camera_housing_mask": false,
+    "fps": 30,
+    "generator_rotation_corrections": {
+      "left_back_camera": 180,
+      "right_front_camera": 180
+    },
+    "jpeg_quality": 95,
+    "mosaic": {
+      "codec": "libx264",
+      "crf": 18,
+      "fps": 30,
+      "height": 960,
+      "pixel_format": "yuv420p",
+      "preset": "veryfast",
+      "width": 1280
+    },
+    "near_plane_block_guard": true,
+    "physics_advance": false,
+    "physics_hz": 120,
+    "render_subframes": 2,
+    "resolution": [
+      640,
+      480
+    ],
+    "stored_rotation_degrees": 0,
+    "warmup_captures_per_response": 32,
+    "wrist_housing_mask": false,
+    "wrist_near_clip_mm": 10.0,
+    "wrist_repeats": 2,
+    "render_product_schedule": "all",
+    "back_wrist_repeats": 4,
+    "back_wrist_subframes": 4
+  },
+  "lighting": {
+    "exposure_ev": 0.5,
+    "fill_exposure_ev": 0.0,
+    "fill_intensity": 325.0,
+    "fill_path": "/__DualReplayCalibrationRender/DefaultPreviewDome",
+    "height_mm": 600.0,
+    "intensity": 9000.0,
+    "normalize": false,
+    "reference_policy": "When referencing only the station prim, apply the embedded fill parameters to the backend dome at the same saved root path; never add a second dome",
+    "runtime_fill_path": "/__DualReplayCalibrationRender/DefaultPreviewDome",
+    "temperature_k": 6500.0,
+    "top_path": "/PNP_DUALD1200_STATION/StationModel/StationLighting/TopWhitePlaneLight",
+    "width_mm": 900.0,
+    "top_offset_mm": [
+      0,
+      -100,
+      0
+    ]
+  },
+  "provenance": {
+    "reference": {
+      "reference": {
+        "path": "redacted",
+        "sha256": "5664e1d600c237341c66b5235ac14c7cb0606eaae39e52e534010d801d348b58",
+        "episode_id": "6c6718a2933049a9ad99b477001e90ab",
+        "frames": 2513,
+        "duration_s": 84.326383179
+      },
+      "real_frames": [
+        0,
+        5,
+        10,
+        20,
+        2480
+      ],
+      "times_seconds": {
+        "0": 0.0,
+        "5": 0.166784546,
+        "10": 0.333569092,
+        "20": 0.6671389160000001,
+        "2480": 83.22560571300001
+      },
+      "fit_frames": [
+        0,
+        5,
+        10
+      ],
+      "holdout_frames": [
+        20,
+        2480
+      ],
+      "scope": "Static home appearance fit; moving wrist frames used only for human review, no aligned pixel error claim."
+    },
+    "scene_manifest": "redacted",
+    "fit_receipt": "redacted",
+    "qualified_dataset": false,
+    "human_review": "pending",
+    "pixel_transforms": [],
+    "shared_colocated_lighting": true,
+    "classification": "Native 6.1 curtain/material/light refinement with N10 native camera response fit; static human review candidate",
+    "selected_variant": "study4-e1/combined_fill5",
+    "response_selection": {
+      "objective": "Per-camera full-frame MAE over real71 frames0/5/10; choose between two native responses measured in N10. Frame20 withheld.",
+      "environments": 10,
+      "cameras": {
+        "right_front_camera": {
+          "source": "study_response",
+          "native_capture": "redacted",
+          "training_full_frame_mae": {
+            "study_response": 11.546168619791667,
+            "n10_refit": 11.682872902199074
+          },
+          "neutral_patch_fit_environments": 1
+        },
+        "left_back_camera": {
+          "source": "study_response",
+          "native_capture": "redacted",
+          "training_full_frame_mae": {
+            "study_response": 21.196157045717595,
+            "n10_refit": 21.274793836805557
+          },
+          "neutral_patch_fit_environments": 1
+        },
+        "left_wrist_camera": {
+          "source": "n10_refit",
+          "native_capture": "redacted",
+          "training_full_frame_mae": {
+            "study_response": 20.35668583622685,
+            "n10_refit": 20.093802445023147
+          },
+          "neutral_patch_fit_environments": 10
+        },
+        "back_wrist_camera": {
+          "source": "n10_refit",
+          "native_capture": "redacted",
+          "training_full_frame_mae": {
+            "study_response": 17.144929832175926,
+            "n10_refit": 16.978282696759262
+          },
+          "neutral_patch_fit_environments": 10
+        }
+      }
+    },
+    "renderer_change": {
+      "source_profile": "redacted",
+      "aa": "DLSS Quality, native engine op3/execMode2; previous DLAA op4",
+      "response_refit": false,
+      "response_policy": "Retain V9 native exposure/whitepoint, materials, lights, geometry, physics and real timing",
+      "review": "redacted",
+      "human_review": "pending",
+      "qualified_dataset": false
+    }
+  },
+  "renderer_controls": {
+    "/omni/replicator/captureMotionBlur": false,
+    "/rtx-transient/dlssg/enabled": false,
+    "/rtx/directLighting/domeLight/sampleCount": 16,
+    "/rtx/directLighting/sampledLighting/samplesPerPixel": 16,
+    "/rtx/indirectDiffuse/fetchSampleCount": 16,
+    "/rtx/post/aa/op": 3,
+    "/rtx/post/dlss/execMode": 2,
+    "/rtx/post/histogram/enabled": false,
+    "/rtx/post/motionblur/enabled": false,
+    "/rtx/post/tonemap/colorMode": 0,
+    "/rtx/post/tonemap/enableSrgbToGamma": true,
+    "/rtx/post/tonemap/exposureTime": 0.019999999552965164,
+    "/rtx/post/tonemap/fNumber": 5.0,
+    "/rtx/post/tonemap/filmIso": 100.0,
+    "/rtx/post/tonemap/op": 6,
+    "/rtx/post/tonemap/whitepoint": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "/rtx/reflections/sampledLighting/samplesPerPixel": 16,
+    "/rtx/rendermode": "RealTimePathTracing",
+    "/rtx/shadows/sampleCount": 16,
+    "/rtx/background/source/type": 2,
+    "/rtx/background/source/color": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "/rtx/rtpt/cached/enabled": false,
+    "/rtx/rtpt/lightcache/cached/enabled": true
+  },
+  "revision": "v2.2-real71-refined-20261005",
+  "schema": "tower-native-appearance-review-6.1-v1",
+  "table": {
+    "albedo_linear_rgb": [
+      0.95,
+      0.95,
+      0.95
+    ],
+    "metallic": 0.0,
+    "roughness": 0.24,
+    "shader": "/PNP_DUALD1200_STATION/StationModel/Looks_Codex/M_OffWhite_Laminate/PreviewSurface",
+    "texture_disconnected": true,
+    "clearcoat": 0.65,
+    "clearcoatRoughness": 0.18
+  },
+  "curtain": {
+    "diffuse_rgb": [
+      0.16,
+      0.165,
+      0.18
+    ],
+    "roughness": 0.7,
+    "fold_depth_scale": 0.35,
+    "broad_wrinkle_mm": 25
+  },
+  "scene_appearance_file": "redacted",
+  "curtain_geometry_manifest": "redacted",
+  "background_review": {
+    "source": "redacted",
+    "policy": "Native visible background override; lighting and camera responses unchanged"
+  },
+  "debug_provenance": {
+    "path_cache": "disabled after native view-count ablation",
+    "light_cache": "enabled; disabling only this cache did not remove shift",
+    "hardware_materials": "redacted"
+  },
+  "response_selection": {
+    "strategy": "Fresh N10 neutral-patch camera response fit with corrected hardware and path cache disabled",
+    "capture": "redacted",
+    "fit_frames": [
+      0,
+      5,
+      10
+    ],
+    "held_out_frames": [
+      20
+    ],
+    "calibration_environments": 10
+  },
+  "candidate_render_schedule": {
+    "render_products": "all",
+    "wrist_repeats": 2,
+    "render_subframes": 2,
+    "warmup_repeats": 32,
+    "status": "Review candidate; validation receipts stored separately",
+    "back_wrist_repeats": 4,
+    "back_wrist_subframes": 4,
+    "mask_schedule": "self"
+  },
+  "scene_appearance": {
+    "mount": {
+      "diffuse_rgb": [
+        0.012,
+        0.012,
+        0.012
+      ],
+      "roughness": 0.72
+    },
+    "gripper": {
+      "diffuse_rgb": [
+        0.018,
+        0.018,
+        0.018
+      ],
+      "roughness": 0.88
+    },
+    "curtain": {
+      "use_albedo_texture": true,
+      "texture_scale": [
+        0.53,
+        0.53,
+        0.54
+      ],
+      "uv_scale": [
+        0.8,
+        1.2
+      ],
+      "roughness": 0.7,
+      "fold_depth_scale": 0.25,
+      "broad_wrinkle_mm": 35,
+      "fold_irregularity_mm": 10
+    },
+    "blocks": {
+      "texture_scale": [
+        0.88,
+        0.9,
+        0.95
+      ],
+      "texture_bias": [
+        0.055,
+        0.045,
+        0.045
+      ],
+      "normal_strength": 0.4,
+      "roughness": 0.72,
+      "uv_scale": [
+        1.08,
+        1.0
+      ]
+    },
+    "table": {
+      "diffuse_rgb": [
+        0.95,
+        0.95,
+        0.95
+      ],
+      "roughness": 0.24,
+      "clearcoat": 0.65,
+      "clearcoatRoughness": 0.18
+    },
+    "lighting": {
+      "fill_scale": 0.5,
+      "top_scale": 3,
+      "top_offset_mm": [
+        0,
+        -100,
+        0
+      ]
+    }
+  },
+  "scene_version": "2.2",
+  "parent_appearance_revision": "real71-dlss-quality-v10-20261005"
+}

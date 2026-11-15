@@ -1,0 +1,360 @@
+{
+  "schema": "tower-task-registry-v1",
+  "benchmark": "2026.11",
+  "tasks": [
+    {
+      "id": "cross-transfer-2",
+      "paper": "A2",
+      "legacy_id": "task2-2",
+      "legacy": [
+        "task2-2",
+        "task22",
+        "task2_2",
+        "cross_tower_transfer_2",
+        "Task2-2",
+        "task_000015",
+        "A-2"
+      ],
+      "generator": "cross_tower_transfer",
+      "layers": 2,
+      "deadline_s": 60,
+      "success_rule": "tower-sim-trajectory-v5",
+      "scorer_ruleset": "bench-2026.11",
+      "status": "benchmark",
+      "counts": {
+        "planned_g": 2,
+        "planned_p": 2,
+        "total_pushes": null
+      },
+      "name": "cross transfer"
+    },
+    {
+      "id": "cross-transfer-3",
+      "paper": "A3",
+      "legacy_id": "task2-3",
+      "legacy": [
+        "task2-3",
+        "task23",
+        "task2_3",
+        "cross_tower_transfer_3",
+        "Task2-3",
+        "task_000009",
+        "A-3"
+      ],
+      "generator": "cross_tower_transfer",
+      "layers": 3,
+      "deadline_s": 131,
+      "success_rule": "tower-sim-trajectory-v5",
+      "scorer_ruleset": "bench-2026.11",
+      "status": "benchmark",
+      "counts": {
+        "planned_g": 3,
+        "planned_p": 3,
+        "total_pushes": null
+      },
+      "name": "cross transfer"
+    },
+    {
+      "id": "two-block-transfer-2",
+      "paper": "B2",
+      "legacy_id": "task1-2",
+      "legacy": [
+        "task1-2",
+        "task12",
+        "task1_2",
+        "tower_transfer_2",
+        "Task 1-2",
+        "TASK1_2",
+        "Task1-2",
+        "Task1_2",
+        "task_000012",
+        "B-2"
+      ],
+      "generator": "tower_transfer",
+      "layers": 2,
+      "deadline_s": 125,
+      "success_rule": "tower-task12-four-place-hold-v1",
+      "scorer_ruleset": "bench-2026.11",
+      "status": "benchmark",
+      "counts": {
+        "planned_g": 4,
+        "planned_p": 4,
+        "total_pushes": null
+      },
+      "name": "two-block transfer"
+    },
+    {
+      "id": "two-block-transfer-3",
+      "paper": "B3",
+      "legacy_id": "task1-3",
+      "legacy": [
+        "task1-3",
+        "task13",
+        "task1_3",
+        "tower_transfer_3",
+        "Task 1-3",
+        "Task1-3",
+        "TASK1_3",
+        "Task1_3",
+        "task_000002",
+        "B-3"
+      ],
+      "generator": "tower_transfer",
+      "layers": 3,
+      "deadline_s": 227,
+      "success_rule": "tower-sim-trajectory-v5",
+      "scorer_ruleset": "bench-2026.11",
+      "status": "benchmark",
+      "counts": {
+        "planned_g": 6,
+        "planned_p": 6,
+        "total_pushes": null
+      },
+      "name": "two-block transfer"
+    },
+    {
+      "id": "extract-and-stack-2",
+      "paper": "C2",
+      "legacy_id": "task6-2",
+      "legacy": [
+        "task6-2",
+        "task62",
+        "task6_2",
+        "middle_block_extraction_2",
+        "Task6-2",
+        "task_000021",
+        "C-2"
+      ],
+      "generator": "middle_block_extraction",
+      "layers": 2,
+      "deadline_s": 40,
+      "success_rule": "tower-task6-roof-no-fall-v1",
+      "scorer_ruleset": "bench-2026.11",
+      "status": "benchmark",
+      "counts": {
+        "planned_g": 1,
+        "planned_p": 1,
+        "total_pushes": null
+      },
+      "name": "extract and stack"
+    },
+    {
+      "id": "extract-and-stack-3",
+      "paper": "C3",
+      "legacy_id": "task6-3",
+      "legacy": [
+        "task6-3",
+        "task63",
+        "task6_3",
+        "middle_block_extraction_3",
+        "Task6-3",
+        "task_000022",
+        "two_block_extraction_3",
+        "C-3"
+      ],
+      "generator": "middle_block_extraction",
+      "layers": 3,
+      "deadline_s": 77,
+      "success_rule": "tower-task6-roof-no-fall-v1",
+      "scorer_ruleset": "bench-2026.11",
+      "status": "benchmark",
+      "counts": {
+        "planned_g": 2,
+        "planned_p": 2,
+        "total_pushes": null
+      },
+      "name": "extract and stack"
+    },
+    {
+      "id": "lateral-insertion-2",
+      "paper": "D2",
+      "legacy_id": "task5-2",
+      "legacy": [
+        "task5-2",
+        "task52",
+        "task5_2",
+        "tower_insertion_2",
+        "task_000019",
+        "D-2"
+      ],
+      "generator": "tower_insertion",
+      "layers": 2,
+      "deadline_s": 43,
+      "success_rule": "tower-sim-trajectory-v5",
+      "scorer_ruleset": "bench-2026.11",
+      "status": "benchmark",
+      "counts": {
+        "planned_g": 1,
+        "planned_p": 1,
+        "total_pushes": null
+      },
+      "name": "lateral insertion"
+    },
+    {
+      "id": "lateral-insertion-3",
+      "paper": "D3",
+      "legacy_id": "task5-3",
+      "legacy": [
+        "task5-3",
+        "task53",
+        "task5_3",
+        "tower_insertion_3",
+        "Task5-3",
+        "task_000020",
+        "D-3"
+      ],
+      "generator": "tower_insertion",
+      "layers": 3,
+      "deadline_s": 82,
+      "success_rule": "tower-sim-trajectory-v5",
+      "scorer_ruleset": "bench-2026.11",
+      "status": "benchmark",
+      "counts": {
+        "planned_g": 2,
+        "planned_p": 2,
+        "total_pushes": null
+      },
+      "name": "lateral insertion"
+    },
+    {
+      "id": "layerwise-pushdown-2",
+      "paper": "E2",
+      "legacy_id": "task4-2",
+      "legacy": [
+        "task4-2",
+        "task42",
+        "task4_2",
+        "full_tower_pushdown_2",
+        "task_000018",
+        "E-2"
+      ],
+      "generator": "full_tower_pushdown",
+      "layers": 2,
+      "deadline_s": 79,
+      "success_rule": "tower-task4-final-state-v3",
+      "scorer_ruleset": "bench-2026.11",
+      "status": "benchmark",
+      "counts": {
+        "planned_g": 3,
+        "planned_p": 3,
+        "total_pushes": 6
+      },
+      "name": "layerwise pushdown"
+    },
+    {
+      "id": "layerwise-pushdown-3",
+      "paper": "E3",
+      "legacy_id": "task4-3",
+      "legacy": [
+        "task4-3",
+        "task43",
+        "task4_3",
+        "full_tower_pushdown_3",
+        "Task4-3",
+        "task_000003",
+        "E-3"
+      ],
+      "generator": "full_tower_pushdown",
+      "layers": 3,
+      "deadline_s": 113,
+      "success_rule": "tower-task4-final-state-v3",
+      "scorer_ruleset": "bench-2026.11",
+      "status": "benchmark",
+      "counts": {
+        "planned_g": 6,
+        "planned_p": 3,
+        "total_pushes": 9
+      },
+      "name": "layerwise pushdown"
+    },
+    {
+      "id": "tool-assisted-extraction-2",
+      "paper": "F2",
+      "legacy_id": "task7-2",
+      "legacy": [
+        "task7-2",
+        "task72",
+        "Task7-2",
+        "TASK72",
+        "F-2"
+      ],
+      "generator": null,
+      "layers": 2,
+      "deadline_s": 216,
+      "success_rule": "tower-sim-trajectory-v5",
+      "scorer_ruleset": "bench-2026.11",
+      "status": "benchmark",
+      "counts": {
+        "planned_g": 5,
+        "planned_p": 3,
+        "total_pushes": null
+      },
+      "name": "tool-assisted extraction"
+    },
+    {
+      "id": "tool-assisted-extraction-3",
+      "paper": "F3",
+      "legacy_id": "task7-3",
+      "legacy": [
+        "task7-3",
+        "task73",
+        "Task7-3",
+        "Task73",
+        "TASK73",
+        "F-3"
+      ],
+      "generator": null,
+      "layers": 3,
+      "deadline_s": 404,
+      "success_rule": "tower-sim-trajectory-v5",
+      "scorer_ruleset": "bench-2026.11",
+      "status": "benchmark",
+      "counts": {
+        "planned_g": 10,
+        "planned_p": 6,
+        "total_pushes": null
+      },
+      "name": "tool-assisted extraction"
+    },
+    {
+      "id": "aligned-stack-2",
+      "paper": null,
+      "legacy_id": "task3-2",
+      "legacy": [
+        "task3-2",
+        "task32",
+        "task3_2",
+        "aligned_stack_2",
+        "task_000016"
+      ],
+      "generator": "aligned_stack",
+      "layers": 2,
+      "deadline_s": null,
+      "success_rule": null,
+      "scorer_ruleset": null,
+      "status": "experimental-legacy",
+      "counts": null,
+      "name": "aligned stack"
+    },
+    {
+      "id": "aligned-stack-3",
+      "paper": null,
+      "legacy_id": "task3-3",
+      "legacy": [
+        "task3-3",
+        "task33",
+        "task3_3",
+        "aligned_stack_3",
+        "task_000017"
+      ],
+      "generator": "aligned_stack",
+      "layers": 3,
+      "deadline_s": null,
+      "success_rule": null,
+      "scorer_ruleset": null,
+      "status": "experimental-legacy",
+      "counts": null,
+      "name": "aligned stack"
+    }
+  ]
+}

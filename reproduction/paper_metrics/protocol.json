@@ -1,0 +1,77 @@
+{
+  "schema": "tower-paper-protocol-v1",
+  "paper_sha256": "0cb416efeb7f7810a156b7e64b0fe96156b48291ebf68f16df3e5a07f3aef972",
+  "paper_title": "TOWER: Benchmarking Bimanual Manipulation Across Simulation and Reality",
+  "source": "TOWER manuscript (2026); Sections 3.3, 4.1, Appendices A, B, D, G, I",
+  "duration_limit_seconds": 420,
+  "execution_prefix": 16,
+  "trials_per_group": 10,
+  "domains": [
+    "REAL",
+    "SIM"
+  ],
+  "reported_labels": "final_human",
+  "historical_labels_included": false,
+  "physics": {
+    "physics_hz": 120,
+    "simulator_hz": 30,
+    "substeps": 4,
+    "gravity_m_s2": [
+      0,
+      0,
+      -9.81
+    ],
+    "solver": "TGS",
+    "gpu_dynamics": true,
+    "broadphase": "GPU",
+    "block_solver_iterations": [
+      16,
+      4
+    ],
+    "robot_solver_iterations": [
+      32,
+      1
+    ],
+    "block_max_depenetration_m_s": 1,
+    "block_static_friction": 0.551,
+    "block_dynamic_friction": 0.263,
+    "block_restitution": 0.02,
+    "finger_static_friction": 2.4,
+    "finger_dynamic_friction": 2.0,
+    "finger_effort_limit_n": 3,
+    "standard_block_dimensions_m": [
+      0.15,
+      0.05,
+      0.03
+    ],
+    "standard_block_mass_kg": 0.1056,
+    "support_dimensions_m": [
+      0.15,
+      0.05,
+      0.032
+    ],
+    "support_mass_kg": 0.11264,
+    "reset_settle_seconds": 1
+  },
+  "human_scoring": {
+    "stable_placement_seconds": 10,
+    "restacking_height_tolerance_m": 0.015,
+    "disturbance_translation_strictly_greater_than_m": 0.01,
+    "disturbance_excludes": [
+      "current_target_set",
+      "fixed_foundation",
+      "tools"
+    ],
+    "disturbance_counting": "unique block within each operation; repeated across operations",
+    "progress": "successful planned G plus P operations, without prefix restriction",
+    "odr_denominator": "successful G + successful P + 1 - terminal_success"
+  },
+  "training_split": {
+    "demonstrations_per_domain_task_layer": 502,
+    "validation": "first 2 in collection-start-time order",
+    "training": "remaining 500",
+    "normalization_excludes_validation": true,
+    "conversion_hz": 10,
+    "source": "Appendix F.3"
+  }
+}

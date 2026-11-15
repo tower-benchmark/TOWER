@@ -1,0 +1,21 @@
+{
+  "source_commit": "6750a33",
+  "sources": {
+    "nero_sim_reference.urdf": "packages/nero-eef-ik/models/nero_sim_reference.urdf",
+    "nero_sdk_mdh.urdf": "simulator/benchmark-202611/runtime/support/task2_fixed/vendor/eef_ik_movejs/models/nero_sdk_mdh.urdf",
+    "agilex": "simulator/benchmark-202611/runtime/ik-capsule/runtime/urdf"
+  },
+  "sha256": {
+    "LICENSE-ASSETS": "70d5064d25a1db191af5f898dc44a4c47480922318d4c39bfea2670827cd4131",
+    "LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "LICENSE.agilex": "247944c63de1573653722ba784f96123da267105b7b48577e0c8826a24b809f6",
+    "THIRD_PARTY_NOTICES.md": "c5c79fd5b6c28e96427bddc1d4cfaae7a4440459d46279a3d4d86399a9825f90",
+    "nero_sim_reference.urdf": "7ae9414dbad6169fce19ee675dd439f1035ea1e07079eb5bcc99c55f39b179e7",
+    "nero_sdk_mdh.urdf": "8c6d04457d31fee7ee7dc12fc01bc864742cb90b244f2bfaab14e7c941e43581",
+    "agilex/nero_with_gripper_description.xacro": "790f60fe612397d7c348bd9879627bc4adb87e803fa15b0ff8e3dec87d2f0820",
+    "agilex/nero_description.urdf": "fc104e970c97d4e65ec578860b702ebb2680469d1f7d0608ffad5c089632f9d1",
+    "agilex/LICENSE": "247944c63de1573653722ba784f96123da267105b7b48577e0c8826a24b809f6",
+    "agilex/nero_with_flange_description.xacro": "a91f72f923f9533b4966d08387942d1235b3f03efa893f4c57e80326d9412891",
+    "agilex/SOURCE_COMMIT_agx_arm_urdf": "903447b612714f72410177be4d4644024b5db1ec72b4b26b4e4a96ba30d735bc"
+  }
+}

@@ -1,0 +1,356 @@
+{
+  "disturbances": [
+    {
+      "baseline_sample": 579,
+      "block": "source_l3_1",
+      "operation": "pusher_upper:return",
+      "sample": 1492,
+      "time_s": 74.6,
+      "translation_m": 0.01091739907860756
+    },
+    {
+      "baseline_sample": 579,
+      "block": "source_l3_0",
+      "operation": "pusher_upper:return",
+      "sample": 1496,
+      "time_s": 74.8,
+      "translation_m": 0.010039446875452995
+    },
+    {
+      "baseline_sample": 579,
+      "block": "source_l2_2",
+      "operation": "pusher_upper:return",
+      "sample": 1630,
+      "time_s": 81.5,
+      "translation_m": 0.010349866934120655
+    },
+    {
+      "baseline_sample": 579,
+      "block": "source_l3_2",
+      "operation": "pusher_upper:return",
+      "sample": 1630,
+      "time_s": 81.5,
+      "translation_m": 0.010971436277031898
+    },
+    {
+      "baseline_sample": 579,
+      "block": "source_l2_0",
+      "operation": "pusher_upper:return",
+      "sample": 1631,
+      "time_s": 81.55,
+      "translation_m": 0.010420648381114006
+    },
+    {
+      "baseline_sample": 579,
+      "block": "source_l1_1",
+      "operation": "pusher_upper:return",
+      "sample": 1648,
+      "time_s": 82.4,
+      "translation_m": 0.01012799609452486
+    },
+    {
+      "baseline_sample": 579,
+      "block": "source_l2_1",
+      "operation": "pusher_upper:return",
+      "sample": 1648,
+      "time_s": 82.4,
+      "translation_m": 0.010129957459867
+    },
+    {
+      "baseline_sample": 2078,
+      "block": "source_l1_0",
+      "operation": "source_l2_2:grasp",
+      "sample": 2103,
+      "time_s": 105.15,
+      "translation_m": 0.011646975763142109
+    },
+    {
+      "baseline_sample": 2078,
+      "block": "source_l3_2",
+      "operation": "source_l2_2:grasp",
+      "sample": 2103,
+      "time_s": 105.15,
+      "translation_m": 0.011056763119995594
+    },
+    {
+      "baseline_sample": 2078,
+      "block": "source_l1_2",
+      "operation": "source_l2_2:grasp",
+      "sample": 2104,
+      "time_s": 105.2,
+      "translation_m": 0.010799294337630272
+    },
+    {
+      "baseline_sample": 2078,
+      "block": "source_l1_1",
+      "operation": "source_l2_2:grasp",
+      "sample": 2105,
+      "time_s": 105.25,
+      "translation_m": 0.012244487181305885
+    },
+    {
+      "baseline_sample": 2078,
+      "block": "source_l2_1",
+      "operation": "source_l2_2:grasp",
+      "sample": 2105,
+      "time_s": 105.25,
+      "translation_m": 0.012521864846348763
+    },
+    {
+      "baseline_sample": 2078,
+      "block": "source_l3_1",
+      "operation": "source_l2_2:grasp",
+      "sample": 2109,
+      "time_s": 105.45,
+      "translation_m": 0.010355832055211067
+    },
+    {
+      "baseline_sample": 2078,
+      "block": "source_l2_0",
+      "operation": "source_l2_2:grasp",
+      "sample": 2113,
+      "time_s": 105.65,
+      "translation_m": 0.010210714302957058
+    },
+    {
+      "baseline_sample": 2078,
+      "block": "source_l3_0",
+      "operation": "source_l2_2:grasp",
+      "sample": 4242,
+      "time_s": 212.1,
+      "translation_m": 0.010616484098136425
+    }
+  ],
+  "duration_s": 241.6,
+  "events": [
+    {
+      "group": "G",
+      "operation": "pusher_upper:grasp",
+      "sample": 198,
+      "time_s": 9.9
+    }
+  ],
+  "operations": [
+    {
+      "arm": 1,
+      "end": 578,
+      "id": "source_l1_2:tool_push",
+      "start": 420,
+      "target": 8,
+      "tool_step": true
+    },
+    {
+      "arm": 1,
+      "end": 419,
+      "id": "pusher_upper:grasp",
+      "start": 153,
+      "target": 15,
+      "tool_step": true
+    },
+    {
+      "arm": 1,
+      "end": 2077,
+      "id": "pusher_upper:return",
+      "start": 579,
+      "target": 15,
+      "tool_step": true
+    },
+    {
+      "active_end": 4832,
+      "arm": 1,
+      "end": 4832,
+      "id": "source_l2_2:grasp",
+      "start": 2078,
+      "target": 11
+    }
+  ],
+  "planned_g": 10,
+  "planned_p": 6,
+  "planned_pushes_by_arm": {
+    "0": 0,
+    "1": 0
+  },
+  "prescribed_order": true,
+  "protocol": "tower-sim-trajectory-v5",
+  "push_successes_by_arm": {
+    "0": 0,
+    "1": 0
+  },
+  "rules": {
+    "angular_velocity_rad_s": 0.05,
+    "approach_margin_m": 0.025,
+    "approach_s": 0.1,
+    "closed_width_m": 0.07,
+    "disturbance_contact_m": 0.002,
+    "disturbance_m": 0.01,
+    "disturbance_motion_m": 0.00025,
+    "disturbance_motion_window_s": 0.2,
+    "disturbance_quiet_s": 0.3,
+    "effort_fraction": 0.8,
+    "effort_gap_s": 0.1,
+    "grasp_surface_distance_m": 0.015,
+    "hold_s": 0.3,
+    "jaw_effort_n": 0.5,
+    "lift_m": 0.005,
+    "linear_velocity_m_s": 0.005,
+    "maximum_sample_gap_s": 0.1,
+    "minimum_carry_m": 0.005,
+    "minimum_push_m": 0.005,
+    "minimum_support_fraction": 0.2,
+    "open_width_m": 0.075,
+    "orientation_deg": 10.0,
+    "paired_spacing_m": 0.02,
+    "placement_dwell_s": 10.0,
+    "position_m": 0.01,
+    "push_clearance_s": 0.1,
+    "push_coast_s": 0.5,
+    "push_face_margin_m": 0.015,
+    "relative_range_m": 0.01,
+    "release_clearance_m": 0.04,
+    "roof_height_m": 0.015,
+    "slot_clearance_m": 0.0005,
+    "stable_rotation_deg": 2.0,
+    "stable_translation_m": 0.002,
+    "support_com_margin_m": 0.002,
+    "support_height_m": 0.008,
+    "time_limit_s": 420.0,
+    "tool_protrusion_m": 0.025,
+    "tool_return_dwell_s": 0.3,
+    "tool_tip_local_m": [
+      0.0,
+      -0.166,
+      0.01
+    ]
+  },
+  "scores": {
+    "C": 1,
+    "D": 15,
+    "E": 2,
+    "g": 1,
+    "p": 0,
+    "s": 0
+  },
+  "source_hashes": {},
+  "target_intervals": [
+    {
+      "arm": 1,
+      "end": 575,
+      "start": 420,
+      "target": 8
+    },
+    {
+      "arm": 1,
+      "end": 419,
+      "start": 177,
+      "target": 15
+    },
+    {
+      "arm": 1,
+      "end": 580,
+      "start": 580,
+      "target": 15
+    },
+    {
+      "arm": 1,
+      "end": 1568,
+      "start": 1568,
+      "target": 15
+    },
+    {
+      "arm": 1,
+      "end": 1669,
+      "start": 1574,
+      "target": 15
+    },
+    {
+      "arm": 1,
+      "end": 1675,
+      "start": 1673,
+      "target": 15
+    },
+    {
+      "arm": 1,
+      "end": 1680,
+      "start": 1680,
+      "target": 15
+    },
+    {
+      "arm": 1,
+      "end": 2192,
+      "start": 2078,
+      "target": 11
+    }
+  ],
+  "targets": [
+    {
+      "arm": 0,
+      "attempt_sample": null,
+      "block": "source_l1_0",
+      "grasp_sample": null,
+      "place_sample": null
+    },
+    {
+      "arm": 0,
+      "attempt_sample": null,
+      "block": "source_l1_2",
+      "grasp_sample": null,
+      "place_sample": null
+    },
+    {
+      "arm": 1,
+      "attempt_sample": 2080,
+      "block": "source_l2_2",
+      "carry_sample": null,
+      "grasp_sample": null,
+      "place_sample": null
+    },
+    {
+      "arm": 1,
+      "attempt_sample": null,
+      "block": "source_l2_0",
+      "grasp_sample": null,
+      "place_sample": null
+    }
+  ],
+  "task": "task7-3",
+  "terminal_geometry": false,
+  "tool_cycles": [
+    {
+      "arm": 1,
+      "grasp_sample": 198,
+      "pushes": [
+        {
+          "attempt_sample": 420,
+          "block": "source_l1_2",
+          "push_sample": null
+        },
+        {
+          "attempt_sample": null,
+          "block": "source_l1_0",
+          "push_sample": null
+        }
+      ],
+      "return_sample": null,
+      "tool": "pusher_upper"
+    },
+    {
+      "arm": 0,
+      "grasp_sample": null,
+      "pushes": [
+        {
+          "attempt_sample": null,
+          "block": "source_l2_2",
+          "push_sample": null
+        },
+        {
+          "attempt_sample": null,
+          "block": "source_l2_0",
+          "push_sample": null
+        }
+      ],
+      "return_sample": null,
+      "tool": "pusher_lower"
+    }
+  ],
+  "valid": true
+}

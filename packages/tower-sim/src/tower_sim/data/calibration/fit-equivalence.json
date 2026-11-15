@@ -1,0 +1,64 @@
+{
+  "schema": "tower-tcp-fit-equivalence-receipt-v1",
+  "status": "passed",
+  "execution": "CPU-only Lula FK; no SimulationApp; CUDA_VISIBLE_DEVICES empty",
+  "environment": {
+    "python": "3.12.3",
+    "machine": "x86_64",
+    "numpy": "2.3.1",
+    "scipy": "1.17.0",
+    "h5py": "3.15.1",
+    "nvidia-lula-no-cuda": "0.10.1"
+  },
+  "lineage": {
+    "path": "simulator/benchmark-202611/runtime/ik-capsule/tcp-cache.json",
+    "sha256": "91b12bb30921f4eb52616cbb75e5487e20ec50711292d85609510136f9d8aecf"
+  },
+  "backend_sha256": "ad0ff012b95b2cddbfd4deaac8e6ba7ecc7911f5934f15d840715a3a36e45465",
+  "profile_sha256": "7207e528078029f8b81f43cb5bd1908a41382ae7dd5a84de8a0cbee9c3d05b06",
+  "key": {
+    "fit_algorithm": "tower-tcp-median-rotation-mean-v1",
+    "coordinate_convention": "nero-base-link-gripper-base-to-eef-m-xyzw-rad-v1",
+    "stage_sha256": "59d3443b7020a365beb648ebbf428cae750559ca320824ca99d77824d4c26d27",
+    "kinematics_sha256": {
+      "nero.urdf": "7ae9414dbad6169fce19ee675dd439f1035ea1e07079eb5bcc99c55f39b179e7",
+      "nero.yaml": "452dc96369c43a643bc8cbe561cabf8a1b0db4c880a58a7cd5f2b27d40ea6111"
+    },
+    "kinematic_geometry_sha256": "7ae9414dbad6169fce19ee675dd439f1035ea1e07079eb5bcc99c55f39b179e7",
+    "fit_source": {
+      "episode_id": "9b870d85bab74d5abada00edc3974d4d",
+      "profile_channel_sha256": "bcff4180104f499961943a21e58f83ac0deac1e424f7f491e2d200e42bfc0c79",
+      "fit_channel_sha256": "54f417513366e0b3f52bbbe08f2cd7a64b797550fd748891d75f5f1ff0af6be1"
+    },
+    "profile_selection": {
+      "rule": "first-source-with-split-fit-v1",
+      "profile_channel_scope": "leader_qpos_observation_eef_gripper_timestamps",
+      "fit_channel_scope": "tower-tcp-observation-channels-v1"
+    }
+  },
+  "comparison": {
+    "atol": 1e-09,
+    "rtol": 0,
+    "max_abs_difference": {
+      "translation_m": 6.938893903907228e-18,
+      "rotation_xyzw": 0.0,
+      "position_residual_p50_p95_m": 6.61024512037256e-18,
+      "rotation_residual_p50_p95_deg": 0.0
+    }
+  },
+  "rejected_key_changes": [
+    "fit_algorithm",
+    "coordinate_convention",
+    "stage_sha256",
+    "kinematics_sha256.nero.urdf",
+    "kinematics_sha256.nero.yaml",
+    "kinematic_geometry_sha256",
+    "fit_source.episode_id",
+    "fit_source.profile_channel_sha256",
+    "fit_source.fit_channel_sha256",
+    "profile_selection.rule",
+    "profile_selection.profile_channel_scope",
+    "profile_selection.fit_channel_scope"
+  ],
+  "raw_fit_data_redistributed": false
+}

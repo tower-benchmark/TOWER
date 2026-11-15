@@ -1,0 +1,177 @@
+{
+  "disturbances": [
+    {
+      "baseline_sample": 151,
+      "block": "src_L2_0",
+      "operation": "src_L1_1:place",
+      "sample": 344,
+      "time_s": 17.2,
+      "translation_m": 0.010847477242350578
+    },
+    {
+      "baseline_sample": 151,
+      "block": "src_L2_1",
+      "operation": "src_L1_1:place",
+      "sample": 344,
+      "time_s": 17.2,
+      "translation_m": 0.010784709826111794
+    },
+    {
+      "baseline_sample": 151,
+      "block": "src_L2_2",
+      "operation": "src_L1_1:place",
+      "sample": 344,
+      "time_s": 17.2,
+      "translation_m": 0.01091290358453989
+    },
+    {
+      "baseline_sample": 151,
+      "block": "src_L1_2",
+      "operation": "src_L1_1:place",
+      "sample": 347,
+      "time_s": 17.35,
+      "translation_m": 0.010220886208117008
+    }
+  ],
+  "duration_s": 43.0,
+  "events": [
+    {
+      "group": "G",
+      "operation": "src_L1_1:grasp",
+      "sample": 150,
+      "time_s": 7.5
+    }
+  ],
+  "operations": [
+    {
+      "active_end": 150,
+      "arm": 0,
+      "end": 150,
+      "id": "src_L1_1:grasp",
+      "start": 101,
+      "target": 7
+    },
+    {
+      "active_end": 461,
+      "arm": 0,
+      "end": 860,
+      "id": "src_L1_1:place",
+      "start": 151,
+      "target": 7
+    }
+  ],
+  "planned_g": 1,
+  "planned_p": 1,
+  "planned_pushes_by_arm": {
+    "0": 0,
+    "1": 0
+  },
+  "prescribed_order": true,
+  "protocol": "tower-sim-trajectory-v5",
+  "push_successes_by_arm": {
+    "0": 0,
+    "1": 0
+  },
+  "rules": {
+    "angular_velocity_rad_s": 0.1,
+    "approach_margin_m": 0.025,
+    "approach_s": 0.1,
+    "closed_width_m": 0.07,
+    "disturbance_contact_m": 0.002,
+    "disturbance_m": 0.01,
+    "disturbance_motion_m": 0.00025,
+    "disturbance_motion_window_s": 0.2,
+    "disturbance_quiet_s": 0.3,
+    "effort_fraction": 0.8,
+    "effort_gap_s": 0.1,
+    "grasp_surface_distance_m": 0.015,
+    "hold_s": 0.3,
+    "jaw_effort_n": 0.5,
+    "lift_m": 0.005,
+    "linear_velocity_m_s": 0.01,
+    "maximum_sample_gap_s": 0.1,
+    "minimum_carry_m": 0.005,
+    "minimum_push_m": 0.005,
+    "minimum_support_fraction": 0.2,
+    "open_width_m": 0.075,
+    "orientation_deg": 5.0,
+    "paired_spacing_m": 0.02,
+    "placement_dwell_s": 0.5,
+    "position_m": 0.005,
+    "push_clearance_s": 0.1,
+    "push_coast_s": 0.5,
+    "push_face_margin_m": 0.015,
+    "relative_range_m": 0.01,
+    "release_clearance_m": 0.04,
+    "roof_height_m": 0.015,
+    "slot_clearance_m": 0.0005,
+    "stable_rotation_deg": 0.5,
+    "stable_translation_m": 0.0005,
+    "support_com_margin_m": 0.002,
+    "support_height_m": 0.008,
+    "time_limit_s": 420.0,
+    "tool_protrusion_m": 0.025,
+    "tool_return_dwell_s": 0.3,
+    "tool_tip_local_m": [
+      0.0,
+      -0.166,
+      0.01
+    ]
+  },
+  "scores": {
+    "C": 1,
+    "D": 4,
+    "E": 2,
+    "g": 1,
+    "p": 0,
+    "s": 0
+  },
+  "scoring_revision": "task5-measured-insertion-v1",
+  "source_hashes": {
+    "episode/states.hdf5": "eac3fb3b2607f92c8b649dff390c0a0bd19c9329502b073c4f76f29adc1fdb5c",
+    "episode_spec.json": "c68855474dced02e4dab981fc123b496b616b3e0249dedca189e020ffd6a0dbb",
+    "finger-feedback.npz": "661c7a1547283c0876cba58c06611ae309f9ad0946cbd83a3514b92312c2afe6",
+    "finger-link-poses.npz": "6da15da6af405f5b4b189c54f48d89efbb7e49c6f9a6b3838c47166ffbd5534d",
+    "finger_geometry.json": "516a0107606663b005efcd9ad48bd600d0686885e74b26ac7263760135680ba1",
+    "status.json": "a6179a4fa0a4b60c14aeb77cbf64b5b4a4c1319716661b9a161c8f3f9f6477a2"
+  },
+  "target_intervals": [
+    {
+      "arm": 0,
+      "end": 150,
+      "start": 101,
+      "target": 7
+    },
+    {
+      "arm": 0,
+      "end": 461,
+      "start": 151,
+      "target": 7
+    }
+  ],
+  "targets": [
+    {
+      "arm": 0,
+      "attempt_sample": 103,
+      "block": "src_L1_1",
+      "carry_sample": 150,
+      "grasp_sample": 150,
+      "place_sample": null,
+      "terminal_position_error_m": 0.043714877669705055,
+      "terminal_released_geometry_s": 0.0
+    }
+  ],
+  "task": "task5-2",
+  "task5_measured_gate": {
+    "failure_reason": "collapse",
+    "insert_containment": false,
+    "maximum_support_orientation_error_rad": 0.92453552721533,
+    "maximum_support_position_error_m": 0.20434743196367955,
+    "passed": false,
+    "structural_bad_dwell_seconds": 26.0,
+    "structural_failure_latched": true,
+    "structural_settle_seconds": 0.0
+  },
+  "terminal_geometry": false,
+  "valid": true
+}

@@ -1,0 +1,18 @@
+{
+  "files_sha256": {
+    "README.md": "d2cb8f971b4792b5bdb7e999957dadcee2ef33773c04fccb3a876f73e3f7f174",
+    "__init__.py": "5595fd723a70ef24ec874618092cd62b22290f8764696c040a49b6cbadd8c59c",
+    "__main__.py": "70b1d025ee9a22cd58589a573431c8574e6b8321be3d15e4bad97a09e03d6ca1",
+    "annotations.py": "8a8396f2b414ad2dd007379245865a1958e2b38321b3d48c0d7dc66a05f0b438",
+    "episodes.template.csv": "832cdee10b95d9ee47c8c2ebbfb25789e462cd596c498d508b73bf04ad99d717",
+    "metrics.py": "d5ea22c133377a9d9e52891767b2c51683d2ca74366e329e1f96e148ccc62204",
+    "protocol.json": "0fe0be009df5a11bcb912ad10d06efb9e865d4df921fafcd756f2815a4c9d471",
+    "protocol.py": "a4a8d36c7798c1ecc7aa437a6c4ae8c099846c374bbfc55c2731b44dac49f5f4",
+    "scoring_cli.py": "53c4d31f44a5e051e7b442569b8ba0a28df264d0750be6b7a5d5b9ca14f4b069",
+    "tests/test_paper_metrics.py": "904dd4f3916737b656798bc67004dddb49a05ae9ac4b0e85325007b919f54914"
+  },
+  "historical_episode_artifacts_included": false,
+  "paper_sha256": "0cb416efeb7f7810a156b7e64b0fe96156b48291ebf68f16df3e5a07f3aef972",
+  "schema": "tower-paper-reference-manifest-v1",
+  "version": "1.0.3"
+}

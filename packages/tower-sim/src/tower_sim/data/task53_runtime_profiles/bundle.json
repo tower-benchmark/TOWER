@@ -1,0 +1,28 @@
+{
+  "schema_version": "jenga_runtime_profile_bundle_v1",
+  "source_archive": "lifter_replay_runtime_profiles_20260902.zip",
+  "source_archive_sha256": "d143dd50e4713c7e26cfbe62c13f3826eec559ed17d27ec8d47ad82bc4d4f983",
+  "files": {
+    "DUAL_ROBOT_ALIGNMENT_PROFILE.json": "d6949c0236479da42aebe12d49fd0fb61159f3e54d0404f535d57a2910a764ef",
+    "dual_parameters.json": "018c0d6a1e92e9e2e03ee3f006262b8f099840775929ced2ae631887e968ae00",
+    "REPLAY_PROFILE_V0_0_1.json": "85c5c36a3029a56aef5f4c7159201d1fd5b9a80b2146592794b450719386c582"
+  },
+  "compatible_runtime_stages": {
+    "f93ca2aa6c63545a1800d379a1dab70ae2d592dd88b4424d646699b946515cce": {
+      "reference_stage_sha256": "080b5dde5ec1d14ebed751a1d09bd7898755fb326df1c47f1f291b36a76e2f3f",
+      "reason": "Review station path metadata was anonymized; scene geometry and calibration values are unchanged."
+    },
+    "01389b34842452ba91b8d0bbb98ef39d966812623d8cf77f366320e8deb55fc7": {
+      "reference_stage_sha256": "080b5dde5ec1d14ebed751a1d09bd7898755fb326df1c47f1f291b36a76e2f3f",
+      "reason": "Diagnostic Task5 collider overlay; calibration values are unchanged from the reference profile."
+    },
+    "02920c30915f364954b05da6a706467e28ae090815e12d7c6694e7ee5948e549": {
+      "reference_stage_sha256": "080b5dde5ec1d14ebed751a1d09bd7898755fb326df1c47f1f291b36a76e2f3f",
+      "reason": "Diagnostic Task5 collider overlay; calibration values are unchanged from the reference profile."
+    },
+    "bb50932bbb6c348910139ff0d30d2bcc5e322300031ac78a638b06c5708859b8": {
+      "reference_stage_sha256": "080b5dde5ec1d14ebed751a1d09bd7898755fb326df1c47f1f291b36a76e2f3f",
+      "reason": "Diagnostic Task5 collider overlay; calibration values are unchanged from the reference profile."
+    }
+  }
+}

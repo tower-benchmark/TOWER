@@ -1,0 +1,8 @@
+{
+  "schema": "tower-benchmark-asset-lock-v1",
+  "repository": "tower-benchmark/TOWER-Assets-archive",
+  "revision": "b67e0f0e0d14a592e6636abb1d616ec756082ea1",
+  "tag": "benchmark-202611-v1",
+  "directory": "benchmarks/202611-v1",
+  "manifest_sha256": "a2065d0b4872b579096caa1b3e4e2efd1b6ac95d4fd8df8b130a743c87207432"
+}

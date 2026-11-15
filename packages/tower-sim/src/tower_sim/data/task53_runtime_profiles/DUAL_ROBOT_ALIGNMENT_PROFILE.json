@@ -1,0 +1,313 @@
+{
+  "arm_mapping": {
+    "back": "StandB",
+    "left": "StandA"
+  },
+  "arms": {
+    "back": {
+      "parameters": {
+        "joint1": {
+          "armature_kg_m2": 0.18199077437285058,
+          "command_delay_seconds": 0.01,
+          "coulomb_friction": 0.24273186874647426,
+          "delay_control_steps": 2,
+          "delay_physics_steps": 4,
+          "delay_physics_steps_120hz": 1,
+          "kd_authored_usd_per_degree": 0.0005103430636788886,
+          "kp_authored_usd_per_degree": 1.1007721787099596,
+          "kp_over_kv": 2156.9259132765897,
+          "kp_runtime_per_rad": 63.0696000455011,
+          "kv_runtime_per_rad": 0.029240503652576535,
+          "move_j_time_constant_seconds": 0.0,
+          "viscous_friction": 2.8273851211620373
+        },
+        "joint2": {
+          "armature_kg_m2": 0.3761882691668921,
+          "command_delay_seconds": 0.01,
+          "coulomb_friction": 0.25127767200349793,
+          "delay_control_steps": 2,
+          "delay_physics_steps": 4,
+          "delay_physics_steps_120hz": 1,
+          "kd_authored_usd_per_degree": 0.4845940521046332,
+          "kp_authored_usd_per_degree": 13.379015200085506,
+          "kp_over_kv": 27.608707003272745,
+          "kp_runtime_per_rad": 766.5611050062761,
+          "kv_runtime_per_rad": 27.76519396273819,
+          "move_j_time_constant_seconds": 0.0,
+          "viscous_friction": 6.201251802837383
+        },
+        "joint3": {
+          "armature_kg_m2": 0.3955382598304437,
+          "command_delay_seconds": 0.01,
+          "coulomb_friction": 0.10376714019699118,
+          "delay_control_steps": 2,
+          "delay_physics_steps": 4,
+          "delay_physics_steps_120hz": 1,
+          "kd_authored_usd_per_degree": 6.113567514203638,
+          "kp_authored_usd_per_degree": 230.10657840057522,
+          "kp_over_kv": 37.63867461444878,
+          "kp_runtime_per_rad": 13184.135780549148,
+          "kv_runtime_per_rad": 350.2816163321544,
+          "move_j_time_constant_seconds": 0.0,
+          "viscous_friction": 5.8823911031397795
+        },
+        "joint4": {
+          "armature_kg_m2": 0.1759047579693371,
+          "command_delay_seconds": 0.01,
+          "coulomb_friction": 0.22550268747259009,
+          "delay_control_steps": 2,
+          "delay_physics_steps": 4,
+          "delay_physics_steps_120hz": 1,
+          "kd_authored_usd_per_degree": 0.024589872767574367,
+          "kp_authored_usd_per_degree": 1.182967701920948,
+          "kp_over_kv": 48.107922847037976,
+          "kp_runtime_per_rad": 67.77905662036032,
+          "kv_runtime_per_rad": 1.4088959283456883,
+          "move_j_time_constant_seconds": 0.0,
+          "viscous_friction": 5.798981272156912
+        },
+        "joint5": {
+          "armature_kg_m2": 0.126517548207961,
+          "command_delay_seconds": 0.01,
+          "coulomb_friction": 0.3259902682338419,
+          "delay_control_steps": 2,
+          "delay_physics_steps": 4,
+          "delay_physics_steps_120hz": 1,
+          "kd_authored_usd_per_degree": 5.293961490078602,
+          "kp_authored_usd_per_degree": 71.34848085541853,
+          "kp_over_kv": 13.477332804390912,
+          "kp_runtime_per_rad": 4087.9668276854354,
+          "kv_runtime_per_rad": 303.3216502862923,
+          "move_j_time_constant_seconds": 0.0,
+          "viscous_friction": 2.523589712599441
+        },
+        "joint6": {
+          "armature_kg_m2": 0.14051120786168383,
+          "command_delay_seconds": 0.01,
+          "coulomb_friction": 0.2779630967133244,
+          "delay_control_steps": 2,
+          "delay_physics_steps": 4,
+          "delay_physics_steps_120hz": 1,
+          "kd_authored_usd_per_degree": 0.007464465331710553,
+          "kp_authored_usd_per_degree": 2.4292258660594968,
+          "kp_over_kv": 325.4386962907652,
+          "kp_runtime_per_rad": 139.18438960922137,
+          "kv_runtime_per_rad": 0.42768235982873476,
+          "move_j_time_constant_seconds": 0.0,
+          "viscous_friction": 6.509197448742527
+        },
+        "joint7": {
+          "armature_kg_m2": 0.060448866885202485,
+          "command_delay_seconds": 0.01,
+          "coulomb_friction": 0.2214094968204472,
+          "delay_control_steps": 2,
+          "delay_physics_steps": 4,
+          "delay_physics_steps_120hz": 1,
+          "kd_authored_usd_per_degree": 1.8836086151581652,
+          "kp_authored_usd_per_degree": 13.883520902110453,
+          "kp_over_kv": 7.370703653818584,
+          "kp_runtime_per_rad": 795.4671524725902,
+          "kv_runtime_per_rad": 107.92282390304457,
+          "move_j_time_constant_seconds": 0.0,
+          "viscous_friction": 4.7318534558677525
+        }
+      },
+      "validation": {
+        "passed": false,
+        "reason": "seed-specific held-out validation not accepted",
+        "winning_seed": 0
+      },
+      "winning_seed": 0
+    },
+    "left": {
+      "parameters": {
+        "joint1": {
+          "armature_kg_m2": 0.1934917217216935,
+          "command_delay_seconds": 0.005,
+          "coulomb_friction": 0.2292048599104205,
+          "delay_control_steps": 1,
+          "delay_physics_steps": 2,
+          "delay_physics_steps_120hz": 1,
+          "kd_authored_usd_per_degree": 0.0010321234274439002,
+          "kp_authored_usd_per_degree": 1.31317274052036,
+          "kp_over_kv": 1272.3020383061073,
+          "kp_runtime_per_rad": 75.2392558034446,
+          "kv_runtime_per_rad": 0.05913631632911253,
+          "move_j_time_constant_seconds": 0.0,
+          "viscous_friction": 5.028104163739042
+        },
+        "joint2": {
+          "armature_kg_m2": 0.08427547639131633,
+          "command_delay_seconds": 0.005,
+          "coulomb_friction": 0.3487539288254656,
+          "delay_control_steps": 1,
+          "delay_physics_steps": 2,
+          "delay_physics_steps_120hz": 1,
+          "kd_authored_usd_per_degree": 0.019304301933061666,
+          "kp_authored_usd_per_degree": 84.04472458774026,
+          "kp_over_kv": 4353.6785157613185,
+          "kp_runtime_per_rad": 4815.408009216895,
+          "kv_runtime_per_rad": 1.1060550272106702,
+          "move_j_time_constant_seconds": 0.0,
+          "viscous_friction": 5.052549015740501
+        },
+        "joint3": {
+          "armature_kg_m2": 0.09853889637353322,
+          "command_delay_seconds": 0.005,
+          "coulomb_friction": 0.27642275130844357,
+          "delay_control_steps": 1,
+          "delay_physics_steps": 2,
+          "delay_physics_steps_120hz": 1,
+          "kd_authored_usd_per_degree": 0.010640911931840684,
+          "kp_authored_usd_per_degree": 47.2724146136092,
+          "kp_over_kv": 4442.515351730003,
+          "kp_runtime_per_rad": 2708.5098447523633,
+          "kv_runtime_per_rad": 0.6096793438648707,
+          "move_j_time_constant_seconds": 0.0,
+          "viscous_friction": 4.384895048917183
+        },
+        "joint4": {
+          "armature_kg_m2": 0.1514724187608408,
+          "command_delay_seconds": 0.005,
+          "coulomb_friction": 0.3206324707181266,
+          "delay_control_steps": 1,
+          "delay_physics_steps": 2,
+          "delay_physics_steps_120hz": 1,
+          "kd_authored_usd_per_degree": 0.3526959534931042,
+          "kp_authored_usd_per_degree": 36.38552803305348,
+          "kp_over_kv": 103.16400761815058,
+          "kp_runtime_per_rad": 2084.7371916489083,
+          "kv_runtime_per_rad": 20.207989586497234,
+          "move_j_time_constant_seconds": 0.0,
+          "viscous_friction": 5.05724813515071
+        },
+        "joint5": {
+          "armature_kg_m2": 0.1625160072310456,
+          "command_delay_seconds": 0.005,
+          "coulomb_friction": 0.07778829827922032,
+          "delay_control_steps": 1,
+          "delay_physics_steps": 2,
+          "delay_physics_steps_120hz": 1,
+          "kd_authored_usd_per_degree": 0.139646833594326,
+          "kp_authored_usd_per_degree": 3.9254580289676073,
+          "kp_over_kv": 28.10989642895206,
+          "kp_runtime_per_rad": 224.91217771558675,
+          "kv_runtime_per_rad": 8.0011741873206,
+          "move_j_time_constant_seconds": 0.0,
+          "viscous_friction": 4.949460062865108
+        },
+        "joint6": {
+          "armature_kg_m2": 0.20219782734877018,
+          "command_delay_seconds": 0.005,
+          "coulomb_friction": 0.2698800743161436,
+          "delay_control_steps": 1,
+          "delay_physics_steps": 2,
+          "delay_physics_steps_120hz": 1,
+          "kd_authored_usd_per_degree": 0.005668143495976639,
+          "kp_authored_usd_per_degree": 2.673014755943918,
+          "kp_over_kv": 471.5855831528043,
+          "kp_runtime_per_rad": 153.15246409177828,
+          "kv_runtime_per_rad": 0.3247606999939891,
+          "move_j_time_constant_seconds": 0.0,
+          "viscous_friction": 5.611882174962787
+        },
+        "joint7": {
+          "armature_kg_m2": 0.21618111413861876,
+          "command_delay_seconds": 0.005,
+          "coulomb_friction": 0.3055659508494213,
+          "delay_control_steps": 1,
+          "delay_physics_steps": 2,
+          "delay_physics_steps_120hz": 1,
+          "kd_authored_usd_per_degree": 0.0020978786508572896,
+          "kp_authored_usd_per_degree": 2.821047953136864,
+          "kp_over_kv": 1344.7145534295105,
+          "kp_runtime_per_rad": 161.63414151876196,
+          "kv_runtime_per_rad": 0.12019959262472188,
+          "move_j_time_constant_seconds": 0.0,
+          "viscous_friction": 6.942746364527166
+        }
+      },
+      "validation": {
+        "passed": false,
+        "reason": "seed-specific held-out validation not accepted",
+        "winning_seed": 0
+      },
+      "winning_seed": 0
+    }
+  },
+  "calibration_command_interpolation": "zero_order_hold",
+  "calibration_control_hz": 200,
+  "calibration_interpretation": "trajectory-domain calibration; not independently measured hardware physics",
+  "calibration_physics_hz": 400,
+  "command_source": "commands/qpos dedicated excitation at 200 Hz",
+  "created_at": "2026-08-28T06:29:20.309945+00:00",
+  "joint_order": [
+    "joint1",
+    "joint2",
+    "joint3",
+    "joint4",
+    "joint5",
+    "joint6",
+    "joint7"
+  ],
+  "provenance": {
+    "parameter_selection": {
+      "policy": "explicit_fixed_seed",
+      "publication_status": "provisional_only",
+      "requested_by_user": true,
+      "seed": 0,
+      "validation_status": "failed_or_not_completed_for_this_seed"
+    },
+    "source_stage": "review-data/data/usd/2026_08_27_pnp_duald1200_camera_aligned/PNP_DUALD1200_CAMERA_ALIGNED_WITH_JENGA_STANDALONE.usdz",
+    "source_stage_sha256": "47ffbced916d270b176df6c7cc0095e4d4eb40a7b66b4187d297662d1167f8d6",
+    "training_data": {
+      "back": {
+        "arm": "back",
+        "collector_git_commit": "6feb09c59cd02326c626d1b3965091a2a18cfe32",
+        "collector_version": "0.4.0",
+        "command_rate_hz": 200.0,
+        "feedback_rate_hz": 180.0,
+        "recording_count": 28,
+        "role": "parameter_estimation",
+        "schema_version": "robot_alignment3_dedicated_dual_v1",
+        "session": "review-data/data/test_data/robot_alignment_dual/back/back_20260827T143220.259156Z_a0ab89ca",
+        "session_id": "back_20260827T143220.259156Z_a0ab89ca",
+        "session_manifest": "review-data/data/test_data/robot_alignment_dual/back/back_20260827T143220.259156Z_a0ab89ca/session_manifest.json",
+        "session_manifest_sha256": "83337a4b466fcfce35be16d3c08d102b801178bbf9c51f07f458777859e9c4bf"
+      },
+      "left": {
+        "arm": "left",
+        "collector_git_commit": "6feb09c59cd02326c626d1b3965091a2a18cfe32",
+        "collector_version": "0.4.0",
+        "command_rate_hz": 200.0,
+        "feedback_rate_hz": 180.0,
+        "recording_count": 28,
+        "role": "parameter_estimation",
+        "schema_version": "robot_alignment3_dedicated_dual_v1",
+        "session": "review-data/data/test_data/robot_alignment_dual/left/left_20260827T134359.055164Z_6497e480",
+        "session_id": "left_20260827T134359.055164Z_6497e480",
+        "session_manifest": "review-data/data/test_data/robot_alignment_dual/left/left_20260827T134359.055164Z_6497e480/session_manifest.json",
+        "session_manifest_sha256": "d23670db6a883f05a60fd51193362faf4339b19159d02086c8bbdc04a90dbcbe"
+      }
+    }
+  },
+  "provisional": true,
+  "publication_authorized": false,
+  "runtime_application": {
+    "loader_requirement": "apply and verify robotAlignment profile tensors before replay",
+    "tensor_runtime": [
+      "viscous friction",
+      "command delay"
+    ],
+    "usd_authored": [
+      "Kp",
+      "Kd",
+      "armature",
+      "Coulomb/static friction"
+    ]
+  },
+  "runtime_command_interpolation": "zoh_30hz",
+  "runtime_physics_hz": 120,
+  "schema_version": "jenga_dual_robot_alignment_profile_v1",
+  "validation_passed": false
+}

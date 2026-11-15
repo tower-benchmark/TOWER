@@ -1,0 +1,189 @@
+{
+  "disturbances": [],
+  "duration_s": 46.0,
+  "events": [
+    {
+      "group": "G",
+      "operation": "src_L2_0:grasp",
+      "sample": 158,
+      "time_s": 7.9
+    },
+    {
+      "group": "P",
+      "operation": "src_L2_0:place",
+      "sample": 498,
+      "time_s": 24.9
+    },
+    {
+      "group": "G",
+      "operation": "src_L1_0:grasp",
+      "sample": 569,
+      "time_s": 28.45
+    },
+    {
+      "group": "P",
+      "operation": "src_L1_0:place",
+      "sample": 911,
+      "time_s": 45.55
+    }
+  ],
+  "operations": [
+    {
+      "active_end": 158,
+      "arm": 0,
+      "end": 158,
+      "id": "src_L2_0:grasp",
+      "start": 103,
+      "target": 7
+    },
+    {
+      "active_end": 292,
+      "arm": 0,
+      "end": 514,
+      "id": "src_L2_0:place",
+      "start": 159,
+      "target": 7
+    },
+    {
+      "active_end": 569,
+      "arm": 1,
+      "end": 569,
+      "id": "src_L1_0:grasp",
+      "start": 515,
+      "target": 6
+    },
+    {
+      "active_end": 711,
+      "arm": 1,
+      "end": 920,
+      "id": "src_L1_0:place",
+      "start": 570,
+      "target": 6
+    }
+  ],
+  "planned_g": 2,
+  "planned_p": 2,
+  "planned_pushes_by_arm": {
+    "0": 0,
+    "1": 0
+  },
+  "prescribed_order": true,
+  "protocol": "tower-sim-trajectory-v5",
+  "push_successes_by_arm": {
+    "0": 0,
+    "1": 0
+  },
+  "rules": {
+    "angular_velocity_rad_s": 0.05,
+    "approach_margin_m": 0.025,
+    "approach_s": 0.1,
+    "closed_width_m": 0.07,
+    "disturbance_contact_m": 0.002,
+    "disturbance_m": 0.01,
+    "disturbance_motion_m": 0.00025,
+    "disturbance_motion_window_s": 0.2,
+    "disturbance_quiet_s": 0.3,
+    "effort_fraction": 0.8,
+    "effort_gap_s": 0.1,
+    "grasp_surface_distance_m": 0.015,
+    "hold_s": 0.3,
+    "jaw_effort_n": 0.5,
+    "lift_m": 0.005,
+    "linear_velocity_m_s": 0.005,
+    "maximum_sample_gap_s": 0.1,
+    "minimum_carry_m": 0.005,
+    "minimum_push_m": 0.005,
+    "minimum_support_fraction": 0.2,
+    "open_width_m": 0.075,
+    "orientation_deg": 10.0,
+    "paired_spacing_m": 0.02,
+    "placement_dwell_s": 10.0,
+    "position_m": 0.01,
+    "push_clearance_s": 0.1,
+    "push_coast_s": 0.5,
+    "push_face_margin_m": 0.015,
+    "relative_range_m": 0.01,
+    "release_clearance_m": 0.04,
+    "roof_height_m": 0.015,
+    "slot_clearance_m": 0.0005,
+    "stable_rotation_deg": 2.0,
+    "stable_translation_m": 0.002,
+    "support_com_margin_m": 0.002,
+    "support_height_m": 0.008,
+    "time_limit_s": 420.0,
+    "tool_protrusion_m": 0.025,
+    "tool_return_dwell_s": 0.3,
+    "tool_tip_local_m": [
+      0.0,
+      -0.166,
+      0.01
+    ]
+  },
+  "scores": {
+    "C": 4,
+    "D": 0,
+    "E": 4,
+    "g": 2,
+    "p": 2,
+    "s": 1
+  },
+  "source_hashes": {
+    "episode/states.hdf5": "f92fcca1f393361e358a3816029acabdda02ae20f6e397ec6c50f0fefcc5863e",
+    "episode_spec.json": "df0531549693f4258719acbffe8ffc746cc4a4e7a26aa5fa23d8f52d949ab2ae",
+    "finger-feedback.npz": "7ccc53c52b54b5658abbdea7570400fee74ca21a92625f77a78e9b14c99debc9",
+    "finger-link-poses.npz": "96f517409d3bce5da7fb931d65920e29d13afb31a60c44758c97751ce7f2710a",
+    "finger_geometry.json": "516a0107606663b005efcd9ad48bd600d0686885e74b26ac7263760135680ba1",
+    "status.json": "7c93d24241dbc9968d62fcfbaecbd21752f38b0337355428f8cea65034dce5ce"
+  },
+  "target_intervals": [
+    {
+      "arm": 0,
+      "end": 158,
+      "start": 103,
+      "target": 7
+    },
+    {
+      "arm": 0,
+      "end": 292,
+      "start": 159,
+      "target": 7
+    },
+    {
+      "arm": 1,
+      "end": 569,
+      "start": 515,
+      "target": 6
+    },
+    {
+      "arm": 1,
+      "end": 711,
+      "start": 570,
+      "target": 6
+    }
+  ],
+  "targets": [
+    {
+      "arm": 0,
+      "attempt_sample": 105,
+      "block": "src_L2_0",
+      "carry_sample": 157,
+      "grasp_sample": 158,
+      "place_sample": 498,
+      "terminal_position_error_m": 0.0022560216409838975,
+      "terminal_released_geometry_s": 10.450000000000003
+    },
+    {
+      "arm": 1,
+      "attempt_sample": 517,
+      "block": "src_L1_0",
+      "carry_sample": 569,
+      "grasp_sample": 569,
+      "place_sample": 911,
+      "terminal_position_error_m": 0.003329822124749315,
+      "terminal_released_geometry_s": 10.450000000000003
+    }
+  ],
+  "task": "task2-2",
+  "terminal_geometry": true,
+  "valid": true
+}

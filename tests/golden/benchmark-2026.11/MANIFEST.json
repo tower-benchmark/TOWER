@@ -1,0 +1,499 @@
+{
+  "committed_compressed_bytes": 13067676,
+  "exact_environment": {
+    "cpu_model": "AMD EPYC 9A75 64-Core Processor",
+    "h5py": "3.15.1",
+    "libm": "glibc 2.39",
+    "numpy": "2.3.1",
+    "platform": "Linux-6.8.0-111-generic-x86_64-with-glibc2.39",
+    "python": "3.12.3 (main, Mar 23 2026, 19:04:32) [GCC 13.3.0]",
+    "qhull": "Options selected for Qhull 2020.2.r 2020/08/31:",
+    "scipy": "1.17.0"
+  },
+  "files": {
+    "task1-2-mme.tar.xz": {
+      "sha256": "baceba55a44d7483ff55083305deb12b75de912c836f84cf3970f346a0a4b638",
+      "size": 429836
+    },
+    "task1-2-openwam.tar.xz": {
+      "sha256": "1379431752cf8beacccedc6140dbad3d130524fef1c0750d5eb9424a3b9bf341",
+      "size": 454752
+    },
+    "task1-3-mme.tar.xz": {
+      "sha256": "5738514743109257ac21fceed430ef7b3812700d4097616c231d2021ec71cc88",
+      "size": 1076276
+    },
+    "task1-3-openwam.tar.xz": {
+      "sha256": "1c61c5c7e9f462ef995c89cbc91273d84c5c476692c68ce947143f7af1db9c89",
+      "size": 821400
+    },
+    "task2-2-mme.tar.xz": {
+      "sha256": "93fa5e6a6b6ca8f219592d74ce8e3d8a7475bdf2377333c9a4789ddd566a2adb",
+      "size": 293284
+    },
+    "task2-2-openwam.tar.xz": {
+      "sha256": "b7dd5fe125ed50a125a6c7ed24c85ca9dbeaea9bf8b96446ab6998434e3c3330",
+      "size": 220908
+    },
+    "task2-3-mme.tar.xz": {
+      "sha256": "9e0682e620052f13147bc43b7f5633743cd19f3dc021a67cfc1f3224da675c03",
+      "size": 595008
+    },
+    "task2-3-openwam.tar.xz": {
+      "sha256": "4530522ae7ed22c6df19e32630cde1d41f4654db8f6902ab2ab337d6ed1929d2",
+      "size": 426256
+    },
+    "task4-2-mme.tar.xz": {
+      "sha256": "a1fc7476007dad227b114cc46f44e50d5ae0d290701f4986a8d437c1db7c5920",
+      "size": 324412
+    },
+    "task4-2-openwam.tar.xz": {
+      "sha256": "54c6b19729e5d73ea76007182ceeac0998e03f7f888b126a2243d7d8eadd5ab7",
+      "size": 324224
+    },
+    "task4-3-mme.tar.xz": {
+      "sha256": "6e99469e43d5a9e4644da1928af4b45a18f5fc6cf6014e75e603544540ac9555",
+      "size": 334012
+    },
+    "task4-3-openwam.tar.xz": {
+      "sha256": "7c831ac706e2f29af0ab8f61ef3b7fd0627c0002f51ee36698f12a4a0d211c17",
+      "size": 483608
+    },
+    "task5-2-mme.tar.xz": {
+      "sha256": "d72437bb831f25bee0677d98ec648830e4c192f6ab491170466ea9d536b095ab",
+      "size": 307516
+    },
+    "task5-2-openwam.tar.xz": {
+      "sha256": "08e03129c61ae225c14acfe7b092a06ed2496c59bd534bf70a47d6f6f3afdb84",
+      "size": 243052
+    },
+    "task5-3-mme.tar.xz": {
+      "sha256": "ee1c75e7e298eb991cb95b3c3313ee5c43e684e7d00d1862afeb6ec2d8d0d2c4",
+      "size": 496396
+    },
+    "task5-3-openwam.tar.xz": {
+      "sha256": "7faaa470cc14d0f6b94338ae151af7632b9461e24d6b777824432b95c6c0fa77",
+      "size": 328140
+    },
+    "task6-2-mme.tar.xz": {
+      "sha256": "cf4333a8e5ebc8b27d4331c05de0fee68bfc60231dc1a98d0866b416aa9849f3",
+      "size": 221408
+    },
+    "task6-2-openwam.tar.xz": {
+      "sha256": "b9f3b224b775ed222cc1c0dfd0fb8734b71c8633cfc10af1bce7f6bc522e9dfd",
+      "size": 219380
+    },
+    "task6-3-mme.tar.xz": {
+      "sha256": "092e265edb1dc67ddda61bdd5529fa04b0387dda326d2be526ddcf0bd3832f7d",
+      "size": 294216
+    },
+    "task6-3-openwam.tar.xz": {
+      "sha256": "2dc2a360a84674fd3c550acd8aada0c3689a709f808c7aad0f0ad847d4cfa727",
+      "size": 450020
+    },
+    "task7-2-mme.tar.xz": {
+      "sha256": "a299ffcb9e64377928622cdce01bbf7ebea13d3afc0b3b25aa08b7f011f3d3d4",
+      "size": 521488
+    },
+    "task7-2-openwam.tar.xz": {
+      "sha256": "1a3d4cc70427329361bdb51b880fc5dc909eedcf09e3fce42153dd20f4d1ea43",
+      "size": 1357608
+    },
+    "task7-3-mme.tar.xz": {
+      "sha256": "a2785bff0634407c79b6b0827330a39e39b66093512367c7d065e644745b3634",
+      "size": 1248820
+    },
+    "task7-3-openwam.tar.xz": {
+      "sha256": "7f0da9b3714fd25a5d55c075b896495340bb2a2abbffd982f41f80590e078866",
+      "size": 1595656
+    }
+  },
+  "reference": "benchmark-2026.11.0",
+  "schema": "tower-golden-recordings-v1",
+  "trials": [
+    {
+      "archive": "task1-2-openwam.tar.xz",
+      "committed": true,
+      "id": "task1-2-openwam",
+      "model": "openwam",
+      "scene_id": "scene-004",
+      "scorer": "bench-2026.11:finalize_trial/from_physical_rows/score_recording",
+      "sha256": "1379431752cf8beacccedc6140dbad3d130524fef1c0750d5eb9424a3b9bf341",
+      "size": 454752,
+      "source_score_sha256": "83733dcf1d1e007fe40318148d449160ac44449e893b386f0008d504a1604ef8",
+      "success": true,
+      "task": "task1-2"
+    },
+    {
+      "archive": "task1-3-openwam.tar.xz",
+      "committed": true,
+      "id": "task1-3-openwam",
+      "model": "openwam",
+      "scene_id": "scene-020",
+      "scorer": "bench-2026.11:finalize_trial/from_physical_rows/score_recording",
+      "sha256": "1c61c5c7e9f462ef995c89cbc91273d84c5c476692c68ce947143f7af1db9c89",
+      "size": 821400,
+      "source_score_sha256": "726dc6b85eabc2f4df101d281dbd8214509f305f9b011a601f4fab338fec6ae9",
+      "success": true,
+      "task": "task1-3"
+    },
+    {
+      "archive": "task2-2-openwam.tar.xz",
+      "committed": true,
+      "id": "task2-2-openwam",
+      "model": "openwam",
+      "scene_id": "scene-000",
+      "scorer": "bench-2026.11:finalize_trial/from_physical_rows/score_recording",
+      "sha256": "b7dd5fe125ed50a125a6c7ed24c85ca9dbeaea9bf8b96446ab6998434e3c3330",
+      "size": 220908,
+      "source_score_sha256": "82ed3ddaea474b1962e7e85105f4025cd4ec31e27b8e4d0484413cf3696aa239",
+      "success": true,
+      "task": "task2-2"
+    },
+    {
+      "archive": "task2-3-openwam.tar.xz",
+      "committed": true,
+      "id": "task2-3-openwam",
+      "model": "openwam",
+      "scene_id": "scene-027",
+      "scorer": "bench-2026.11:finalize_trial/from_physical_rows/score_recording",
+      "sha256": "4530522ae7ed22c6df19e32630cde1d41f4654db8f6902ab2ab337d6ed1929d2",
+      "size": 426256,
+      "source_score_sha256": "b8659e783953583cb72346eb49c7ef9a0f4d8752cc48a9d16896efa5c0ad76fd",
+      "success": true,
+      "task": "task2-3"
+    },
+    {
+      "archive": "task4-2-openwam.tar.xz",
+      "committed": true,
+      "id": "task4-2-openwam",
+      "model": "openwam",
+      "scene_id": "scene-001",
+      "scorer": "bench-2026.11:finalize_trial/from_physical_rows/score_recording",
+      "sha256": "54c6b19729e5d73ea76007182ceeac0998e03f7f888b126a2243d7d8eadd5ab7",
+      "size": 324224,
+      "source_score_sha256": "5f9062815374d34b0685da0bbb33bb971c45cbf01b9c8f896bce5781b867555d",
+      "success": true,
+      "task": "task4-2"
+    },
+    {
+      "archive": "task4-3-openwam.tar.xz",
+      "committed": true,
+      "id": "task4-3-openwam",
+      "model": "openwam",
+      "scene_id": "scene-007",
+      "scorer": "bench-2026.11:finalize_trial/from_physical_rows/score_recording",
+      "sha256": "7c831ac706e2f29af0ab8f61ef3b7fd0627c0002f51ee36698f12a4a0d211c17",
+      "size": 483608,
+      "source_score_sha256": "094ad956797955d1a22e7d758e44d716485960bf6bb638d133180866251b7d41",
+      "success": true,
+      "task": "task4-3"
+    },
+    {
+      "archive": "task5-2-openwam.tar.xz",
+      "committed": true,
+      "id": "task5-2-openwam",
+      "model": "openwam",
+      "scene_id": "scene-000",
+      "scorer": "bench-2026.11:finalize_trial/from_physical_rows/score_recording",
+      "sha256": "08e03129c61ae225c14acfe7b092a06ed2496c59bd534bf70a47d6f6f3afdb84",
+      "size": 243052,
+      "source_score_sha256": "2a1908b6e41d723de99447f30e4b3def09a81f6e92908a89376131346a3675ff",
+      "success": false,
+      "task": "task5-2"
+    },
+    {
+      "archive": "task5-3-openwam.tar.xz",
+      "committed": true,
+      "id": "task5-3-openwam",
+      "model": "openwam",
+      "scene_id": "scene-000",
+      "scorer": "bench-2026.11:finalize_trial/from_physical_rows/score_recording",
+      "sha256": "7faaa470cc14d0f6b94338ae151af7632b9461e24d6b777824432b95c6c0fa77",
+      "size": 328140,
+      "source_score_sha256": "e7036fdd7e92eeaba40c796f76a040218e135641097967e115ea958f0a52e76a",
+      "success": false,
+      "task": "task5-3"
+    },
+    {
+      "archive": "task6-2-openwam.tar.xz",
+      "committed": true,
+      "id": "task6-2-openwam",
+      "model": "openwam",
+      "scene_id": "scene-000",
+      "scorer": "bench-2026.11:finalize_trial/from_physical_rows/score_recording",
+      "sha256": "b9f3b224b775ed222cc1c0dfd0fb8734b71c8633cfc10af1bce7f6bc522e9dfd",
+      "size": 219380,
+      "source_score_sha256": "59de0d0ce0b8e74ecdcb429d93bdd20a231c576076399862b185889c3d778b5c",
+      "success": true,
+      "task": "task6-2"
+    },
+    {
+      "archive": "task6-3-openwam.tar.xz",
+      "committed": true,
+      "id": "task6-3-openwam",
+      "model": "openwam",
+      "scene_id": "scene-001",
+      "scorer": "bench-2026.11:finalize_trial/from_physical_rows/score_recording",
+      "sha256": "2dc2a360a84674fd3c550acd8aada0c3689a709f808c7aad0f0ad847d4cfa727",
+      "size": 450020,
+      "source_score_sha256": "49c94532fd5e98221274ad6f3c58e7c7aa0f921172a7e0f5e993d71d9a39c348",
+      "success": true,
+      "task": "task6-3"
+    },
+    {
+      "archive": "task7-2-openwam.tar.xz",
+      "committed": true,
+      "id": "task7-2-openwam",
+      "model": "openwam",
+      "scene_id": "scene-000",
+      "scorer": "bench-2026.11:finalize_trial/from_physical_rows/score_recording",
+      "sha256": "1a3d4cc70427329361bdb51b880fc5dc909eedcf09e3fce42153dd20f4d1ea43",
+      "size": 1357608,
+      "source_score_sha256": "85e23a80399858561c760d146c4ff9e2e32f155dceb047c8e0a4d7f9a45e99da",
+      "success": false,
+      "task": "task7-2"
+    },
+    {
+      "archive": "task7-3-openwam.tar.xz",
+      "committed": true,
+      "id": "task7-3-openwam",
+      "model": "openwam",
+      "scene_id": "scene-000",
+      "scorer": "bench-2026.11:finalize_trial/from_physical_rows/score_recording",
+      "sha256": "7f0da9b3714fd25a5d55c075b896495340bb2a2abbffd982f41f80590e078866",
+      "size": 1595656,
+      "source_score_sha256": "32b622bf4b4d175faff895f61deff9d181ceaff5a1abbc8a3b407928f0acae2c",
+      "success": false,
+      "task": "task7-3"
+    },
+    {
+      "archive": "task1-2-mme.tar.xz",
+      "committed": true,
+      "id": "task1-2-mme",
+      "model": "mme",
+      "observation_history": {
+        "closed": true,
+        "extra_render_or_physics_calls": 0,
+        "frames_collected": 897,
+        "lossless_history_bytes": 32440760
+      },
+      "scene_id": "scene-000",
+      "scorer": "bench-2026.11:finalize_trial/from_physical_rows/score_recording",
+      "sha256": "baceba55a44d7483ff55083305deb12b75de912c836f84cf3970f346a0a4b638",
+      "size": 429836,
+      "source_score_sha256": "29efbb4581b70fb7fe225cf73e4501c8a02059dd2aeaa1a63f478d6e78b89a75",
+      "success": false,
+      "task": "task1-2"
+    },
+    {
+      "archive": "task1-3-mme.tar.xz",
+      "committed": true,
+      "id": "task1-3-mme",
+      "model": "mme",
+      "observation_history": {
+        "closed": true,
+        "extra_render_or_physics_calls": 0,
+        "frames_collected": 2271,
+        "lossless_history_bytes": 82363056
+      },
+      "scene_id": "scene-000",
+      "scorer": "bench-2026.11:finalize_trial/from_physical_rows/score_recording",
+      "sha256": "5738514743109257ac21fceed430ef7b3812700d4097616c231d2021ec71cc88",
+      "size": 1076276,
+      "source_score_sha256": "6cc2e8362fbd8d6bb91c2403e86b6381abc84adcc7bac1540988611aa2d65c58",
+      "success": false,
+      "task": "task1-3"
+    },
+    {
+      "archive": "task2-2-mme.tar.xz",
+      "committed": true,
+      "id": "task2-2-mme",
+      "model": "mme",
+      "observation_history": {
+        "closed": true,
+        "extra_render_or_physics_calls": 0,
+        "frames_collected": 601,
+        "lossless_history_bytes": 21652324
+      },
+      "scene_id": "scene-024",
+      "scorer": "bench-2026.11:finalize_trial/from_physical_rows/score_recording",
+      "sha256": "93fa5e6a6b6ca8f219592d74ce8e3d8a7475bdf2377333c9a4789ddd566a2adb",
+      "size": 293284,
+      "source_score_sha256": "67740b37d445d589267c07e2d7489dbaa9ec96185a76af3dc9f656b68a71d344",
+      "success": false,
+      "task": "task2-2"
+    },
+    {
+      "archive": "task2-3-mme.tar.xz",
+      "committed": true,
+      "id": "task2-3-mme",
+      "model": "mme",
+      "observation_history": {
+        "closed": true,
+        "extra_render_or_physics_calls": 0,
+        "frames_collected": 1281,
+        "lossless_history_bytes": 45860992
+      },
+      "scene_id": "scene-000",
+      "scorer": "bench-2026.11:finalize_trial/from_physical_rows/score_recording",
+      "sha256": "9e0682e620052f13147bc43b7f5633743cd19f3dc021a67cfc1f3224da675c03",
+      "size": 595008,
+      "source_score_sha256": "f04e7dfa1064fbb0cef2dd3467ca9805fdd468639ef323e061f3f6dbedc91c53",
+      "success": false,
+      "task": "task2-3"
+    },
+    {
+      "archive": "task4-2-mme.tar.xz",
+      "committed": true,
+      "id": "task4-2-mme",
+      "model": "mme",
+      "observation_history": {
+        "closed": true,
+        "extra_render_or_physics_calls": 0,
+        "frames_collected": 641,
+        "lossless_history_bytes": 24497652
+      },
+      "scene_id": "scene-004",
+      "scorer": "bench-2026.11:finalize_trial/from_physical_rows/score_recording",
+      "sha256": "a1fc7476007dad227b114cc46f44e50d5ae0d290701f4986a8d437c1db7c5920",
+      "size": 324412,
+      "source_score_sha256": "95b94f2acae54aae43c1ce7533a41bc05f96aed26c678ba8a1cf766446a3bd15",
+      "success": false,
+      "task": "task4-2"
+    },
+    {
+      "archive": "task4-3-mme.tar.xz",
+      "committed": true,
+      "id": "task4-3-mme",
+      "model": "mme",
+      "observation_history": {
+        "closed": true,
+        "extra_render_or_physics_calls": 0,
+        "frames_collected": 641,
+        "lossless_history_bytes": 25098756
+      },
+      "scene_id": "scene-000",
+      "scorer": "bench-2026.11:finalize_trial/from_physical_rows/score_recording",
+      "sha256": "6e99469e43d5a9e4644da1928af4b45a18f5fc6cf6014e75e603544540ac9555",
+      "size": 334012,
+      "source_score_sha256": "f9edcb143cb9cbee0de71dfc79725b3f96cbf007faa510b6b8d45f235c8566cc",
+      "success": false,
+      "task": "task4-3"
+    },
+    {
+      "archive": "task5-2-mme.tar.xz",
+      "committed": true,
+      "id": "task5-2-mme",
+      "model": "mme",
+      "observation_history": {
+        "closed": true,
+        "extra_render_or_physics_calls": 0,
+        "frames_collected": 431,
+        "lossless_history_bytes": 15798492
+      },
+      "scene_id": "scene-000",
+      "scorer": "bench-2026.11:finalize_trial/from_physical_rows/score_recording",
+      "sha256": "d72437bb831f25bee0677d98ec648830e4c192f6ab491170466ea9d536b095ab",
+      "size": 307516,
+      "source_score_sha256": "727f1a32c047fb55b3278d48af660ff628e839a780e3c50de02155320f52900f",
+      "success": false,
+      "task": "task5-2"
+    },
+    {
+      "archive": "task5-3-mme.tar.xz",
+      "committed": true,
+      "id": "task5-3-mme",
+      "model": "mme",
+      "observation_history": {
+        "closed": true,
+        "extra_render_or_physics_calls": 0,
+        "frames_collected": 821,
+        "lossless_history_bytes": 31707096
+      },
+      "scene_id": "scene-000",
+      "scorer": "bench-2026.11:finalize_trial/from_physical_rows/score_recording",
+      "sha256": "ee1c75e7e298eb991cb95b3c3313ee5c43e684e7d00d1862afeb6ec2d8d0d2c4",
+      "size": 496396,
+      "source_score_sha256": "f9cbc8cba83494a7f79aa5e9365bfd9d7dc0e602ed2cfb0b597faed53d62b9f0",
+      "success": false,
+      "task": "task5-3"
+    },
+    {
+      "archive": "task6-2-mme.tar.xz",
+      "committed": true,
+      "id": "task6-2-mme",
+      "model": "mme",
+      "observation_history": {
+        "closed": true,
+        "extra_render_or_physics_calls": 0,
+        "frames_collected": 401,
+        "lossless_history_bytes": 14645664
+      },
+      "scene_id": "scene-002",
+      "scorer": "bench-2026.11:finalize_trial/from_physical_rows/score_recording",
+      "sha256": "cf4333a8e5ebc8b27d4331c05de0fee68bfc60231dc1a98d0866b416aa9849f3",
+      "size": 221408,
+      "source_score_sha256": "55c0774e90656ebd8b346629213bb545c441ea5319535cafcc390297b93a3645",
+      "success": false,
+      "task": "task6-2"
+    },
+    {
+      "archive": "task6-3-mme.tar.xz",
+      "committed": true,
+      "id": "task6-3-mme",
+      "model": "mme",
+      "observation_history": {
+        "closed": true,
+        "extra_render_or_physics_calls": 0,
+        "frames_collected": 433,
+        "lossless_history_bytes": 16056032
+      },
+      "scene_id": "scene-000",
+      "scorer": "bench-2026.11:finalize_trial/from_physical_rows/score_recording",
+      "sha256": "092e265edb1dc67ddda61bdd5529fa04b0387dda326d2be526ddcf0bd3832f7d",
+      "size": 294216,
+      "source_score_sha256": "fc9f8873cf22cb85878a649021dc1e7fa052ed44e17fe8ef08ba5b729fb82f61",
+      "success": false,
+      "task": "task6-3"
+    },
+    {
+      "archive": "task7-2-mme.tar.xz",
+      "committed": true,
+      "id": "task7-2-mme",
+      "model": "mme",
+      "observation_history": {
+        "closed": true,
+        "extra_render_or_physics_calls": 0,
+        "frames_collected": 1025,
+        "lossless_history_bytes": 38868300
+      },
+      "scene_id": "scene-000",
+      "scorer": "bench-2026.11:finalize_trial/from_physical_rows/score_recording",
+      "sha256": "a299ffcb9e64377928622cdce01bbf7ebea13d3afc0b3b25aa08b7f011f3d3d4",
+      "size": 521488,
+      "source_score_sha256": "04b1889586155799a7d304a37484666533d5baf98ff91efc65526c6db37593f7",
+      "success": false,
+      "task": "task7-2"
+    },
+    {
+      "archive": "task7-3-mme.tar.xz",
+      "committed": true,
+      "id": "task7-3-mme",
+      "model": "mme",
+      "observation_history": {
+        "closed": true,
+        "extra_render_or_physics_calls": 0,
+        "frames_collected": 1889,
+        "lossless_history_bytes": 74519352
+      },
+      "scene_id": "scene-000",
+      "scorer": "bench-2026.11:finalize_trial/from_physical_rows/score_recording",
+      "sha256": "a2785bff0634407c79b6b0827330a39e39b66093512367c7d065e644745b3634",
+      "size": 1248820,
+      "source_score_sha256": "c7d9b95d77f084c1b5a7aa4c8805437c9448b7ebb580fc9139c65921825aa3d3",
+      "success": false,
+      "task": "task7-3"
+    }
+  ]
+}

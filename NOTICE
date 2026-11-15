@@ -1,0 +1,30 @@
+TOWER
+Copyright 2026 [COPYRIGHT HOLDER PENDING]
+# TODO(owner): supply the TOWER copyright holder.
+
+TOWER code is released under the Apache License, Version 2.0.
+
+Simulation stages, textures, robot models, and datasets may have separate
+licenses. Each released asset must be listed in its manifest with its source,
+version, SHA-256 checksum, and license before publication.
+
+TOWER-authored files in the TOWER-Assets dataset are released under the
+Creative Commons Attribution 4.0 International license (CC BY 4.0). The
+station includes an AgileX arm model from
+https://github.com/agilexrobotics/agx_arm_urdf. That component is released
+under the MIT License, Copyright (c) 2026 aalicecc; its notice must be
+retained. See LICENSE-ASSETS and hf-assets/THIRD_PARTY_NOTICES.md. Any other
+third-party component retains its original license and is identified in the
+asset manifest.
+
+The frozen eef_ik_movejs fork contains TOWER Nero EEF IK code (Apache-2.0)
+and AgileX model data (MIT). Adjacent LICENSE and NOTICE files describe its
+provenance without modifying the frozen sources. The piper_ros Pinocchio
+example (MIT) is an algorithm reference, not copied implementation.
+
+XPolicyLab
+----------
+The third_party/XPolicyLab submodule is derived from XPolicyLab
+(https://github.com/XPolicyLab/XPolicyLab), licensed under Apache-2.0.
+TOWER-specific integration is maintained in tower-benchmark/XPolicyLab.
+See the submodule LICENSE and policy notices for its dependencies.

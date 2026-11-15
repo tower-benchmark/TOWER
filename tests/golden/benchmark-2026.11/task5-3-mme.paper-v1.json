@@ -1,0 +1,4 @@
+{
+  "exception": "ValueError",
+  "message": "Insertion slot must have two authored side blocks"
+}

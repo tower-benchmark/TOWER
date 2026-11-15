@@ -1,0 +1,114 @@
+{
+  "contract": {
+    "benchmark": "benchmark-2026.11.0",
+    "data_version": "benchmark-2026.11.0",
+    "hardware_runtime_profile": {
+      "driver": "580.126.09",
+      "gpu_model": "NVIDIA RTX PRO 5000 72GB Blackwell",
+      "h5py": "3.15.1",
+      "isaac_sim": "6.1.0.0",
+      "libc": "glibc 2.39",
+      "numpy": "2.3.1",
+      "platform": "Linux x86_64",
+      "python": "3.12.3",
+      "scipy": "1.17.0"
+    },
+    "immutable_data": {
+      "assets_manifest_sha256": "a2065d0b4872b579096caa1b3e4e2efd1b6ac95d4fd8df8b130a743c87207432",
+      "corpus_manifest_sha256": "12be536f09e3fef94f4c197909368955b693b2fd32d782d212a2a60c5e77bc9c",
+      "physics_resources_sha256": "e2d1fe8087b4a817f17b6b4eb5bbc97b2da74e5db644e417bc9aea9287231063",
+      "protocol_sha256": "5bd8cc560020e62a6c8242f2fa96ff1ac5c9e61d4f2bff16cedc97b996a6d387",
+      "scene_index_sha256": "1c807662308040a4fc8f69a129978670bf433400cdf671fcda5fbe57d51ff56f",
+      "scenes_sha256": "af6ee56c5fbb706476db05baaf01ae6d390d2d38f0bc131422f5106a2b4dd6d2"
+    },
+    "physics": {
+      "bootstrap_hz": 120,
+      "camera_batch_mode": "individual",
+      "command_mode": "command_replay",
+      "drive_profile": "v4",
+      "record_hz": 20,
+      "simulation_hz": 400
+    },
+    "task_order": [
+      "task1-2",
+      "task1-3",
+      "task2-2",
+      "task2-3",
+      "task6-2",
+      "task6-3",
+      "task4-2",
+      "task4-3",
+      "task5-2",
+      "task5-3",
+      "task7-2",
+      "task7-3"
+    ]
+  },
+  "reference_identity": {
+    "benchmark": "benchmark-2026.11.0",
+    "corpus_manifest_sha256": "12be536f09e3fef94f4c197909368955b693b2fd32d782d212a2a60c5e77bc9c",
+    "experts": {
+      "task1-2": {
+        "scene_id": "scene-000",
+        "sha256": "4d4dbb1a855e68bb8ed3be0f0a4e187123777487df356427a94f010d1e7e25f3"
+      },
+      "task1-3": {
+        "scene_id": "scene-000",
+        "sha256": "ebdf0afe28ce7deefe2bc083f8833d6877b888a3dcf8fa580e1b39f43ca2506e"
+      },
+      "task2-2": {
+        "scene_id": "scene-000",
+        "sha256": "108e4018196a9dd36b0e92a57bfceb2795e2c2aef3ff4a3e9ec2e25c973c1d20"
+      },
+      "task2-3": {
+        "scene_id": "scene-000",
+        "sha256": "343e0fce04c42367401fb0d40293e25bda5b5f2c2bc66f8068894f9a75ec1df1"
+      },
+      "task4-2": {
+        "scene_id": "scene-000",
+        "sha256": "79621451d40a4218ffaafcb4648bbfaeb005543ffe45f632164bc5b73f40e14b"
+      },
+      "task4-3": {
+        "scene_id": "scene-000",
+        "sha256": "ce58373cab4114a7aedc8afcc2d53b3b37c4803fc4e067b8921f9ccaeceb5955"
+      },
+      "task5-2": {
+        "scene_id": "scene-000",
+        "sha256": "3c2477174fb91b40ae7066fa2116a6fbffcde57fee8b7fe2bba6f951100d3ba7"
+      },
+      "task5-3": {
+        "scene_id": "scene-000",
+        "sha256": "b1cbe79b7771d0f466cc5c68e87266c74184d3dd2acaec50d9926780d2f09ecf"
+      },
+      "task6-2": {
+        "scene_id": "scene-000",
+        "sha256": "82e94d4552180f16f74e856ab221afb78ba80381469f1a5a85301b269d40df3d"
+      },
+      "task6-3": {
+        "scene_id": "scene-000",
+        "sha256": "2af22fae1d268915547c219a894862d978beb6a46f684fd5649452b3d32de59a"
+      },
+      "task7-2": {
+        "scene_id": "scene-000",
+        "sha256": "ea50b7f857c0211fab6997a0845333895043ef7b97d404f5e359be5dc5d98fc3"
+      },
+      "task7-3": {
+        "scene_id": "scene-000",
+        "sha256": "7553f3477a36fe427d2cacf1e752973a95e0a5078bdd99a883e0f691bb7b62d4"
+      }
+    },
+    "hardware_runtime_profile": {
+      "driver": "580.126.09",
+      "gpu_model": "NVIDIA RTX PRO 5000 72GB Blackwell",
+      "h5py": "3.15.1",
+      "isaac_sim": "6.1.0.0",
+      "libc": "glibc 2.39",
+      "numpy": "2.3.1",
+      "platform": "Linux x86_64",
+      "python": "3.12.3",
+      "scipy": "1.17.0"
+    },
+    "source_manifest_sha256": "4947fb1d383efbfb5306e9c359a51deb6a17104b6590e7c2b30a3a0e2131f41a"
+  },
+  "schema": "tower-gpu-reference-contract-v2"
+}

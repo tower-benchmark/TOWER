@@ -1,0 +1,64 @@
+{
+  "schema_version": "jenga_runtime_profile_bundle_v1",
+  "source_archive": "lifter_replay_runtime_profiles_20260902.zip",
+  "source_archive_sha256": "d143dd50e4713c7e26cfbe62c13f3826eec559ed17d27ec8d47ad82bc4d4f983",
+  "files": {
+    "DUAL_ROBOT_ALIGNMENT_PROFILE.json": "d6949c0236479da42aebe12d49fd0fb61159f3e54d0404f535d57a2910a764ef",
+    "dual_parameters.json": "018c0d6a1e92e9e2e03ee3f006262b8f099840775929ced2ae631887e968ae00",
+    "REPLAY_PROFILE_V0_0_1.json": "85c5c36a3029a56aef5f4c7159201d1fd5b9a80b2146592794b450719386c582"
+  },
+  "compatible_runtime_stages": {
+    "f93ca2aa6c63545a1800d379a1dab70ae2d592dd88b4424d646699b946515cce": {
+      "reference_stage_sha256": "080b5dde5ec1d14ebed751a1d09bd7898755fb326df1c47f1f291b36a76e2f3f",
+      "reason": "Review station path metadata was anonymized; scene geometry and calibration values are unchanged."
+    },
+    "5c96b41013576173d4dfc84b2e0b12b588f248224f7d5ccf09792d34f7237c4a": {
+      "reference_stage_sha256": "080b5dde5ec1d14ebed751a1d09bd7898755fb326df1c47f1f291b36a76e2f3f",
+      "reason": "User-approved right-front calibration and rear curtain revision. Existing robot, gripper, stand and physical properties verified unchanged through both standalone builds; no control parameter changes.",
+      "verification": "redacted"
+    },
+    "2032c02b4ceadc2bfe8d2fa78444be5a3a10d5561631a55e39ab64e45f29dc4a": {
+      "reference_stage_sha256": "080b5dde5ec1d14ebed751a1d09bd7898755fb326df1c47f1f291b36a76e2f3f",
+      "reason": "Approved V2 wrist calibration plus paper block/finger friction and 3 N finger maxForce. Exhaustive spec comparison proves robot geometry, arm parameters, kinematics and TCP unchanged.",
+      "verification": "redacted"
+    },
+    "1289b7f3570fd1ea6723822370a0ef86167940106e7072172188af4e2a55f074": {
+      "reference_stage_sha256": "080b5dde5ec1d14ebed751a1d09bd7898755fb326df1c47f1f291b36a76e2f3f",
+      "reason": "V2.1 appearance-only change; exhaustive spec comparison proves ALL robot dynamics, geometry and physics identical to V2.",
+      "verification": "redacted"
+    },
+    "21ec6010842c531cefa198359492fb2a34147695240bef13b17af343ba59d429": {
+      "reference_stage_sha256": "080b5dde5ec1d14ebed751a1d09bd7898755fb326df1c47f1f291b36a76e2f3f",
+      "reason": "V2.2 preserves the V2.1 physical attributes, drives and joint relationships; independent dynamic native6.1 qualification is required.",
+      "verification": "redacted",
+      "physics_preservation_evidence": "redacted",
+      "physics_preservation_sha256": "fc7fa8ceddb2597c1ec32352c6ab42248d2646c5fb53e12ea22af07fc9d8cce9"
+    },
+    "fd9ffb6bebeb2d3c0939e3793acf70de74a21f017da8235fc5627dba6b4a0bb7": {
+      "reference_stage_sha256": "080b5dde5ec1d14ebed751a1d09bd7898755fb326df1c47f1f291b36a76e2f3f",
+      "reason": "User-requested back robot rigid XY installation translation to 0.435 m horizontal foundation-edge/J1 distance. Exhaustive canonical root-layer diff changes only mount translation; every packaged resource is byte-identical. Internal kinematics and actuator physics preserved; this is not a new real-hardware dynamics validation.",
+      "verification": "redacted",
+      "physics_preservation_evidence": "redacted"
+    },
+    "21f54876f735ff8836afa19c29ababf584457cd4cde8a2235c7972a636cc3bb5": {
+      "reference_stage_sha256": "080b5dde5ec1d14ebed751a1d09bd7898755fb326df1c47f1f291b36a76e2f3f",
+      "reason": "base435 stage with right-front/left-back external camera poses refined from real/sim image registration; robot, blocks and physics unchanged.",
+      "verification": "redacted",
+      "physics_preservation_evidence": "redacted"
+    },
+    "028111a8d1cc53a8ff4f43f46f17ce78dca7a8b7227c077cb1002589c4f1b11c": {
+      "reference_stage_sha256": "080b5dde5ec1d14ebed751a1d09bd7898755fb326df1c47f1f291b36a76e2f3f",
+      "reason": "camfix stage plus back-wrist camera rotation refined from real wrist images (table edges); robot, blocks, physics unchanged.",
+      "verification": "redacted",
+      "physics_preservation_evidence": "redacted"
+    },
+    "59d3443b7020a365beb648ebbf428cae750559ca320824ca99d77824d4c26d27": {
+      "reference_stage_sha256": "080b5dde5ec1d14ebed751a1d09bd7898755fb326df1c47f1f291b36a76e2f3f",
+      "reason": "Dual-arm J2 derivative of the unified station: same geometry, inertials, gains and layout; per-arm J2 compliance k2 (left refitted after zero re-calibration). Effective fixed parameters are read from the USD by runtime/adapter.py.",
+      "verification": "redacted",
+      "physics_preservation_evidence": "redacted",
+      "effective_parameters_source": "USD authored attributes",
+      "dynamics_requalification_required": true
+    }
+  }
+}

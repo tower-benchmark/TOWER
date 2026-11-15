@@ -1,0 +1,174 @@
+{
+  "schema": "tower-backend-move-ast-v1",
+  "modules": {
+    "assets": {
+      "source_sha256": "7019ca467c845fc89d9b8ebe7b2f8cbf79a4f15ff057a765cd86abc86b61aeef",
+      "symbols": {
+        "block_reference": "3986045c71262b467eb7a0f312275d2f4e0cf060bbbc1b6562acdcd186dfc254",
+        "checksum": "00b4e99e4f02544ba9c496c521067953428e4b3beca8a028bc7de00eca193976",
+        "calibration": "17ecba170b919857f8170ebef44d643ae9e5c8be7e60b0da0b77701908920c6a",
+        "normalize_reset_stacks": "d736d6cbb0c4cbcac875497869598ed978e9eb0e7fb1d40185592cc1012b15b6",
+        "export_kinematics": "54e0439809a8a443d14558c22df1f94ba17cd1267bfbccd6eb2ff88ca9291296",
+        "main": "c36b5903bda0d53b39ef0d0d630e98e7fa6910f2ea2bf4533da4c8416d933607"
+      }
+    },
+    "backend": {
+      "source_sha256": "ad0ff012b95b2cddbfd4deaac8e6ba7ecc7911f5934f15d840715a3a36e45465",
+      "symbols": {
+        "rigid_pose": "9921e2d6b0cd5e83fb0e2159ec7f7829ac744f16b0387e5095220b0c39cd2766",
+        "LulaModel": "a84995f84f8b800a9b642cdb5036e5a9291466c97311fc5ef3f909cbcd68bc6f",
+        "LulaModel.__init__": "460a6ddae7bd694dd79e69cd15a858e4c794b0b52eb133c407b5ff1f3759c373",
+        "LulaModel.calibrate_tcp": "4263f25c23bdb932e6ebd544b389f342d59fdd2d962ffe839a8896b5a4b5b1ce",
+        "LulaModel.fk": "c1c344208da80d38e1b88208cfc245c6f62c35064ca3d2871ced16b7b873832a",
+        "LulaModel.ik": "1af8252a9f7b9f078f65e57ae1a2846b56f69d6ac66ad880aaca0d624316f78e",
+        "IsaacEnvironment": "737db6472ed2eea7369f759690f0e1ff88e359dfd7767a8c29c1fc220ae0756c",
+        "IsaacEnvironment.__init__": "c0fbc7439a1ca01d1a9fe5ccbd34a9fbbe22e816685d08699456f3d37c725ecb",
+        "IsaacEnvironment._commands": "cd82680860756a134b0519aaca53942c672da89c005775992253839dffc48fee",
+        "IsaacEnvironment.reset": "b04be5d71598479dbfb6e63920d01e16a88c9ea84d9fa8c17159e695c3d7139e",
+        "IsaacEnvironment._validate_fk": "c1af15d2520d5609848ded79149317511378b1487bd4b9695f2e36e070e99f8d",
+        "IsaacEnvironment.step": "f3c003c73e6244c8fa2dd90a4ad46cf23cf3bf322697075cc9f32d13a2bb754b",
+        "IsaacEnvironment.compile_commands": "787f603ca4361c6bd3ef6f9bddd1a3ab1db32021dff09065b9e9a7500fc448cc",
+        "IsaacEnvironment.dispatch_substeps": "f06f7b1035625f1ce2b7e3a7194615ac7be8c869036fc0015efb6ab50224fb44",
+        "IsaacEnvironment.snapshots": "aaf738a6cc86c9972436a8691d769b5e80d496585f0bf7833f6d978c50e74072",
+        "IsaacEnvironment.snapshot": "6c3c9f890449a6f26be152b4ec3e43351917a23c291b7e9f6cc1500aadddf77b",
+        "IsaacEnvironment.restore": "7dae363613bb8426eadeaf291281c08138d9eea77ddc96b22efc660351700591",
+        "IsaacEnvironment.capture_guarded": "92ecc71bb464374704addb45074cf99a608f923ab865749f2098402ff6621fe2",
+        "IsaacEnvironment.capture_guarded.roots": "d5dbd0b15e42c44553ada97ab776725f670bb51481755c7190c7e0d33a0a4ab6",
+        "IsaacEnvironment.read": "d912a914d35624e4bc550dfaf759f6a60d91ab8561bb5ad9877e5fd5bb5e7a1d",
+        "IsaacEnvironment.to_base": "25b0dc3fe8b7349125e583eecc8b31565419aab5aa4fb72401b66387f4492a74",
+        "IsaacEnvironment.finger_lowest_z": "fd425583e27180d76f58fcc1491a5abe4f421ae913db31e8d9cd5e7dc3c86758",
+        "IsaacEnvironment.plan_free_space": "13802ec86669b78ee3a3e5da07060234518cdd22aec17ea0a62e3b88d7f78e4f",
+        "IsaacEnvironment.capture": "0889780e7bec3991e04119d63c4f5f98d14b817041c643e4cc255babcd3ae133",
+        "IsaacEnvironment.validate_initial_rgb": "57d5a0d5c9aa92b7fa8a4203cc414c8afb6cb8a5c5ee5ba6df1ce2753d46ea09",
+        "main": "86ae0e5f8a7fab32fbf569f207e58290bd74ed02fcf587f55a53a78adc4609cd"
+      }
+    },
+    "model": {
+      "source_sha256": "5f8428c2b8a30033aca26e97e7b224b01d649006d1f6e2660b7fede6111bb47c",
+      "symbols": {
+        "resolve_task": "76d3b32d46df4ecc01ce1c882b1a2bb2c2b096b8a199487416a290d4ce00ad77",
+        "Config": "7cb17d7a1402ced82dc3c2aa878eb07d1a0cf293c851a89b49fe8fb77618419f",
+        "Config.validate": "d13713edf65a8efe1a76e7d7c0bc2c569d98efdc92db8167580552b1067351e3",
+        "Config.to_dict": "e3aa1a21bbf660df26add61f2192805dd9cb2effbe415db87a266ae47326384a",
+        "episode_seed": "456b29e8b064f1afef676278f8bcb9aedf5c91d93f5727c191641b95aa2a303b",
+        "digest": "cfd904674e603dff1dbcbcf84d0575d33863f4c8adf6f449798382bf5a97d607",
+        "Block": "2673f06651bcc83fea88a1329676f0eba5269c069de50e67ecd4b6bdf8b18844",
+        "Transfer": "75fc40b10c336381a7d6b46ccb414435e154198583f8e716c553bc3be19321ce",
+        "EpisodeSpec": "a1d9f241b2498919eb6fdba7762a7f584afb961f629db36026430765607ced70",
+        "State": "58bb48cad9b03b5d3d8ca675dfcb22cc54e4751e37782e16dd8b48898b51c388",
+        "Evaluation": "94dbdff544262b6c4c3bdd026391d837596fad8917bf7171e69b8f7a8f2535eb",
+        "Environment": "b7ace1d39251dc5d2de1107c011048674667a4a6bf697fa7466a7e8b172595a6",
+        "Environment.reset": "d3c8bac4e0b68b920e467fad622ac63a69f243a9d997164ab5815ea48b1c9941",
+        "Environment.step": "26499a483aeb81b72efd649ebdbd0373c629e6b39e6c7e75fdaa5c800c923bbe",
+        "Recorder": "ab235d5764ce545128c1084266550ca03c46501567c4d1a5e07f532465e42173",
+        "Recorder.append": "49b64b304c53773979ca85d9467c8632dc5193e4bc90225aa35c57b48c04b23e",
+        "Recorder.finalize": "1dfb52913415305f52cc63e19420eaaf1c5cc991b9c33bdd788e3e4e7b007e88",
+        "MotionPolicy": "10da789ea26d2c4523d71accc9ed8fc712023a38371a5f4a307efc2f1520d6f3",
+        "MotionPolicy.action_for": "338ecd0885f93c9d64cf52205528e578bf1de4836f0ecc24000b7cfc8144ff44",
+        "Evaluator": "6a09011bb50460a0abeeda366797ce6f7d964ab00561fc668c1fccdc514b0d5f",
+        "Evaluator.update": "f8e3a8cbbe37f23874e88674e1be22db022fc2feba1277eb54d779d5a8fbe723",
+        "Task": "f1bf15ae083e9f5a935f2908cbc94d39980eb0cf6a9fbf7dc4dc07a98ff4b3ef",
+        "Task.build_layout": "6dbfde6dbfc031f675fb6ba96828e550b1385ab88ced68e61c2e5fc40f785ba0",
+        "Task.evaluator": "01980615ed2d1d8db9a75129839f2e0d118a1db5389bfff221cdb6d6820dd26b",
+        "Task.policy": "58898d6b582c58fa0295397b30146a177984c5a982cff8a4a9e7b87aa8430715",
+        "Task.instruction": "cb9e2c3550e7c96fd9e442e7ad0fb0db96e6db60502e18e320ac4e5c6a6afb95"
+      }
+    },
+    "runtime_profiles": {
+      "source_sha256": "6ee4696baad8d97c997e79408bc3c994c104f342a608f7b075a767822c7bf565",
+      "symbols": {
+        "runtime_profile_files": "d73cf9e58624230ce391c9abda63b17232f893ea1d8d24ce9fcacb1b90ff9dc1",
+        "load_runtime_profiles": "6f2097264c9195976fac57bcb22d3feddfb9725cb5ca89a2c984f7f336f72a1a",
+        "apply_runtime_profile": "ad4dc348fe03f2f1a4ba5e69f7ab5a11c0d397f92750836d595b2eb41844bf6f",
+        "delayed_actions": "290d44034920c16bc87d840a4ba23c5e571b0c81bb4ac5b3b10e732aef0df942"
+      }
+    },
+    "grasp_geometry": {
+      "source_sha256": "76eda92fbe22f0cfcf18f9a84a831d6b78f8583a6687c97a86cbf0123e00bc26",
+      "symbols": {
+        "collision_meshes": "c0d5d0ad3dd453892e176b11eb2fde6edbe3c72e02675ad4064ad7f5010357ff",
+        "inspect_fingers": "02b0be278b7386424da5f435a84cb164e79e59dd06e296e0c9b12d77de2b9d64",
+        "block_top": "ed18b22844cb65a0a7effdf86e4c51a6373575086e936f8c8e7273af8cb60ffa",
+        "support_height": "64a773d90678572c3bfb56741844d787af58a06a2da1cb949ed5e19f0a7d5d70",
+        "centered_grasp": "4c1013e62ed20e66e8281a6a3a898a6939266faff2bd9d6619aafe2b9e1091d7"
+      }
+    },
+    "physics_scene": {
+      "source_sha256": "2facb9d92a182ba6c70b04ff4db1d1fa3fe7640f391881cc885542d38527c588",
+      "symbols": {
+        "prepare_physics_scene": "4bc78afd3fd96a4c8316219ff0474f750c1595464819ed8f47c1fef0eb52f3d0",
+        "prepare_physics_scene.physical_prims": "233986f76a7740e722b838f541f246d6c05d7a7a18d128ba49c52e2835712076"
+      }
+    },
+    "profiles": {
+      "source_sha256": "acfaa75041548dc0406595a996d3ef8a6e9e6b3e92401ce681541ed8c61a54fc",
+      "symbols": {
+        "runs": "bea61960e2342c03804347c5f370273ed659ee8eec1e7ef533c63a5a69d62d66",
+        "quantiles": "e28c273899e21f22b58ce9da9f985600c0dcf8db3d14817f481e1c585917ed47",
+        "episode_features": "099de12b749508fdbc959ff70ad984c10361ef008e268aae67987564d903c5fe",
+        "summarize": "14a7a2f2165dc66401753de2f73ef7fd3ba9190e656ad81b8e611a1d3128466f",
+        "fit_profile": "4def77bc8867074ba7944e887aa9f77b7d32bcade0059fb395c591cf13ceefda",
+        "procedural_profile": "9037c29bf00f08be420790c6e30637ad1e4172d26019fb4bf9a13ba70ed04868",
+        "generation_profile": "1d900d2837da4f0b3562d1baa202bd00d465df68356e734596670af4a7274fb5",
+        "load_profile": "2c65cf1e2fdcd13aac39797bbca50269e399f4f9790768a20c40049415005745",
+        "compare_episode": "4bba7e169ce82dd6c128ada77776ebb9cd64f13ce94ecd3af8ea062195f0bf00",
+        "main": "6a7a52d3a7c35b0913a8122848b6de6af6d1f10c3984dad1cac8e9439e2bf1e3"
+      }
+    },
+    "render_validation": {
+      "source_sha256": "70a5e8857effd524e76a3b66cc1ea978ade9bcf091fe0cf3e5f9bc05d218123c",
+      "symbols": {
+        "verify_capture_settings": "57fa49057f2aa98157aac006decd57a50a003674bb409952f95ab6d206470eb2",
+        "check_wrist_near_plane": "68926362be1b6e284e1013075e918e8739f1032b79e4d8a101acd8acd7bf5621",
+        "check_wood_region": "24ee8f8293575c733ea5f0c9472ec0a894c67f1c6a8e2a2ee70f3aec89ace4fa",
+        "verify_render_profile": "b7447fecc28c5900d88a8aff7e8555e250c5902d700e4a73ced06aa8135acebf"
+      }
+    },
+    "physics_output": {
+      "source_sha256": "d76a5e2f480bcae8852df64ebf7f6d886cd94a11a777c7a70b421cb8812cf3ed",
+      "symbols": {
+        "PhysicsOutputPolicy": "eb3812292b9291841a971f9e9b99486aaf702b62449e13f07250d4cbe20f8275",
+        "PhysicsOutputPolicy.__init__": "81e8c668427cafe13bfb43ca403f3e0e1800b88bd3496e9821f790ea67484b43",
+        "PhysicsOutputPolicy._read": "40548dc514029d6606422a51d7abf14be177671c7b5896583a73fdd4171bf9ac",
+        "PhysicsOutputPolicy._set_writeback": "d843fe40f1a82ecb49c3240959484ffe9279e7bacb540893927b1b193af7679a",
+        "PhysicsOutputPolicy.finish_initialization": "e57ea8ce1bf3dfc8e0aacf9b666e879e161b3f9c497b2324fb54c65c7496bb9c",
+        "PhysicsOutputPolicy.verify": "19d8cdae87ec223232e5000a45b17b06c3677b24613ff8cf176f90c406b53265",
+        "PhysicsOutputPolicy._verify": "3b2b128311015b223a06b182451e1d087cc5c5ab3fca149b3463f671929ba604",
+        "PhysicsOutputPolicy.verify_capture": "b2f7eedfae215cf14a40f3f3c5ed6ff3e0aacf70882a1873c2136d30fb3d528b",
+        "PhysicsOutputPolicy.verify_tensor_views": "48b9ddff143a5057ccd1c753c6550ca38ebb05f417f04d23131f4735220b7765"
+      }
+    },
+    "physics_capacity": {
+      "source_sha256": "9bbde57ca01aebac2e25590ed89a42d1eb4b36ff12458821bbe7c3abfa7d88c4",
+      "symbols": {
+        "configure_capacity": "9bf5a19f0ee77b2d1525adaee9b9f0db2b78626b92637df82760810b3b16df06",
+        "PhysicsLogGuard": "71b4828bb35787e164d4c93bc7eef47c3d87ee2b8f45ea9d64238c3999af429b",
+        "PhysicsLogGuard.__init__": "2f7109e1732b78288aa926f3187596a0924e88d26d6598a350e106fe7e7aa222",
+        "PhysicsLogGuard.check": "ef3a5f456c7f707dda67bb04418e75d627b70340bcbb6eeef14d58a73a7720bb",
+        "require_valid_run": "3758850d406babc1cabb57dd456d477631a9a5418e7ff075b178b00805dd8a96"
+      }
+    },
+    "material_contract": {
+      "source_sha256": "12a7c70dc7137de9759ca4d424af49edf3f5ea9b723b223ccb4f23760b24a895",
+      "symbols": {
+        "bind_block_material": "d5e4bfdbfcdde35c98fe97683e197903e7561d55091c0f2aef115890b5a8299a"
+      }
+    },
+    "camera_batch": {
+      "source_sha256": "79d104115316a05966c3c68367d4413ab0f0608ae2d67ff45a1d1aa25757d716",
+      "symbols": {
+        "IndividualCameraPasses": "36da348cab11e16881a9eccf84614f6ab44d8dff1c5008ddff01a577e4bc8c0a",
+        "IndividualCameraPasses.__init__": "f418ca70a466ee20c88074358012f02e063058c880d7f0cf9cc8070373c9e5a3",
+        "IndividualCameraPasses.prepare": "9f1610102d8232134cf86c110930a8292655a6e52efe009e19c792ba08612b73",
+        "untile_rgba": "af38b1e2b18972883d6ffc0eaf7a375f4881fedf82b2dc1ba0d2ca4995135452",
+        "TiledRgbaCapture": "b4e6c8f852615bef79437333c5812f98b2f155cbfc81d3be3bbecc65f2b558d5",
+        "TiledRgbaCapture.__init__": "4b7c5e81db6bcf9a75d205eb326ba8414c570cc9093df0dc2ebe76dc57504494",
+        "TiledRgbaCapture.read": "9335964bfad18f26b44f28128499ff927fbe3675c2492b3498eb18d171ce0763",
+        "SplitTiledRgbaCapture": "8f49f317e18051484a3fa73487e5a4a4227c21216eeac5fb555ee4f356c327b1",
+        "SplitTiledRgbaCapture.__init__": "63bab1620f6a347e660dd78673fd34ff01c6ce50e2e262d7458e3aa4767e69e6",
+        "SplitTiledRgbaCapture.prepare": "b686eac90977ec3df8f1a5165971508f2fdbbff9585975cd1bebe5c8f677866c",
+        "SplitTiledRgbaCapture.read": "9f9eebcf7b80afb1a0bf824a11d2b94075d8aa47ca61ebe7e0c2170d301b6fd3"
+      }
+    }
+  }
+}

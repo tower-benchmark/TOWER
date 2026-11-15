@@ -1,0 +1,32 @@
+name: Result submission
+description: Submit a reproducible TOWER evaluation result
+title: "[Result] "
+body:
+  - type: textarea
+    id: identity
+    attributes:
+      label: Evaluation identity
+      description: Include TOWER commit/package versions, benchmark revision, ruleset, canonical task IDs, seeds, and asset lock revision/manifest hash.
+    validations:
+      required: true
+  - type: textarea
+    id: policy
+    attributes:
+      label: Policy and environment
+      description: Include policy/checkpoint revision and hash, inference configuration, Python/Isaac versions, GPU, driver, and hardware settings.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Results and reproduction evidence
+      description: Link scores, validity/evidence status, logs, recordings, and exact commands/configs. Report failed or incomplete trials; remove credentials and private paths.
+    validations:
+      required: true
+  - type: checkboxes
+    id: interpretation
+    attributes:
+      label: Interpretation
+      options:
+        - label: I distinguish physical scores from trial validity and do not claim posture approval from historical receipts or a symmetric flag alone.
+          required: true

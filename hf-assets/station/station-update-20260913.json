@@ -1,0 +1,87 @@
+{
+  "source": "PNP_DUALD1200_GOAL_REFERENCE_TASK1_2_TASK1_3_20260913_STANDALONE.usdz",
+  "source_sha256": "7088bb401bd9618d0d570d83693750a496e0b6b4af14c15febb821f24d661369",
+  "previous_station_sha256": "606cd48f7cf614f9978fa76150291dc54ef0229268712e623b2881b2d4f4104b",
+  "station_sha256": "5ffea9b3bc3f5a2936c41cf129ca8a6fedf9298c23627b0c523615f8ff6fde66",
+  "changes": [
+    {
+      "path": "/PNP_DUALD1200_STATION/CameraAlignment/low_camera.clippingRange",
+      "before": "(10, 10000000)",
+      "after": "(1, 3000)"
+    },
+    {
+      "path": "/PNP_DUALD1200_STATION/CameraAlignment/low_camera.verticalAperture",
+      "before": "14.240998268127441",
+      "after": "14.230816841125488"
+    },
+    {
+      "path": "/PNP_DUALD1200_STATION/CameraAlignment/low_camera.xformOp:orient",
+      "before": null,
+      "after": "(0.3940219581127167, -0.0941786915063858, -0.36636799573898315, 0.8376464247703552)"
+    },
+    {
+      "path": "/PNP_DUALD1200_STATION/CameraAlignment/low_camera.xformOp:scale",
+      "before": null,
+      "after": "(1, 1, 1)"
+    },
+    {
+      "path": "/PNP_DUALD1200_STATION/CameraAlignment/low_camera.xformOp:translate",
+      "before": null,
+      "after": "(-151.47540283203125, -878.2537231445312, 956.2520751953125)"
+    },
+    {
+      "path": "/PNP_DUALD1200_STATION/CameraAlignment/low_camera.xformOpOrder",
+      "before": "[xformOp:transform]",
+      "after": "[xformOp:translate, xformOp:orient, xformOp:scale]"
+    },
+    {
+      "path": "/PNP_DUALD1200_STATION/CameraAlignment/high_camera.clippingRange",
+      "before": "(10, 10000000)",
+      "after": "(1, 3000)"
+    },
+    {
+      "path": "/PNP_DUALD1200_STATION/CameraAlignment/high_camera.verticalAperture",
+      "before": "14.243803024291992",
+      "after": "14.234564781188965"
+    },
+    {
+      "path": "/PNP_DUALD1200_STATION/CameraAlignment/high_camera.xformOp:orient",
+      "before": null,
+      "after": "(0.8332406878471375, -0.3619384765625, 0.16050313413143158, -0.38593941926956177)"
+    },
+    {
+      "path": "/PNP_DUALD1200_STATION/CameraAlignment/high_camera.xformOp:scale",
+      "before": null,
+      "after": "(1, 1, 1)"
+    },
+    {
+      "path": "/PNP_DUALD1200_STATION/CameraAlignment/high_camera.xformOp:translate",
+      "before": null,
+      "after": "(875.4592895507812, -34.80156326293945, 558.1890869140625)"
+    },
+    {
+      "path": "/PNP_DUALD1200_STATION/CameraAlignment/high_camera.xformOpOrder",
+      "before": "[xformOp:transform]",
+      "after": "[xformOp:translate, xformOp:orient, xformOp:scale]"
+    },
+    {
+      "path": "/__DualReplayGripperPhysicsMaterial.physics:staticFriction",
+      "before": "1.2000000476837158",
+      "after": "2.4000000953674316"
+    },
+    {
+      "path": "/__DualReplayGripperPhysicsMaterial.physics:dynamicFriction",
+      "before": "1.0",
+      "after": "2.0"
+    }
+  ],
+  "verification": {
+    "unrelated_layer_content_unchanged": true,
+    "packaged_dependencies_byte_identical": true,
+    "usdz_alignment_valid": true,
+    "prim_count": 2453,
+    "foundation_blocks": 6,
+    "imported_runtime_objects": false
+  },
+  "release_tag": "0.0.2"
+}

@@ -1,0 +1,36 @@
+{
+  "name": "vendor",
+  "source": "simulator/benchmark-202611/runtime/support/task2_fixed/vendor/eef_ik_movejs/models/pinocchio_config.json",
+  "model": "nero_sdk_mdh.urdf",
+  "tcp_frame": "link7",
+  "lower": [
+    -2.70526,
+    -1.74,
+    -2.75,
+    -1.01,
+    -2.75,
+    -0.73,
+    -1.5707963
+  ],
+  "upper": [
+    2.70526,
+    1.74,
+    2.75,
+    2.14,
+    2.75,
+    0.95,
+    1.5707963
+  ],
+  "solver": {
+    "optimizer_tolerance": 1e-10,
+    "position_tolerance_m": 0.002,
+    "orientation_tolerance_rad": 0.0005,
+    "position_weight": 1.0,
+    "orientation_weight": 0.1,
+    "seed_weight": 1e-07,
+    "max_iter": 80,
+    "max_time_s": 0.025,
+    "verified_current_seed": true
+  },
+  "margin_rad": 0.0
+}

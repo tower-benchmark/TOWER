@@ -1,0 +1,786 @@
+{
+  "profile": {
+    "joint_gain_mode": "robot_alignment3_dual_200hz",
+    "runtime_readback": {
+      "back": {
+        "command_delays_seconds": [
+          0.01,
+          0.01,
+          0.01,
+          0.01,
+          0.01,
+          0.01,
+          0.01
+        ],
+        "dynamics": {
+          "joint1": {
+            "armature_kg_m2": 181990.78125,
+            "dynamic_friction": 242731.875,
+            "static_friction": 242731.875,
+            "viscous_friction": 2827385.0
+          },
+          "joint2": {
+            "armature_kg_m2": 376188.28125,
+            "dynamic_friction": 251277.671875,
+            "static_friction": 251277.671875,
+            "viscous_friction": 6201252.0
+          },
+          "joint3": {
+            "armature_kg_m2": 395538.25,
+            "dynamic_friction": 103767.140625,
+            "static_friction": 103767.140625,
+            "viscous_friction": 5882391.0
+          },
+          "joint4": {
+            "armature_kg_m2": 175904.765625,
+            "dynamic_friction": 225502.6875,
+            "static_friction": 225502.6875,
+            "viscous_friction": 5798981.5
+          },
+          "joint5": {
+            "armature_kg_m2": 126517.546875,
+            "dynamic_friction": 325990.28125,
+            "static_friction": 325990.28125,
+            "viscous_friction": 2523589.75
+          },
+          "joint6": {
+            "armature_kg_m2": 140511.203125,
+            "dynamic_friction": 277963.09375,
+            "static_friction": 277963.09375,
+            "viscous_friction": 6509197.5
+          },
+          "joint7": {
+            "armature_kg_m2": 60448.8671875,
+            "dynamic_friction": 221409.5,
+            "static_friction": 221409.5,
+            "viscous_friction": 4731853.5
+          }
+        },
+        "dynamics_application": {
+          "active": {
+            "joint1": {
+              "armature_kg_m2": 181990.78125,
+              "dynamic_friction": 242731.875,
+              "static_friction": 242731.875,
+              "viscous_friction": 2827385.0
+            },
+            "joint2": {
+              "armature_kg_m2": 376188.28125,
+              "dynamic_friction": 251277.671875,
+              "static_friction": 251277.671875,
+              "viscous_friction": 6201252.0
+            },
+            "joint3": {
+              "armature_kg_m2": 395538.25,
+              "dynamic_friction": 103767.140625,
+              "static_friction": 103767.140625,
+              "viscous_friction": 5882391.0
+            },
+            "joint4": {
+              "armature_kg_m2": 175904.765625,
+              "dynamic_friction": 225502.6875,
+              "static_friction": 225502.6875,
+              "viscous_friction": 5798981.5
+            },
+            "joint5": {
+              "armature_kg_m2": 126517.546875,
+              "dynamic_friction": 325990.28125,
+              "static_friction": 325990.28125,
+              "viscous_friction": 2523589.75
+            },
+            "joint6": {
+              "armature_kg_m2": 140511.203125,
+              "dynamic_friction": 277963.09375,
+              "static_friction": 277963.09375,
+              "viscous_friction": 6509197.5
+            },
+            "joint7": {
+              "armature_kg_m2": 60448.8671875,
+              "dynamic_friction": 221409.5,
+              "static_friction": 221409.5,
+              "viscous_friction": 4731853.5
+            }
+          },
+          "mapping": {
+            "coulomb_friction": [
+              "physx_static_friction",
+              "physx_dynamic_friction"
+            ],
+            "viscous_friction": "physx_viscous_friction"
+          },
+          "original": {
+            "joint1": {
+              "armature_kg_m2": 0.0,
+              "dynamic_friction": 0.0,
+              "static_friction": 0.0,
+              "viscous_friction": 0.0
+            },
+            "joint2": {
+              "armature_kg_m2": 0.0,
+              "dynamic_friction": 0.0,
+              "static_friction": 0.0,
+              "viscous_friction": 0.0
+            },
+            "joint3": {
+              "armature_kg_m2": 0.0,
+              "dynamic_friction": 0.0,
+              "static_friction": 0.0,
+              "viscous_friction": 0.0
+            },
+            "joint4": {
+              "armature_kg_m2": 0.0,
+              "dynamic_friction": 0.0,
+              "static_friction": 0.0,
+              "viscous_friction": 0.0
+            },
+            "joint5": {
+              "armature_kg_m2": 0.0,
+              "dynamic_friction": 0.0,
+              "static_friction": 0.0,
+              "viscous_friction": 0.0
+            },
+            "joint6": {
+              "armature_kg_m2": 0.0,
+              "dynamic_friction": 0.0,
+              "static_friction": 0.0,
+              "viscous_friction": 0.0
+            },
+            "joint7": {
+              "armature_kg_m2": 0.0,
+              "dynamic_friction": 0.0,
+              "static_friction": 0.0,
+              "viscous_friction": 0.0
+            }
+          },
+          "other_dof_dynamics_unchanged": true,
+          "parameter_file": "review-data/repo/robot_alignment3/outputs/scene_fac0_seed0_200hz/dual_parameters.json",
+          "parameter_file_sha256": "018c0d6a1e92e9e2e03ee3f006262b8f099840775929ced2ae631887e968ae00",
+          "save_to_usd": false
+        },
+        "finite": true,
+        "gain_setter_called": true,
+        "gain_source": "robot_alignment3_arm_specific_seed0_dedicated_200hz",
+        "gains": {
+          "joint1": {
+            "kp_runtime_per_rad": 63069600.0,
+            "kv_runtime_per_rad": 29240.50390625
+          },
+          "joint2": {
+            "kp_runtime_per_rad": 766561088.0,
+            "kv_runtime_per_rad": 27765194.0
+          },
+          "joint3": {
+            "kp_runtime_per_rad": 13184136192.0,
+            "kv_runtime_per_rad": 350281632.0
+          },
+          "joint4": {
+            "kp_runtime_per_rad": 67779056.0,
+            "kv_runtime_per_rad": 1408895.875
+          },
+          "joint5": {
+            "kp_runtime_per_rad": 4087966720.0,
+            "kv_runtime_per_rad": 303321664.0
+          },
+          "joint6": {
+            "kp_runtime_per_rad": 139184384.0,
+            "kv_runtime_per_rad": 427682.375
+          },
+          "joint7": {
+            "kp_runtime_per_rad": 795467136.0,
+            "kv_runtime_per_rad": 107922824.0
+          }
+        },
+        "gripper_profile": {
+          "finger_effort_limit_n": 22.0,
+          "finger_kp_runtime_per_meter": [
+            800.0,
+            800.0
+          ],
+          "finger_kv_runtime_per_meter": [
+            20.0,
+            20.0
+          ],
+          "finger_velocity_limit_authored_m_s": 1.5,
+          "limits": {
+            "active_effort_limits": {
+              "gripper_joint1": 22000.0,
+              "gripper_joint2": 22000.0
+            },
+            "active_velocity_limits_m_s": {
+              "gripper_joint1": 1500.0,
+              "gripper_joint2": 1500.0
+            },
+            "dofs": [
+              "gripper_joint1",
+              "gripper_joint2"
+            ],
+            "original_effort_limits": {
+              "gripper_joint1": 100.0,
+              "gripper_joint2": 100.0
+            },
+            "original_velocity_limits_m_s": {
+              "gripper_joint1": 3.4028234663852886e+38,
+              "gripper_joint2": 3.4028234663852886e+38
+            },
+            "other_dof_limits_unchanged": true,
+            "requested_effort_limit": 22000.0,
+            "requested_velocity_limit_m_s": 1500.0,
+            "save_to_usd": false
+          },
+          "path": "review-data/data/usd/2026_08_06_double_tower_replay_calibrated_v0_0_1/REPLAY_PROFILE_V0_0_1.json",
+          "runtime_units": "isaac_si",
+          "sha256": "85c5c36a3029a56aef5f4c7159201d1fd5b9a80b2146592794b450719386c582",
+          "verified": true
+        },
+        "isaac_urdf_importer_defaults": null,
+        "joint_gain_mode": "robot_alignment3_dual_200hz",
+        "reproduction_seed": 0,
+        "single_arm_gain_profile": {
+          "active_effort_limit_stage_units": 100000000.0,
+          "angular_quantity_numeric_scale": 1000000.0,
+          "calibration_control_hz": 200.0,
+          "calibration_interpretation": "trajectory-domain calibration; not independently measured hardware physics",
+          "calibration_physics_hz": 400.0,
+          "calibration_source_stage_meters_per_unit": 0.001,
+          "source_effort_limit_nm": 100.0,
+          "source_stage_meters_per_unit": 1.0,
+          "stage1_physical_parameters": "review-data/repo/robot_alignment3/outputs/scene_fac0_seed0_200hz/dual_parameters.json",
+          "stage1_sha256": "018c0d6a1e92e9e2e03ee3f006262b8f099840775929ced2ae631887e968ae00",
+          "stage2_gain_parameters": "review-data/repo/robot_alignment3/outputs/scene_fac0_seed0_200hz/dual_parameters.json",
+          "stage2_sha256": "018c0d6a1e92e9e2e03ee3f006262b8f099840775929ced2ae631887e968ae00",
+          "target_stage_meters_per_unit": 0.001
+        },
+        "stage_default_gains_preserved": false,
+        "verified": true
+      },
+      "left": {
+        "command_delays_seconds": [
+          0.005,
+          0.005,
+          0.005,
+          0.005,
+          0.005,
+          0.005,
+          0.005
+        ],
+        "dynamics": {
+          "joint1": {
+            "armature_kg_m2": 193491.71875,
+            "dynamic_friction": 229204.859375,
+            "static_friction": 229204.859375,
+            "viscous_friction": 5028104.0
+          },
+          "joint2": {
+            "armature_kg_m2": 84275.4765625,
+            "dynamic_friction": 348753.9375,
+            "static_friction": 348753.9375,
+            "viscous_friction": 5052549.0
+          },
+          "joint3": {
+            "armature_kg_m2": 98538.8984375,
+            "dynamic_friction": 276422.75,
+            "static_friction": 276422.75,
+            "viscous_friction": 4384895.0
+          },
+          "joint4": {
+            "armature_kg_m2": 151472.421875,
+            "dynamic_friction": 320632.46875,
+            "static_friction": 320632.46875,
+            "viscous_friction": 5057248.0
+          },
+          "joint5": {
+            "armature_kg_m2": 162516.0,
+            "dynamic_friction": 77788.296875,
+            "static_friction": 77788.296875,
+            "viscous_friction": 4949460.0
+          },
+          "joint6": {
+            "armature_kg_m2": 202197.828125,
+            "dynamic_friction": 269880.0625,
+            "static_friction": 269880.0625,
+            "viscous_friction": 5611882.0
+          },
+          "joint7": {
+            "armature_kg_m2": 216181.109375,
+            "dynamic_friction": 305565.9375,
+            "static_friction": 305565.9375,
+            "viscous_friction": 6942746.5
+          }
+        },
+        "dynamics_application": {
+          "active": {
+            "joint1": {
+              "armature_kg_m2": 193491.71875,
+              "dynamic_friction": 229204.859375,
+              "static_friction": 229204.859375,
+              "viscous_friction": 5028104.0
+            },
+            "joint2": {
+              "armature_kg_m2": 84275.4765625,
+              "dynamic_friction": 348753.9375,
+              "static_friction": 348753.9375,
+              "viscous_friction": 5052549.0
+            },
+            "joint3": {
+              "armature_kg_m2": 98538.8984375,
+              "dynamic_friction": 276422.75,
+              "static_friction": 276422.75,
+              "viscous_friction": 4384895.0
+            },
+            "joint4": {
+              "armature_kg_m2": 151472.421875,
+              "dynamic_friction": 320632.46875,
+              "static_friction": 320632.46875,
+              "viscous_friction": 5057248.0
+            },
+            "joint5": {
+              "armature_kg_m2": 162516.0,
+              "dynamic_friction": 77788.296875,
+              "static_friction": 77788.296875,
+              "viscous_friction": 4949460.0
+            },
+            "joint6": {
+              "armature_kg_m2": 202197.828125,
+              "dynamic_friction": 269880.0625,
+              "static_friction": 269880.0625,
+              "viscous_friction": 5611882.0
+            },
+            "joint7": {
+              "armature_kg_m2": 216181.109375,
+              "dynamic_friction": 305565.9375,
+              "static_friction": 305565.9375,
+              "viscous_friction": 6942746.5
+            }
+          },
+          "mapping": {
+            "coulomb_friction": [
+              "physx_static_friction",
+              "physx_dynamic_friction"
+            ],
+            "viscous_friction": "physx_viscous_friction"
+          },
+          "original": {
+            "joint1": {
+              "armature_kg_m2": 0.0,
+              "dynamic_friction": 0.0,
+              "static_friction": 0.0,
+              "viscous_friction": 0.0
+            },
+            "joint2": {
+              "armature_kg_m2": 0.0,
+              "dynamic_friction": 0.0,
+              "static_friction": 0.0,
+              "viscous_friction": 0.0
+            },
+            "joint3": {
+              "armature_kg_m2": 0.0,
+              "dynamic_friction": 0.0,
+              "static_friction": 0.0,
+              "viscous_friction": 0.0
+            },
+            "joint4": {
+              "armature_kg_m2": 0.0,
+              "dynamic_friction": 0.0,
+              "static_friction": 0.0,
+              "viscous_friction": 0.0
+            },
+            "joint5": {
+              "armature_kg_m2": 0.0,
+              "dynamic_friction": 0.0,
+              "static_friction": 0.0,
+              "viscous_friction": 0.0
+            },
+            "joint6": {
+              "armature_kg_m2": 0.0,
+              "dynamic_friction": 0.0,
+              "static_friction": 0.0,
+              "viscous_friction": 0.0
+            },
+            "joint7": {
+              "armature_kg_m2": 0.0,
+              "dynamic_friction": 0.0,
+              "static_friction": 0.0,
+              "viscous_friction": 0.0
+            }
+          },
+          "other_dof_dynamics_unchanged": true,
+          "parameter_file": "review-data/repo/robot_alignment3/outputs/scene_fac0_seed0_200hz/dual_parameters.json",
+          "parameter_file_sha256": "018c0d6a1e92e9e2e03ee3f006262b8f099840775929ced2ae631887e968ae00",
+          "save_to_usd": false
+        },
+        "finite": true,
+        "gain_setter_called": true,
+        "gain_source": "robot_alignment3_arm_specific_seed0_dedicated_200hz",
+        "gains": {
+          "joint1": {
+            "kp_runtime_per_rad": 75239256.0,
+            "kv_runtime_per_rad": 59136.31640625
+          },
+          "joint2": {
+            "kp_runtime_per_rad": 4815408128.0,
+            "kv_runtime_per_rad": 1106055.0
+          },
+          "joint3": {
+            "kp_runtime_per_rad": 2708509952.0,
+            "kv_runtime_per_rad": 609679.375
+          },
+          "joint4": {
+            "kp_runtime_per_rad": 2084737152.0,
+            "kv_runtime_per_rad": 20207990.0
+          },
+          "joint5": {
+            "kp_runtime_per_rad": 224912176.0,
+            "kv_runtime_per_rad": 8001174.0
+          },
+          "joint6": {
+            "kp_runtime_per_rad": 153152464.0,
+            "kv_runtime_per_rad": 324760.6875
+          },
+          "joint7": {
+            "kp_runtime_per_rad": 161634144.0,
+            "kv_runtime_per_rad": 120199.59375
+          }
+        },
+        "gripper_profile": {
+          "finger_effort_limit_n": 22.0,
+          "finger_kp_runtime_per_meter": [
+            800.0,
+            800.0
+          ],
+          "finger_kv_runtime_per_meter": [
+            20.0,
+            20.0
+          ],
+          "finger_velocity_limit_authored_m_s": 1.5,
+          "limits": {
+            "active_effort_limits": {
+              "gripper_joint1": 22000.0,
+              "gripper_joint2": 22000.0
+            },
+            "active_velocity_limits_m_s": {
+              "gripper_joint1": 1500.0,
+              "gripper_joint2": 1500.0
+            },
+            "dofs": [
+              "gripper_joint1",
+              "gripper_joint2"
+            ],
+            "original_effort_limits": {
+              "gripper_joint1": 100.0,
+              "gripper_joint2": 100.0
+            },
+            "original_velocity_limits_m_s": {
+              "gripper_joint1": 3.4028234663852886e+38,
+              "gripper_joint2": 3.4028234663852886e+38
+            },
+            "other_dof_limits_unchanged": true,
+            "requested_effort_limit": 22000.0,
+            "requested_velocity_limit_m_s": 1500.0,
+            "save_to_usd": false
+          },
+          "path": "review-data/data/usd/2026_08_06_double_tower_replay_calibrated_v0_0_1/REPLAY_PROFILE_V0_0_1.json",
+          "runtime_units": "isaac_si",
+          "sha256": "85c5c36a3029a56aef5f4c7159201d1fd5b9a80b2146592794b450719386c582",
+          "verified": true
+        },
+        "isaac_urdf_importer_defaults": null,
+        "joint_gain_mode": "robot_alignment3_dual_200hz",
+        "reproduction_seed": 0,
+        "single_arm_gain_profile": {
+          "active_effort_limit_stage_units": 100000000.0,
+          "angular_quantity_numeric_scale": 1000000.0,
+          "calibration_control_hz": 200.0,
+          "calibration_interpretation": "trajectory-domain calibration; not independently measured hardware physics",
+          "calibration_physics_hz": 400.0,
+          "calibration_source_stage_meters_per_unit": 0.001,
+          "source_effort_limit_nm": 100.0,
+          "source_stage_meters_per_unit": 1.0,
+          "stage1_physical_parameters": "review-data/repo/robot_alignment3/outputs/scene_fac0_seed0_200hz/dual_parameters.json",
+          "stage1_sha256": "018c0d6a1e92e9e2e03ee3f006262b8f099840775929ced2ae631887e968ae00",
+          "stage2_gain_parameters": "review-data/repo/robot_alignment3/outputs/scene_fac0_seed0_200hz/dual_parameters.json",
+          "stage2_sha256": "018c0d6a1e92e9e2e03ee3f006262b8f099840775929ced2ae631887e968ae00",
+          "target_stage_meters_per_unit": 0.001
+        },
+        "stage_default_gains_preserved": false,
+        "verified": true
+      }
+    },
+    "sha256": "d6949c0236479da42aebe12d49fd0fb61159f3e54d0404f535d57a2910a764ef"
+  },
+  "stage": {
+    "source_sha256_after": "080b5dde5ec1d14ebed751a1d09bd7898755fb326df1c47f1f291b36a76e2f3f",
+    "source_sha256_before": "080b5dde5ec1d14ebed751a1d09bd7898755fb326df1c47f1f291b36a76e2f3f"
+  },
+  "wrist_camera_proxies": {
+    "back_wrist": {
+      "aim_mode": "source_mount",
+      "arm": "back",
+      "camera_to_gripper_matrix": [
+        [
+          -9.45668683460411e-06,
+          0.0009998599937419144,
+          -1.3804491607180994e-05,
+          0.0
+        ],
+        [
+          0.0009404475508798571,
+          1.3584354151553241e-05,
+          0.0003396672921645023,
+          0.0
+        ],
+        [
+          0.00033980726172080613,
+          -9.770273113157181e-06,
+          -0.0009404443453203924,
+          0.0
+        ],
+        [
+          0.07417346515448318,
+          -0.0029819296955167496,
+          0.03890258639119848,
+          1.0
+        ]
+      ],
+      "finger_behind_mm": 70.0,
+      "finger_height_mm": 60.0,
+      "gripper_path": "/PNP_DUALD1200_STATION/StationModel/InstalledRobots/StandB_Robot/NeroRobotWithWristCamera/gripper_base",
+      "locked_at_first_live_pose": true,
+      "own_self_mask_paths": [
+        "/PNP_DUALD1200_STATION/StationModel/InstalledRobots/StandB_Robot/NeroRobotWithWristCamera/gripper_base/WristCameraMount"
+      ],
+      "position_mode": "source_mount",
+      "proxy_path": "/__DualReplayWristCameraProxies/back_wrist",
+      "runtime_follow": true,
+      "self_mask_mode": "hide_camera_mount",
+      "session_layer_only": true,
+      "source_path": "/PNP_DUALD1200_STATION/StationModel/InstalledRobots/StandB_Robot/NeroRobotWithWristCamera/gripper_base/WristCameraMount/camera_stand_link/d435_camera_link/camera_link/camera_color_frame/camera_color_optical_frame/wrist_camera",
+      "target_world_mm": [
+        426.0,
+        -277.0,
+        75.0
+      ],
+      "tracking_mode": "lock_to_gripper_at_first_live_pose"
+    },
+    "left_wrist": {
+      "aim_mode": "source_mount",
+      "arm": "left",
+      "camera_to_gripper_matrix": [
+        [
+          -6.902292735798815e-05,
+          0.0009928076719715195,
+          9.78200489338821e-05,
+          0.0
+        ],
+        [
+          0.0009640810243768832,
+          4.117204507686876e-05,
+          0.00026239786801841603,
+          0.0
+        ],
+        [
+          0.00025648316501352623,
+          0.0001124179219639,
+          -0.0009599888524800498,
+          0.0
+        ],
+        [
+          0.06323748453884814,
+          0.013354980528551053,
+          0.037497860198589306,
+          1.0000000000000002
+        ]
+      ],
+      "finger_behind_mm": 70.0,
+      "finger_height_mm": 60.0,
+      "gripper_path": "/PNP_DUALD1200_STATION/StationModel/InstalledRobots/StandA_Robot/NeroRobotWithWristCamera/gripper_base",
+      "locked_at_first_live_pose": true,
+      "own_self_mask_paths": [
+        "/PNP_DUALD1200_STATION/StationModel/InstalledRobots/StandA_Robot/NeroRobotWithWristCamera/gripper_base/WristCameraMount"
+      ],
+      "position_mode": "source_mount",
+      "proxy_path": "/__DualReplayWristCameraProxies/left_wrist",
+      "runtime_follow": true,
+      "self_mask_mode": "hide_camera_mount",
+      "session_layer_only": true,
+      "source_path": "/PNP_DUALD1200_STATION/StationModel/InstalledRobots/StandA_Robot/NeroRobotWithWristCamera/gripper_base/WristCameraMount/camera_stand_link/d435_camera_link/camera_link/camera_color_frame/camera_color_optical_frame/wrist_camera",
+      "target_world_mm": [
+        426.0,
+        -277.0,
+        75.0
+      ],
+      "tracking_mode": "lock_to_gripper_at_first_live_pose"
+    }
+  },
+  "robot_z_overrides": {
+    "arms": {
+      "back": {
+        "component": {
+          "edited_op": "xformOp:translate",
+          "path": "/PNP_DUALD1200_STATION/StationModel/InstalledRobots/StandB_Robot",
+          "world_translation_after_mm": [
+            381.0,
+            -774.0,
+            0.0
+          ],
+          "world_translation_before_mm": [
+            381.0,
+            -774.0,
+            0.0
+          ],
+          "world_z_delta_mm": 0.0
+        },
+        "requested_offset_mm": 0.0
+      },
+      "left": {
+        "component": {
+          "edited_op": "xformOp:translate",
+          "path": "/PNP_DUALD1200_STATION/StationModel/InstalledRobots/StandA_Robot",
+          "world_translation_after_mm": [
+            -116.5,
+            -288.0,
+            0.0
+          ],
+          "world_translation_before_mm": [
+            -116.5,
+            -288.0,
+            0.0
+          ],
+          "world_z_delta_mm": 0.0
+        },
+        "requested_offset_mm": 0.0
+      }
+    },
+    "mode": "experimental_robot_root_world_z_v1",
+    "session_layer_only": true,
+    "source_usd_saved": false,
+    "stand_geometry_moved": false,
+    "units": "millimetres"
+  },
+  "stand_height_overrides": {
+    "arms": {
+      "back": {
+        "components": [
+          {
+            "edited_op": "xformOp:transform",
+            "path": "/PNP_DUALD1200_STATION/StationModel/tn__b4b08Ou03GRNY0xCb0/LiftColumnB_TopPlate",
+            "world_translation_after_mm": [
+              261.0,
+              -444.0,
+              -690.0
+            ],
+            "world_translation_before_mm": [
+              261.0,
+              -444.0,
+              -690.0
+            ],
+            "world_z_delta_mm": 0.0
+          },
+          {
+            "edited_op": "xformOp:transform",
+            "path": "/PNP_DUALD1200_STATION/StationModel/tn__b4b08Ou03GRNY0xCb0/LiftColumnB_InnerColumn",
+            "world_translation_after_mm": [
+              261.0,
+              -444.0,
+              -690.0
+            ],
+            "world_translation_before_mm": [
+              261.0,
+              -444.0,
+              -690.0
+            ],
+            "world_z_delta_mm": 0.0
+          },
+          {
+            "edited_op": "xformOp:translate",
+            "path": "/PNP_DUALD1200_STATION/StationModel/InstalledRobots/StandB_Robot",
+            "world_translation_after_mm": [
+              381.0,
+              -774.0,
+              0.0
+            ],
+            "world_translation_before_mm": [
+              381.0,
+              -774.0,
+              0.0
+            ],
+            "world_z_delta_mm": 0.0
+          }
+        ],
+        "fixed_components_not_moved": [
+          "base_plate",
+          "outer_housing",
+          "middle_sleeve"
+        ],
+        "measured_base_bottom_to_disc_top_mm": 440.0,
+        "requested_offset_mm": 0.0
+      },
+      "left": {
+        "components": [
+          {
+            "edited_op": "xformOp:transform",
+            "path": "/PNP_DUALD1200_STATION/StationModel/tn__b4b08Ou03GRNY0xCb0/LiftColumnA_TopPlate",
+            "world_translation_after_mm": [
+              363.5,
+              -288.0,
+              -690.0
+            ],
+            "world_translation_before_mm": [
+              363.5,
+              -288.0,
+              -690.0
+            ],
+            "world_z_delta_mm": 0.0
+          },
+          {
+            "edited_op": "xformOp:transform",
+            "path": "/PNP_DUALD1200_STATION/StationModel/tn__b4b08Ou03GRNY0xCb0/LiftColumnA_InnerColumn",
+            "world_translation_after_mm": [
+              363.5,
+              -288.0,
+              -690.0
+            ],
+            "world_translation_before_mm": [
+              363.5,
+              -288.0,
+              -690.0
+            ],
+            "world_z_delta_mm": 0.0
+          },
+          {
+            "edited_op": "xformOp:translate",
+            "path": "/PNP_DUALD1200_STATION/StationModel/InstalledRobots/StandA_Robot",
+            "world_translation_after_mm": [
+              -116.5,
+              -288.0,
+              0.0
+            ],
+            "world_translation_before_mm": [
+              -116.5,
+              -288.0,
+              0.0
+            ],
+            "world_z_delta_mm": 0.0
+          }
+        ],
+        "fixed_components_not_moved": [
+          "base_plate",
+          "outer_housing",
+          "middle_sleeve"
+        ],
+        "measured_base_bottom_to_disc_top_mm": 440.0,
+        "requested_offset_mm": 0.0
+      }
+    },
+    "lifter_trajectory_replayed": false,
+    "mode": "static_measured_installation_height_v1",
+    "session_layer_only": true,
+    "source_usd_saved": false,
+    "units": "millimetres"
+  },
+  "robot_base_link_overrides": {
+    "arms": {},
+    "mode": "not_applied",
+    "session_layer_only": true,
+    "source_usd_saved": false
+  }
+}

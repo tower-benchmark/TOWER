@@ -1,0 +1,1457 @@
+{
+  "schema": "tower-assets-v1",
+  "repository": "tower-benchmark/TOWER-Assets-archive",
+  "revision": "0.0.2",
+  "license": "other",
+  "source": {
+    "repository": "https://github.com/tower-benchmark/TOWER",
+    "evaluator_version": "0.1.0"
+  },
+  "assets": [
+    {
+      "id": "blocks/base/block_base.usd",
+      "path": "blocks/base/block_base.usd",
+      "sha256": "3146ad5f6761eb5ec7132dcb6234097da927b2e3a3b65f7ba9a52c7ee97d265e",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/base/textures/pbr/bottom_albedo.png",
+      "path": "blocks/base/textures/pbr/bottom_albedo.png",
+      "sha256": "354409d39fa0e275d3c9e3402f5e5bc2e119ad35e304369376dc38233499fff4",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/base/textures/pbr/bottom_normal.png",
+      "path": "blocks/base/textures/pbr/bottom_normal.png",
+      "sha256": "0df4b05e5d2e0c859230fc0bcc210af5a9f96b6694e9684d8fde176f84b92cf2",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/base/textures/pbr/bottom_roughness.png",
+      "path": "blocks/base/textures/pbr/bottom_roughness.png",
+      "sha256": "76ac3bebd4bafb64ccb2bf15f1df6d3ed6b3aa7b4cbff91833a7d5d585ae005b",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/base/textures/pbr/end_left_albedo.png",
+      "path": "blocks/base/textures/pbr/end_left_albedo.png",
+      "sha256": "2d746774a87008a1b2563a95fd76d118bcc89dc3611d592bf8be19546181da91",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/base/textures/pbr/end_left_normal.png",
+      "path": "blocks/base/textures/pbr/end_left_normal.png",
+      "sha256": "cff8bde940a8295eeaec86f8a79fb1da0c52c076c76cc2f3eab2ed8de696d1dc",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/base/textures/pbr/end_left_roughness.png",
+      "path": "blocks/base/textures/pbr/end_left_roughness.png",
+      "sha256": "4265655cf28d84a81893c244bc2230fdcbad0626edabfc6b99d70e0a1918c2cd",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/base/textures/pbr/end_right_albedo.png",
+      "path": "blocks/base/textures/pbr/end_right_albedo.png",
+      "sha256": "24c85d9feb238924d770bc87d1fcd9f08267f4462d88c1779203f2cd3757908b",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/base/textures/pbr/end_right_normal.png",
+      "path": "blocks/base/textures/pbr/end_right_normal.png",
+      "sha256": "8589960a5bcbe743075a93aa6177d7f8ce4c754ae443fb4f15306f2e3f07756c",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/base/textures/pbr/end_right_roughness.png",
+      "path": "blocks/base/textures/pbr/end_right_roughness.png",
+      "sha256": "a256844169f5ee23a4b52c50cb41d37d791c5ab598064b5659593f83c9eb3579",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/base/textures/pbr/long_back_albedo.png",
+      "path": "blocks/base/textures/pbr/long_back_albedo.png",
+      "sha256": "aef4008984894aa61754b7fc0841679cebadb924a7f855d9f2b61c69936da2e4",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/base/textures/pbr/long_back_normal.png",
+      "path": "blocks/base/textures/pbr/long_back_normal.png",
+      "sha256": "f94c26fb0c20bfab73a530957678db104033bf32fc11e12eab1ffe430494ba3f",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/base/textures/pbr/long_back_roughness.png",
+      "path": "blocks/base/textures/pbr/long_back_roughness.png",
+      "sha256": "6891d4a125dd421effc954b3c065e6c1f022cb6c294d4c55025be7049bd89668",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/base/textures/pbr/long_front_albedo.png",
+      "path": "blocks/base/textures/pbr/long_front_albedo.png",
+      "sha256": "d208504accd3b896e677bf2091882f0910958aeb3f7687d95e54d05033d9ef7a",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/base/textures/pbr/long_front_normal.png",
+      "path": "blocks/base/textures/pbr/long_front_normal.png",
+      "sha256": "12e220e38a18c569e81d09d296bae3c6d589153210d8ee258e42297bb14ca22c",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/base/textures/pbr/long_front_roughness.png",
+      "path": "blocks/base/textures/pbr/long_front_roughness.png",
+      "sha256": "d2d2a9946780bc91b77d60ea96309a40d5ee55ad23d4043a5a6cf3171144094d",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/base/textures/pbr/top_albedo.png",
+      "path": "blocks/base/textures/pbr/top_albedo.png",
+      "sha256": "8d0e2bfcf542beff8a79f6f874e275d8e15f87dd24de6a926ef69e69729937c1",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/base/textures/pbr/top_normal.png",
+      "path": "blocks/base/textures/pbr/top_normal.png",
+      "sha256": "7b4ac6c858840f846df3273067d405f9fcbdfa48f37a9c02fb7e50e892695d3c",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/base/textures/pbr/top_roughness.png",
+      "path": "blocks/base/textures/pbr/top_roughness.png",
+      "sha256": "1e058f98abdd25b3477b8bb4040adc2291e67fe00bdb9d6929ebef11a5e3c3ba",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/block_01.usd",
+      "path": "blocks/block_01.usd",
+      "sha256": "3146ad5f6761eb5ec7132dcb6234097da927b2e3a3b65f7ba9a52c7ee97d265e",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/block_02.usd",
+      "path": "blocks/block_02.usd",
+      "sha256": "3146ad5f6761eb5ec7132dcb6234097da927b2e3a3b65f7ba9a52c7ee97d265e",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/block_03.usd",
+      "path": "blocks/block_03.usd",
+      "sha256": "3146ad5f6761eb5ec7132dcb6234097da927b2e3a3b65f7ba9a52c7ee97d265e",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/block_04.usd",
+      "path": "blocks/block_04.usd",
+      "sha256": "3146ad5f6761eb5ec7132dcb6234097da927b2e3a3b65f7ba9a52c7ee97d265e",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/block_05.usd",
+      "path": "blocks/block_05.usd",
+      "sha256": "3146ad5f6761eb5ec7132dcb6234097da927b2e3a3b65f7ba9a52c7ee97d265e",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/block_06.usd",
+      "path": "blocks/block_06.usd",
+      "sha256": "3146ad5f6761eb5ec7132dcb6234097da927b2e3a3b65f7ba9a52c7ee97d265e",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/block_07.usd",
+      "path": "blocks/block_07.usd",
+      "sha256": "3146ad5f6761eb5ec7132dcb6234097da927b2e3a3b65f7ba9a52c7ee97d265e",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/block_08.usd",
+      "path": "blocks/block_08.usd",
+      "sha256": "3146ad5f6761eb5ec7132dcb6234097da927b2e3a3b65f7ba9a52c7ee97d265e",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/block_09.usd",
+      "path": "blocks/block_09.usd",
+      "sha256": "3146ad5f6761eb5ec7132dcb6234097da927b2e3a3b65f7ba9a52c7ee97d265e",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/block_10.usd",
+      "path": "blocks/block_10.usd",
+      "sha256": "3146ad5f6761eb5ec7132dcb6234097da927b2e3a3b65f7ba9a52c7ee97d265e",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/block_11.usd",
+      "path": "blocks/block_11.usd",
+      "sha256": "3146ad5f6761eb5ec7132dcb6234097da927b2e3a3b65f7ba9a52c7ee97d265e",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/block_12.usd",
+      "path": "blocks/block_12.usd",
+      "sha256": "3146ad5f6761eb5ec7132dcb6234097da927b2e3a3b65f7ba9a52c7ee97d265e",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/block_13.usd",
+      "path": "blocks/block_13.usd",
+      "sha256": "3146ad5f6761eb5ec7132dcb6234097da927b2e3a3b65f7ba9a52c7ee97d265e",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/block_14.usd",
+      "path": "blocks/block_14.usd",
+      "sha256": "3146ad5f6761eb5ec7132dcb6234097da927b2e3a3b65f7ba9a52c7ee97d265e",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/block_15.usd",
+      "path": "blocks/block_15.usd",
+      "sha256": "3146ad5f6761eb5ec7132dcb6234097da927b2e3a3b65f7ba9a52c7ee97d265e",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/block_16.usd",
+      "path": "blocks/block_16.usd",
+      "sha256": "3146ad5f6761eb5ec7132dcb6234097da927b2e3a3b65f7ba9a52c7ee97d265e",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/block_17.usd",
+      "path": "blocks/block_17.usd",
+      "sha256": "3146ad5f6761eb5ec7132dcb6234097da927b2e3a3b65f7ba9a52c7ee97d265e",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/block_18.usd",
+      "path": "blocks/block_18.usd",
+      "sha256": "3146ad5f6761eb5ec7132dcb6234097da927b2e3a3b65f7ba9a52c7ee97d265e",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/block_19.usd",
+      "path": "blocks/block_19.usd",
+      "sha256": "3146ad5f6761eb5ec7132dcb6234097da927b2e3a3b65f7ba9a52c7ee97d265e",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/block_20.usd",
+      "path": "blocks/block_20.usd",
+      "sha256": "3146ad5f6761eb5ec7132dcb6234097da927b2e3a3b65f7ba9a52c7ee97d265e",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/block_21.usd",
+      "path": "blocks/block_21.usd",
+      "sha256": "3146ad5f6761eb5ec7132dcb6234097da927b2e3a3b65f7ba9a52c7ee97d265e",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/block_22.usd",
+      "path": "blocks/block_22.usd",
+      "sha256": "3146ad5f6761eb5ec7132dcb6234097da927b2e3a3b65f7ba9a52c7ee97d265e",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/block_23.usd",
+      "path": "blocks/block_23.usd",
+      "sha256": "3146ad5f6761eb5ec7132dcb6234097da927b2e3a3b65f7ba9a52c7ee97d265e",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/block_24.usd",
+      "path": "blocks/block_24.usd",
+      "sha256": "3146ad5f6761eb5ec7132dcb6234097da927b2e3a3b65f7ba9a52c7ee97d265e",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/texture_variant_00.usda",
+      "path": "blocks/texture_variant_00.usda",
+      "sha256": "20c641717eab160dc54a29f980df89ba6e8366b4839d5771ac493383c382b3a3",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/texture_variant_01.usda",
+      "path": "blocks/texture_variant_01.usda",
+      "sha256": "e93c7b3490a9d8c9f86df46e99c2f498ccc33dbb41498e858bdfbe50a89dbe3c",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/texture_variant_02.usda",
+      "path": "blocks/texture_variant_02.usda",
+      "sha256": "d7e0ec2fdd9a49f8c0b552c93d32f6e37df5eba763b31df65a760ff490e47b44",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/texture_variant_03.usda",
+      "path": "blocks/texture_variant_03.usda",
+      "sha256": "b8622a6469ec9fa5e32ad9db9034c50dc8665e73c729430fcf70f11e08b4817e",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/texture_variant_04.usda",
+      "path": "blocks/texture_variant_04.usda",
+      "sha256": "678f84cb36113c9dd8cfe459fea4fa9d31492f2146e16f85db22b83e297d1f86",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/texture_variant_05.usda",
+      "path": "blocks/texture_variant_05.usda",
+      "sha256": "71adead75497d4a656486f6a5b20269f5bc12f9e781c58b3ad6a373318f8f7e9",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/texture_variant_06.usda",
+      "path": "blocks/texture_variant_06.usda",
+      "sha256": "2f1542b5d23c5186e2125493967291656d71ac25370dbbcf974fd7077e570539",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/texture_variant_07.usda",
+      "path": "blocks/texture_variant_07.usda",
+      "sha256": "6bf30a383dc66dd568cef60eda2dab9c519bd0f4cfdfe7e17caa76c9c9d3bbbb",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_00/bottom_albedo.png",
+      "path": "blocks/textures/variant_00/bottom_albedo.png",
+      "sha256": "df124ff4cf538d7a5123be7505593e492c7e43e0ac75f92eaffb003e8fdedd34",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_00/bottom_normal.png",
+      "path": "blocks/textures/variant_00/bottom_normal.png",
+      "sha256": "09add35f2cdb2ebdd480bb5053b2ae19707499f26aeefc4558f2bbf93627acad",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_00/bottom_roughness.png",
+      "path": "blocks/textures/variant_00/bottom_roughness.png",
+      "sha256": "0d9f32d6f17ab9a365548267dd8fe3f5fd222451cefe379c23df593e806569f7",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_00/end_left_albedo.png",
+      "path": "blocks/textures/variant_00/end_left_albedo.png",
+      "sha256": "5ae150dcde54581ac6a68aef8a1e0f32559839b074facd9f8f092894140072e5",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_00/end_left_normal.png",
+      "path": "blocks/textures/variant_00/end_left_normal.png",
+      "sha256": "770033d6ecc1cfad90171eabf81f1571bc28a1815bbeebe86f58239cf416d003",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_00/end_left_roughness.png",
+      "path": "blocks/textures/variant_00/end_left_roughness.png",
+      "sha256": "e077bfc2062d07d0b34f8ae8e4ce3eddd39424ee38c5e482c9ecc6f795a5d4fc",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_00/end_right_albedo.png",
+      "path": "blocks/textures/variant_00/end_right_albedo.png",
+      "sha256": "cbeb49f721c75d4417cbdc17be3e757c9ab13a5afcb7d34a084d1a793d63d282",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_00/end_right_normal.png",
+      "path": "blocks/textures/variant_00/end_right_normal.png",
+      "sha256": "491b2efaeba16dee593d8926c649d5cddb7cd933626f63241d3c699aabd80ed7",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_00/end_right_roughness.png",
+      "path": "blocks/textures/variant_00/end_right_roughness.png",
+      "sha256": "0f86f2b76e7f165da20a0e95ccd5a9f16017650de7023c9b54a500ee5f7f24c8",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_00/long_back_albedo.png",
+      "path": "blocks/textures/variant_00/long_back_albedo.png",
+      "sha256": "cc02fe755435707c4ed8a6b08c69d7d9a42552d7d459806a487fa6a89fefe1f3",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_00/long_back_normal.png",
+      "path": "blocks/textures/variant_00/long_back_normal.png",
+      "sha256": "62006ca5e93347becb117dd64d8ae8547b89eac3f83649def4d062cfc3b928ba",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_00/long_back_roughness.png",
+      "path": "blocks/textures/variant_00/long_back_roughness.png",
+      "sha256": "11274c34e311f3fb56d89858d06370ef746d4a0e405de640a928bdfa11512483",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_00/long_front_albedo.png",
+      "path": "blocks/textures/variant_00/long_front_albedo.png",
+      "sha256": "6f8f061fe80ace16ed5e6ef4db28f302906d43a7927e2d5c636fe520f4cf40bb",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_00/long_front_normal.png",
+      "path": "blocks/textures/variant_00/long_front_normal.png",
+      "sha256": "1ded07bea7612f5f0548d87a5785ed4901fbf09bf17ee44b342158aa8f286f59",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_00/long_front_roughness.png",
+      "path": "blocks/textures/variant_00/long_front_roughness.png",
+      "sha256": "252cf70eadf10be5194decfb46a08bb7ec667fb923650b65b5a4548e48d134aa",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_00/top_albedo.png",
+      "path": "blocks/textures/variant_00/top_albedo.png",
+      "sha256": "6c609b938602e49a56ba204c7bf64d70a74cbce264f169de856da461ea6714d0",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_00/top_normal.png",
+      "path": "blocks/textures/variant_00/top_normal.png",
+      "sha256": "36c72d8b8727d519a9f096cadcfaf9fcf39a911093d4d2662268b3cdae8aa620",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_00/top_roughness.png",
+      "path": "blocks/textures/variant_00/top_roughness.png",
+      "sha256": "5e6c2b14265236f13f1cffed27d285ceb4f7e6e01ebd83c294322f33a798eefe",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_01/bottom_albedo.png",
+      "path": "blocks/textures/variant_01/bottom_albedo.png",
+      "sha256": "9fcca0bc23872d4aa7a1afa87878442103068f388d40a508623a26db11f79f16",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_01/bottom_normal.png",
+      "path": "blocks/textures/variant_01/bottom_normal.png",
+      "sha256": "03b0aad26209e2765fa357a152037ce0fc20bbe5b2ff2e960e68bc693a54a753",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_01/bottom_roughness.png",
+      "path": "blocks/textures/variant_01/bottom_roughness.png",
+      "sha256": "3b6477961b38470d835d74e80cc42f0c76ccd2f3e125c4d7ec8a827508e0c3d2",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_01/end_left_albedo.png",
+      "path": "blocks/textures/variant_01/end_left_albedo.png",
+      "sha256": "9abe4636c8355a17ccf78629eaacbef7cd7eeafcd2cc4a3a4a60747394b878a2",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_01/end_left_normal.png",
+      "path": "blocks/textures/variant_01/end_left_normal.png",
+      "sha256": "b68dacfacf628692fd79ec24ab99e239615b503ea5962da9fd71f145358ab8b6",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_01/end_left_roughness.png",
+      "path": "blocks/textures/variant_01/end_left_roughness.png",
+      "sha256": "1afab58687cd885fec52b77ddd704486460d1dc8bd2f4992c3c6fa5f5a9158de",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_01/end_right_albedo.png",
+      "path": "blocks/textures/variant_01/end_right_albedo.png",
+      "sha256": "5e75915abb17bf29975384d7918ce94720137fc5c9a69bab700065572c67e56d",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_01/end_right_normal.png",
+      "path": "blocks/textures/variant_01/end_right_normal.png",
+      "sha256": "2d8b3ca594b358aa72b76fb1f97d631bcbf232efb28dbd0a2551213924da3d6e",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_01/end_right_roughness.png",
+      "path": "blocks/textures/variant_01/end_right_roughness.png",
+      "sha256": "fa7ad9ef8e84b6b7c12aa8c0d96a556db138abb4d88768f92d136dabdc1f6339",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_01/long_back_albedo.png",
+      "path": "blocks/textures/variant_01/long_back_albedo.png",
+      "sha256": "68c7e7b0482cd3bc7f9d062baa9dc1bd0a5edcfe810cac11139cd8ca961ad284",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_01/long_back_normal.png",
+      "path": "blocks/textures/variant_01/long_back_normal.png",
+      "sha256": "2c23f2d3c4e56a1ca4be238204d49caea5439d06c1e5a93f959409d46c742850",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_01/long_back_roughness.png",
+      "path": "blocks/textures/variant_01/long_back_roughness.png",
+      "sha256": "a2ca6a90dafffec1ee7cf2dc0da2c5602e1d4575907078006dd926a5ce5846ce",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_01/long_front_albedo.png",
+      "path": "blocks/textures/variant_01/long_front_albedo.png",
+      "sha256": "39061315b7d559a8ba798da35a8961f8f0dad32d625ca2ac09566c7e39f7d8d0",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_01/long_front_normal.png",
+      "path": "blocks/textures/variant_01/long_front_normal.png",
+      "sha256": "a7b9745182c439e7262516b6726ed7a4cebacd6e53c25df1172c65250f2c5c34",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_01/long_front_roughness.png",
+      "path": "blocks/textures/variant_01/long_front_roughness.png",
+      "sha256": "7153cb5ba7e5dd7592e588de8be2612d99c0d661129f0a9e9feae6f22795f6ac",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_01/top_albedo.png",
+      "path": "blocks/textures/variant_01/top_albedo.png",
+      "sha256": "e966cb8048cbd26691b9f98aff27e4309a201deaf3c3da2ea5a66c197c8c2689",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_01/top_normal.png",
+      "path": "blocks/textures/variant_01/top_normal.png",
+      "sha256": "8687db2135d9cabfbec4a79df521b9de3e0543147cf8e2257dbd1d10a011b7c2",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_01/top_roughness.png",
+      "path": "blocks/textures/variant_01/top_roughness.png",
+      "sha256": "448951b6d10976ca30c9ce86330a1e7273da210591cb85ebc30112092266c88a",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_02/bottom_albedo.png",
+      "path": "blocks/textures/variant_02/bottom_albedo.png",
+      "sha256": "8ae2e0692b0b6c12ca4456ebd5e04a53d57c7e4a65f1671bf41951711970fffe",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_02/bottom_normal.png",
+      "path": "blocks/textures/variant_02/bottom_normal.png",
+      "sha256": "54bf8d94b1a6ce56bf2c80e4eacfbeef4ca7907d1cdc961bbdfd51883a929a6c",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_02/bottom_roughness.png",
+      "path": "blocks/textures/variant_02/bottom_roughness.png",
+      "sha256": "50314ff5d7bb14d351ac02f1c5b7bfb20b4af66828820beeed113fb286416147",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_02/end_left_albedo.png",
+      "path": "blocks/textures/variant_02/end_left_albedo.png",
+      "sha256": "ac3454a67bebbcac6fe25da41f98bbb252d25cfd6aa806b92b88d85cf07ecc7c",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_02/end_left_normal.png",
+      "path": "blocks/textures/variant_02/end_left_normal.png",
+      "sha256": "7bf4a7054ac5a996996006e5ccfc5c6d0dd4b3022c2b73bf51e41d07598faaf2",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_02/end_left_roughness.png",
+      "path": "blocks/textures/variant_02/end_left_roughness.png",
+      "sha256": "7f0d812040296d3ba2115fb5dcb33b9f3a131102c9088b0ffe1368d3e0ddb0ce",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_02/end_right_albedo.png",
+      "path": "blocks/textures/variant_02/end_right_albedo.png",
+      "sha256": "f527eda20820f0acc14313fd2b98bca2303a6417800cabd6bbe3ea96d28c4da6",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_02/end_right_normal.png",
+      "path": "blocks/textures/variant_02/end_right_normal.png",
+      "sha256": "7bfaebecc7034725cb39c28c650fc79138d27b62d65d205c57acca8c73a73b1c",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_02/end_right_roughness.png",
+      "path": "blocks/textures/variant_02/end_right_roughness.png",
+      "sha256": "f0da9a853848f9a6a17b6f6a3293b97e0380e86b4dff036b03144a154f3e2961",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_02/long_back_albedo.png",
+      "path": "blocks/textures/variant_02/long_back_albedo.png",
+      "sha256": "eeeaac9c9e1816ca80ceb693539e528aee8a532b465be78d4efb18d2be2f98c2",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_02/long_back_normal.png",
+      "path": "blocks/textures/variant_02/long_back_normal.png",
+      "sha256": "db35a2ab0031734a77328e8ad454c6c4acd0882668b9764bc110a26f78844334",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_02/long_back_roughness.png",
+      "path": "blocks/textures/variant_02/long_back_roughness.png",
+      "sha256": "9b218161f19d5753cb4aada0033e723604c8aeb823edc694871ec13d10af91f9",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_02/long_front_albedo.png",
+      "path": "blocks/textures/variant_02/long_front_albedo.png",
+      "sha256": "95653b590b58dc6968759fddd851eb90be3484c297867401703b15bad1421835",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_02/long_front_normal.png",
+      "path": "blocks/textures/variant_02/long_front_normal.png",
+      "sha256": "a806119a5e9883bd42c49e94a0c9ac1410e341dbe5677421a8d0a94ce3ed5821",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_02/long_front_roughness.png",
+      "path": "blocks/textures/variant_02/long_front_roughness.png",
+      "sha256": "f3d8c0d8730807361aa6cb8481f740a98b4e897c048e10a2525df49f8e157474",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_02/top_albedo.png",
+      "path": "blocks/textures/variant_02/top_albedo.png",
+      "sha256": "f29a3cb65236fe20680d645231cc3639ded69ad62f21ed899e17661705ec0a98",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_02/top_normal.png",
+      "path": "blocks/textures/variant_02/top_normal.png",
+      "sha256": "d5a0a9d4ea7fe3fc1d44716ab3b074042bd2c70f557b517ffd80bf9de3215b81",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_02/top_roughness.png",
+      "path": "blocks/textures/variant_02/top_roughness.png",
+      "sha256": "1073d7e0bb617f6541057009ab516a8d68d0ed3d4f42114e1ba42c5ed026968f",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_03/bottom_albedo.png",
+      "path": "blocks/textures/variant_03/bottom_albedo.png",
+      "sha256": "a2ee0e1a9a9b53e9cc339e56e9c0e1b413e1439da5a867cebc1f10fb1421d681",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_03/bottom_normal.png",
+      "path": "blocks/textures/variant_03/bottom_normal.png",
+      "sha256": "87b14041bb53d6a6c6e274fc5099e0e5c4fa264a84eac5477f26d69df1785bfc",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_03/bottom_roughness.png",
+      "path": "blocks/textures/variant_03/bottom_roughness.png",
+      "sha256": "06d54f077fe32b6bea3d2aad5806dfec299a5876dbdcb510f2b597e265a3f909",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_03/end_left_albedo.png",
+      "path": "blocks/textures/variant_03/end_left_albedo.png",
+      "sha256": "6be3c59978b2186864fb7405195a4756cd33ee42c35eef4426b1bf586bf02fcf",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_03/end_left_normal.png",
+      "path": "blocks/textures/variant_03/end_left_normal.png",
+      "sha256": "b9eaf0872cfc4357ddca39edc78a5aff602d56f3dea0611c3a25c50dc700d0d5",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_03/end_left_roughness.png",
+      "path": "blocks/textures/variant_03/end_left_roughness.png",
+      "sha256": "25797562ee6650ffa2e9683493133a4354b0a296d6a89c825abd4e746fff1460",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_03/end_right_albedo.png",
+      "path": "blocks/textures/variant_03/end_right_albedo.png",
+      "sha256": "5362b79b4eb1987e262ea8daff96a61ed569f572e8de1bab69c61f3bce1080a2",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_03/end_right_normal.png",
+      "path": "blocks/textures/variant_03/end_right_normal.png",
+      "sha256": "cde3aa4dc6e455edc86348ddb2930446ec13fbdcec116b0c3c356715b9850065",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_03/end_right_roughness.png",
+      "path": "blocks/textures/variant_03/end_right_roughness.png",
+      "sha256": "2f17c199e1b8bad8382c121dca18b53cae2a9568bf31d4746d2f07dd8e35255c",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_03/long_back_albedo.png",
+      "path": "blocks/textures/variant_03/long_back_albedo.png",
+      "sha256": "08ad16a1cfea456cfacf60f5e64778ed292d8dbd2684a88ad989665d2b198cad",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_03/long_back_normal.png",
+      "path": "blocks/textures/variant_03/long_back_normal.png",
+      "sha256": "668461429b4519dd2283edfed1935df356026ecc732b373626c225b11500db19",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_03/long_back_roughness.png",
+      "path": "blocks/textures/variant_03/long_back_roughness.png",
+      "sha256": "395da96cfdcb8a4a6818e8486dd74b672b71557bf1c8c9f4f9211a14cccac488",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_03/long_front_albedo.png",
+      "path": "blocks/textures/variant_03/long_front_albedo.png",
+      "sha256": "47a9d92d4a60c382bf4643478a0100b521b807409ed4dbd92b29faf4a7d623a9",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_03/long_front_normal.png",
+      "path": "blocks/textures/variant_03/long_front_normal.png",
+      "sha256": "5418e5be1e3344799f4196346271bbe607d2bd94379983b4ae8c7ca291ce8aeb",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_03/long_front_roughness.png",
+      "path": "blocks/textures/variant_03/long_front_roughness.png",
+      "sha256": "acd19f61e6ac354ec375494c278adcf081291ea09f0445e9dd3986f261a0b8f2",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_03/top_albedo.png",
+      "path": "blocks/textures/variant_03/top_albedo.png",
+      "sha256": "a1b56eabdd2ae3ac13ef637043162a7e46648640f695601d295ee13b863668c0",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_03/top_normal.png",
+      "path": "blocks/textures/variant_03/top_normal.png",
+      "sha256": "0e27944affb367c0f24c2c18301ab55593d2993736f86bab2f28970f1058a401",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_03/top_roughness.png",
+      "path": "blocks/textures/variant_03/top_roughness.png",
+      "sha256": "c9955e57828e8d320ced418f4b56db0e735ba74c9f075c131191c549b9495574",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_04/bottom_albedo.png",
+      "path": "blocks/textures/variant_04/bottom_albedo.png",
+      "sha256": "582867a4ee901f34f0e3897199f659975f159d7b20a04cd4b13c852fafd82099",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_04/bottom_normal.png",
+      "path": "blocks/textures/variant_04/bottom_normal.png",
+      "sha256": "a3976687befd418868c3866978c395f2efa33c56d3d2cb2ee197fbde8212ff80",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_04/bottom_roughness.png",
+      "path": "blocks/textures/variant_04/bottom_roughness.png",
+      "sha256": "9acddde202e7f55dea0af4f60ff8267f92e151b92473ee7f01f4b8a47487f99f",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_04/end_left_albedo.png",
+      "path": "blocks/textures/variant_04/end_left_albedo.png",
+      "sha256": "7cda26b497d48d753d8d59e991f8a6b438d4ed0793a5647f670be7602b7a4a70",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_04/end_left_normal.png",
+      "path": "blocks/textures/variant_04/end_left_normal.png",
+      "sha256": "c4757199dc0d52f6079dfb6246ae78fb902c355148ba12f2d4b808796ce7fd78",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_04/end_left_roughness.png",
+      "path": "blocks/textures/variant_04/end_left_roughness.png",
+      "sha256": "219835156d0138b5204690f490f1080d5a9d94a9fc448c83b52add4bbbbeceb4",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_04/end_right_albedo.png",
+      "path": "blocks/textures/variant_04/end_right_albedo.png",
+      "sha256": "3cd3969ead153c21451d8da235836e91b8585e28efb6231a2fca671f584257a8",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_04/end_right_normal.png",
+      "path": "blocks/textures/variant_04/end_right_normal.png",
+      "sha256": "1ae5384d0f4729e6b04119a4eab1a5c24efceaa735d51d0e4374e68a52f43195",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_04/end_right_roughness.png",
+      "path": "blocks/textures/variant_04/end_right_roughness.png",
+      "sha256": "8f2c237b2b59673e917b12590f82eec9d729565fcd0aa937024a78d906eb3ff5",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_04/long_back_albedo.png",
+      "path": "blocks/textures/variant_04/long_back_albedo.png",
+      "sha256": "3fb7178012ad24e41585c33b61d4e74e1c97f341b9f463c42525f05c4dc142c6",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_04/long_back_normal.png",
+      "path": "blocks/textures/variant_04/long_back_normal.png",
+      "sha256": "13bc4ca41410b936f99a302edbcbe1c2a11526142332249853b33ba0244296a7",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_04/long_back_roughness.png",
+      "path": "blocks/textures/variant_04/long_back_roughness.png",
+      "sha256": "4d1158556930b5d41a744b4946569a68756e7f2e744ef675a592fcbd9ce8ed3b",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_04/long_front_albedo.png",
+      "path": "blocks/textures/variant_04/long_front_albedo.png",
+      "sha256": "c1289f0dc125e1c5f834335345e0bf8d33c81c9b6c1dc9c568817547496985d7",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_04/long_front_normal.png",
+      "path": "blocks/textures/variant_04/long_front_normal.png",
+      "sha256": "8758dc8aee0c6f3edd9e78f5d02a200b9d45d82e33cfc950837f4a7ba1c57c6c",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_04/long_front_roughness.png",
+      "path": "blocks/textures/variant_04/long_front_roughness.png",
+      "sha256": "820afbfc9b2b0d803515be77750c55f0c2c3647bb2f673d53c2c89239c1a6c82",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_04/top_albedo.png",
+      "path": "blocks/textures/variant_04/top_albedo.png",
+      "sha256": "c95ace466c713ff6a03892554d526d02c618fe162ec045db62ff2afd46fe3a3b",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_04/top_normal.png",
+      "path": "blocks/textures/variant_04/top_normal.png",
+      "sha256": "b97e33acf0bb51bb2aa54a970f27c5548ce0a571cebcf0ef7581379b767fa8ba",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_04/top_roughness.png",
+      "path": "blocks/textures/variant_04/top_roughness.png",
+      "sha256": "14725c4dba5c283bd11521bf90c0157e6665aead2d3f6642249a94c83c5c926a",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_05/bottom_albedo.png",
+      "path": "blocks/textures/variant_05/bottom_albedo.png",
+      "sha256": "805cb2135669f3ace00fc50310118d2caaf6d0df94f30272a9fb68a45fe0dbd7",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_05/bottom_normal.png",
+      "path": "blocks/textures/variant_05/bottom_normal.png",
+      "sha256": "89be2e63c7aa2c21a19627722156532811063218868fa030f1be2ee801a34fff",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_05/bottom_roughness.png",
+      "path": "blocks/textures/variant_05/bottom_roughness.png",
+      "sha256": "1e29ea20508f3fa80fddb14c6dcb1a7840f486d02bff344023ceeae073ea8593",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_05/end_left_albedo.png",
+      "path": "blocks/textures/variant_05/end_left_albedo.png",
+      "sha256": "db077e35b19bfc6b54a2e486260deb33cfab08b345e39edfbbf5ee0805191ea7",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_05/end_left_normal.png",
+      "path": "blocks/textures/variant_05/end_left_normal.png",
+      "sha256": "4a0c68f5adf42e3bd351f117cbf7c3234a6599c536a6cdef8c4f097285e4440e",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_05/end_left_roughness.png",
+      "path": "blocks/textures/variant_05/end_left_roughness.png",
+      "sha256": "03abe39126c5360e4cfe40ca9b86e30aff71e0d08f6a7e7a8906c5414533e4f5",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_05/end_right_albedo.png",
+      "path": "blocks/textures/variant_05/end_right_albedo.png",
+      "sha256": "4ccb2aa2928c1e976a7153183c29bbbd3828bdcfa903fb4aa46e0bed3d884c0d",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_05/end_right_normal.png",
+      "path": "blocks/textures/variant_05/end_right_normal.png",
+      "sha256": "c4ef18ce51ed6d7619fb9a43ad6ecead58b8468eceba615d1269bcaef3c41a0a",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_05/end_right_roughness.png",
+      "path": "blocks/textures/variant_05/end_right_roughness.png",
+      "sha256": "856348ec4b95b3b98caf0bdd5870db988939bb36ee7c8d07c1544611d3d345ec",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_05/long_back_albedo.png",
+      "path": "blocks/textures/variant_05/long_back_albedo.png",
+      "sha256": "b8b49610132d52ad2db2b6cde5db7597f4f32366d0f30e492e2a2dfa61de28e7",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_05/long_back_normal.png",
+      "path": "blocks/textures/variant_05/long_back_normal.png",
+      "sha256": "158372d5e4d64de9020dc6fe11c2aedd7890429d0ca1bc01b39f4a71b70e362b",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_05/long_back_roughness.png",
+      "path": "blocks/textures/variant_05/long_back_roughness.png",
+      "sha256": "0b7028e293ce57f257321030968efb69fae1bb853e29feed5d78445b9d1571da",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_05/long_front_albedo.png",
+      "path": "blocks/textures/variant_05/long_front_albedo.png",
+      "sha256": "ab6e41ec08f1cdae6262c836f3226f1d1a7163f60205a52032388ac0c3cd1572",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_05/long_front_normal.png",
+      "path": "blocks/textures/variant_05/long_front_normal.png",
+      "sha256": "c80020b208d6c17bb409233ce96cfbf20f0c62e5473a903222e31fcb3a78f6b8",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_05/long_front_roughness.png",
+      "path": "blocks/textures/variant_05/long_front_roughness.png",
+      "sha256": "e2a751138b88a8c5ec6d46935300b74c838967e3edd7312ae2a925f316cacbc0",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_05/top_albedo.png",
+      "path": "blocks/textures/variant_05/top_albedo.png",
+      "sha256": "9fbea3b30702e45de4afc802f4ef9c700e713c329f5b9c21f7cb16858546b000",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_05/top_normal.png",
+      "path": "blocks/textures/variant_05/top_normal.png",
+      "sha256": "76965dd2edebc8d0045dfd468205d045829f564e2d6f4dbee85aa604f517e802",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_05/top_roughness.png",
+      "path": "blocks/textures/variant_05/top_roughness.png",
+      "sha256": "91de9bfe6d1085479ed279d4c0e77b413c16b398e8eb79527b08d781282f1818",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_06/bottom_albedo.png",
+      "path": "blocks/textures/variant_06/bottom_albedo.png",
+      "sha256": "261d8cc5eb63e7d34dc2afbeb4bc53ca51445083b3e6beb0d1ff59bdacafda72",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_06/bottom_normal.png",
+      "path": "blocks/textures/variant_06/bottom_normal.png",
+      "sha256": "a761b1940f250469842db4faaffd56d920928fee0bd9419a9186245e0150257e",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_06/bottom_roughness.png",
+      "path": "blocks/textures/variant_06/bottom_roughness.png",
+      "sha256": "f0cb972c887eb27b63710afb20b37cb6b2f1853c461a50ba69b13614ed9ec9d0",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_06/end_left_albedo.png",
+      "path": "blocks/textures/variant_06/end_left_albedo.png",
+      "sha256": "6cae1ca2615ed833cd902a0958f370162de68f5b959ae8588c8fd3a9082c8552",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_06/end_left_normal.png",
+      "path": "blocks/textures/variant_06/end_left_normal.png",
+      "sha256": "05116e9a822fcd3d73a451a35710b13627d3a99d6538f5b977633eef3020ab7b",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_06/end_left_roughness.png",
+      "path": "blocks/textures/variant_06/end_left_roughness.png",
+      "sha256": "c309ff0d66fec51d34e06f4ab1435611e1714ea06e00f03e2a6ad9ac64721ee9",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_06/end_right_albedo.png",
+      "path": "blocks/textures/variant_06/end_right_albedo.png",
+      "sha256": "4ea83458aae1b3f50cb7348b55c19654daa9c1d28408e922f25ce76ccde3a00a",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_06/end_right_normal.png",
+      "path": "blocks/textures/variant_06/end_right_normal.png",
+      "sha256": "fdfe56acadf8603d782668a380f4a4a6d1f0a51797bd981b4ad3b3c5a01174d2",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_06/end_right_roughness.png",
+      "path": "blocks/textures/variant_06/end_right_roughness.png",
+      "sha256": "3ef2344cdcaec1f6444762bfd3116d4d7e3cf0e22f16bad2f129891b5d671e37",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_06/long_back_albedo.png",
+      "path": "blocks/textures/variant_06/long_back_albedo.png",
+      "sha256": "28c83b7f4857310016464aa406a181498d364e0c57aad8cac4db872d74122c64",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_06/long_back_normal.png",
+      "path": "blocks/textures/variant_06/long_back_normal.png",
+      "sha256": "bb15ffa0779178fe0f6bc256d1c26adf4cb27c1a2ad2b51b897272591c64bafb",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_06/long_back_roughness.png",
+      "path": "blocks/textures/variant_06/long_back_roughness.png",
+      "sha256": "bf09e46d055981d7fda4c2693f903621e2af49fff0ce6dc2c36a25779dd7aba9",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_06/long_front_albedo.png",
+      "path": "blocks/textures/variant_06/long_front_albedo.png",
+      "sha256": "433ef32ac92c1f396ff147981021f523ddf1a123421cd83617302546dcca7822",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_06/long_front_normal.png",
+      "path": "blocks/textures/variant_06/long_front_normal.png",
+      "sha256": "65c70d224e90aedd67f994544eda77ed5da5846704bf9a25ca9fee74e0bfe43f",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_06/long_front_roughness.png",
+      "path": "blocks/textures/variant_06/long_front_roughness.png",
+      "sha256": "d39b7ba7ae1f78bdc82b9f21f05af63fab524f8880eac9ff8bbae9ef646a3b14",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_06/top_albedo.png",
+      "path": "blocks/textures/variant_06/top_albedo.png",
+      "sha256": "4dc048356d6b8652182dfba094ae1d08718b094e03634e31f1ee527c9f26cc84",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_06/top_normal.png",
+      "path": "blocks/textures/variant_06/top_normal.png",
+      "sha256": "922df006786c2ffd290366a76bd9238f27916902ae8113738a6432427ebf211d",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_06/top_roughness.png",
+      "path": "blocks/textures/variant_06/top_roughness.png",
+      "sha256": "2e92a1b5ef7976bb84a3be5f7a952a8cb7449ae8bbe93eb79ebeb2cdcf807c06",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_07/bottom_albedo.png",
+      "path": "blocks/textures/variant_07/bottom_albedo.png",
+      "sha256": "feaa8b30ca1eb6f61ea8c93957940f3a7c3f52c8b94a97e8bb1657bb5288e06b",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_07/bottom_normal.png",
+      "path": "blocks/textures/variant_07/bottom_normal.png",
+      "sha256": "15c69de8cfaebb6d6a0511de8a5a7acf035a78415513f327f0ca014a1dc9a104",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_07/bottom_roughness.png",
+      "path": "blocks/textures/variant_07/bottom_roughness.png",
+      "sha256": "5517b1c10af9bc1a5f9dde2b3c0da92b842c830b26b572d876427f2a3557c5c7",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_07/end_left_albedo.png",
+      "path": "blocks/textures/variant_07/end_left_albedo.png",
+      "sha256": "67ed8857ac8ff59117c6a259cfda596becd2b5325f5b23fcfb93010a82a48602",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_07/end_left_normal.png",
+      "path": "blocks/textures/variant_07/end_left_normal.png",
+      "sha256": "9fd4f8ccaceee83c8ef996b9b80d6f62153d6f06dd125c0c2784fd0243a31e23",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_07/end_left_roughness.png",
+      "path": "blocks/textures/variant_07/end_left_roughness.png",
+      "sha256": "e3b68ddd785fa80128c77ce931b712ef325aa97bc848139151900c5e3b02fd7e",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_07/end_right_albedo.png",
+      "path": "blocks/textures/variant_07/end_right_albedo.png",
+      "sha256": "453df6aa1043447a0c6ceee9c83b7372a8e6ae26afc849f913f7dfb69bd1b4da",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_07/end_right_normal.png",
+      "path": "blocks/textures/variant_07/end_right_normal.png",
+      "sha256": "ce086cb7d70d98fba032932aa7279ec13dbfed866be447d2e0030acf7b548bf2",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_07/end_right_roughness.png",
+      "path": "blocks/textures/variant_07/end_right_roughness.png",
+      "sha256": "8db8d323ab0431d1953bfbaba32ec2120918bc10447a4c94187e9698bd22331c",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_07/long_back_albedo.png",
+      "path": "blocks/textures/variant_07/long_back_albedo.png",
+      "sha256": "0aa46f5dbc0e3c889867476f9e380137c5c1d488c616fd552c307ef4a3f7873a",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_07/long_back_normal.png",
+      "path": "blocks/textures/variant_07/long_back_normal.png",
+      "sha256": "5d723b7ecd9f0e859930c213f8a5d6f8ba774395fa85b8e986aec6694e12053e",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_07/long_back_roughness.png",
+      "path": "blocks/textures/variant_07/long_back_roughness.png",
+      "sha256": "50578735ff262b7ba572b790c3768c54de5b6663c8ad53cbf10e26dc5d50e911",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_07/long_front_albedo.png",
+      "path": "blocks/textures/variant_07/long_front_albedo.png",
+      "sha256": "12922dce569d96ecfa97801b26926775dcb1ef437df5f5ca4ebb5cf396c8c1fc",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_07/long_front_normal.png",
+      "path": "blocks/textures/variant_07/long_front_normal.png",
+      "sha256": "a0465471fdccb698d04bf865e98c52da5c90b53054c784f47c4b0e200e254f30",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_07/long_front_roughness.png",
+      "path": "blocks/textures/variant_07/long_front_roughness.png",
+      "sha256": "38abab5ae9d39c403503de43a7f70d02dfae09c8651322fe8ac73a115ceceb2c",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_07/top_albedo.png",
+      "path": "blocks/textures/variant_07/top_albedo.png",
+      "sha256": "5904b14ffd4e29035c67af16b783c2073fac9b131ff79b0651f81f1d16e040e7",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_07/top_normal.png",
+      "path": "blocks/textures/variant_07/top_normal.png",
+      "sha256": "65b6efa798715cdec1fef8e2307117107031c305d959530e14e6a5b9af3a61d7",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "blocks/textures/variant_07/top_roughness.png",
+      "path": "blocks/textures/variant_07/top_roughness.png",
+      "sha256": "89d5bed0b4ffd6f4dec43de4977771fcef921875e3ae3e21f856db5463f779c0",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "station/station.usdz",
+      "path": "station/station.usdz",
+      "sha256": "5ffea9b3bc3f5a2936c41cf129ca8a6fedf9298c23627b0c523615f8ff6fde66",
+      "version": "0.0.2",
+      "license": "MIT AND CC-BY-4.0"
+    },
+    {
+      "id": "tasks/aligned_stack_2.usda",
+      "path": "tasks/aligned_stack_2.usda",
+      "sha256": "a0951765f52411c65aefc2857d17b8969dcc70036b52dec160253a2c31a3564b",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "tasks/aligned_stack_3.usda",
+      "path": "tasks/aligned_stack_3.usda",
+      "sha256": "1615400d0434a10f2cf2610a51311c80a51ef6008ebea6f1134ff7af001b8f45",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "tasks/cross_tower_transfer_2.usda",
+      "path": "tasks/cross_tower_transfer_2.usda",
+      "sha256": "d162295c2b6d19877edb50004b0a158f07ab2f37329ee089b54bccad30ea9672",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "tasks/cross_tower_transfer_3.usda",
+      "path": "tasks/cross_tower_transfer_3.usda",
+      "sha256": "4dd1b6f6cf4d29d2d2d9bd5a0020ccf8f4733582d475d5ceafac74e983cf5bc3",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "tasks/tower_transfer_2.usda",
+      "path": "tasks/tower_transfer_2.usda",
+      "sha256": "83f1a2c2be3df1548e634f27a60e6700950942105b8520b77255ce12c7a720b7",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "tasks/tower_transfer_3.usda",
+      "path": "tasks/tower_transfer_3.usda",
+      "sha256": "6a104b3bce3c2f573f81c736f1d108262581dd70d7d0e4a33558f2e0aca2b487",
+      "version": "0.0.1",
+      "license": "CC-BY-4.0"
+    }
+  ],
+  "metadata": [
+    {
+      "path": "README.md",
+      "sha256": "2e253ad233d79dceb399e9cbcfe2d424e5aaf9981e399ea5194859cfc31728b4"
+    },
+    {
+      "path": "tasks/README.md",
+      "sha256": "074ff34f1696361dadb0c58f2a8b880a68241b1e6ac89ded5331bb404cea3cb1"
+    },
+    {
+      "path": "metadata/task-catalog.json",
+      "sha256": "3178fa51e0f44ba3417e079e91155494d1d9a9c32a8b6340a2efc0908fe540a8"
+    },
+    {
+      "path": "station/station-block-inventory.json",
+      "sha256": "96e4c5a7c0f7e131fce15ed36b3b0e34049eb924c5688ec84fe8e3553ab99eed"
+    },
+    {
+      "path": "THIRD_PARTY_NOTICES.md",
+      "sha256": "c5c79fd5b6c28e96427bddc1d4cfaae7a4440459d46279a3d4d86399a9825f90"
+    },
+    {
+      "path": "LICENSE-ASSETS",
+      "sha256": "859e1a2609ec99871fcba70f5a55d1e9943288e0812147ee8ca40a761eb8b70a"
+    },
+    {
+      "path": "station/station-update-20260913.json",
+      "sha256": "a36d173b7d018a1c4a454c5b2aad9db0b3c4073674867774a86c9a2d8fd1a30c"
+    }
+  ],
+  "archived": true
+}

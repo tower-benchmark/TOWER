@@ -1,0 +1,2695 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:tower:scene:v2",
+  "type": "object",
+  "properties": {
+    "episode": {
+      "type": "object",
+      "properties": {
+        "episode_spec": {
+          "type": "object",
+          "properties": {
+            "blocks": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "asset_reference": {
+                    "type": "string",
+                    "pattern": "sha256:[0-9a-f]{64}"
+                  },
+                  "asset_scale": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 3,
+                    "maxItems": 3
+                  },
+                  "asset_sha256": {
+                    "type": "string",
+                    "pattern": "[0-9a-f]{64}"
+                  },
+                  "diagonal_inertia_kg_m2": {
+                    "type": [
+                      "array",
+                      "null"
+                    ],
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 3,
+                    "maxItems": 3
+                  },
+                  "dimensions_m": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 3,
+                    "maxItems": 3
+                  },
+                  "fixed_on_table": {
+                    "type": "boolean"
+                  },
+                  "layer": {
+                    "type": "integer"
+                  },
+                  "mass_kg": {
+                    "type": "number"
+                  },
+                  "measured_asset_id": {
+                    "type": [
+                      "integer",
+                      "null"
+                    ]
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "pose": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 7,
+                    "maxItems": 7
+                  },
+                  "slot": {
+                    "type": "integer"
+                  },
+                  "texture_atlas": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "pattern": "sha256:[0-9a-f]{64}"
+                  },
+                  "texture_sha256": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "pattern": "[0-9a-f]{64}"
+                  },
+                  "texture_variant": {
+                    "type": "null"
+                  },
+                  "tower": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "asset_reference",
+                  "asset_scale",
+                  "asset_sha256",
+                  "diagonal_inertia_kg_m2",
+                  "dimensions_m",
+                  "fixed_on_table",
+                  "layer",
+                  "mass_kg",
+                  "measured_asset_id",
+                  "name",
+                  "pose",
+                  "slot",
+                  "texture_atlas",
+                  "texture_sha256",
+                  "texture_variant",
+                  "tower"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 8,
+              "maxItems": 17
+            },
+            "layout_metadata": {
+              "type": "object",
+              "properties": {
+                "active_arms": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
+                },
+                "arm_sequence": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 2,
+                  "maxItems": 3
+                },
+                "blocks_per_movable_layer": {
+                  "type": "integer"
+                },
+                "body_transform": {
+                  "type": "object",
+                  "properties": {
+                    "translation_m": {
+                      "type": "array",
+                      "items": {
+                        "type": "number"
+                      },
+                      "minItems": 2,
+                      "maxItems": 2
+                    },
+                    "yaw_deg": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "translation_m",
+                    "yaw_deg"
+                  ],
+                  "additionalProperties": false
+                },
+                "catalog_task": {
+                  "type": "integer"
+                },
+                "contact_model": {
+                  "type": "string"
+                },
+                "cycles": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "cycle": {
+                        "type": "integer"
+                      },
+                      "direction": {
+                        "type": "array",
+                        "items": {
+                          "type": "number"
+                        },
+                        "minItems": 3,
+                        "maxItems": 3
+                      },
+                      "extract_arm": {
+                        "type": "string"
+                      },
+                      "extract_order": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "minItems": 2,
+                        "maxItems": 2
+                      },
+                      "layer": {
+                        "type": "integer"
+                      },
+                      "push_order": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "minItems": 2,
+                        "maxItems": 2
+                      },
+                      "tool_arm": {
+                        "type": "string"
+                      },
+                      "tool_index": {
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "cycle",
+                      "direction",
+                      "extract_arm",
+                      "extract_order",
+                      "layer",
+                      "push_order",
+                      "tool_arm",
+                      "tool_index"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "minItems": 1,
+                  "maxItems": 2
+                },
+                "destination_base_canonical": {
+                  "type": "boolean"
+                },
+                "evaluation_task": {
+                  "type": "string"
+                },
+                "extraction_count": {
+                  "type": "integer"
+                },
+                "fixed_slot_order": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 8,
+                  "maxItems": 15
+                },
+                "foundation_fixed_on_table": {
+                  "type": "boolean"
+                },
+                "foundation_yaw_degrees": {
+                  "type": "object",
+                  "properties": {
+                    "destination": {
+                      "type": "integer"
+                    },
+                    "source": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "destination",
+                    "source"
+                  ],
+                  "additionalProperties": false
+                },
+                "identity": {
+                  "type": "object",
+                  "properties": {
+                    "source_l1_0": {
+                      "type": "object",
+                      "properties": {
+                        "authored_slot": {
+                          "type": "integer"
+                        },
+                        "layer": {
+                          "type": "integer"
+                        },
+                        "role": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "authored_slot",
+                        "layer",
+                        "role"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "source_l1_1": {
+                      "type": "object",
+                      "properties": {
+                        "authored_slot": {
+                          "type": "integer"
+                        },
+                        "layer": {
+                          "type": "integer"
+                        },
+                        "role": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "authored_slot",
+                        "layer",
+                        "role"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "source_l1_2": {
+                      "type": "object",
+                      "properties": {
+                        "authored_slot": {
+                          "type": "integer"
+                        },
+                        "layer": {
+                          "type": "integer"
+                        },
+                        "role": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "authored_slot",
+                        "layer",
+                        "role"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "source_l2_0": {
+                      "type": "object",
+                      "properties": {
+                        "authored_slot": {
+                          "type": "integer"
+                        },
+                        "layer": {
+                          "type": "integer"
+                        },
+                        "role": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "authored_slot",
+                        "layer",
+                        "role"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "source_l2_1": {
+                      "type": "object",
+                      "properties": {
+                        "authored_slot": {
+                          "type": "integer"
+                        },
+                        "layer": {
+                          "type": "integer"
+                        },
+                        "role": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "authored_slot",
+                        "layer",
+                        "role"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "source_l2_2": {
+                      "type": "object",
+                      "properties": {
+                        "authored_slot": {
+                          "type": "integer"
+                        },
+                        "layer": {
+                          "type": "integer"
+                        },
+                        "role": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "authored_slot",
+                        "layer",
+                        "role"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "source_l3_0": {
+                      "type": "object",
+                      "properties": {
+                        "authored_slot": {
+                          "type": "integer"
+                        },
+                        "layer": {
+                          "type": "integer"
+                        },
+                        "role": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "authored_slot",
+                        "layer",
+                        "role"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "source_l3_1": {
+                      "type": "object",
+                      "properties": {
+                        "authored_slot": {
+                          "type": "integer"
+                        },
+                        "layer": {
+                          "type": "integer"
+                        },
+                        "role": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "authored_slot",
+                        "layer",
+                        "role"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "source_l3_2": {
+                      "type": "object",
+                      "properties": {
+                        "authored_slot": {
+                          "type": "integer"
+                        },
+                        "layer": {
+                          "type": "integer"
+                        },
+                        "role": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "authored_slot",
+                        "layer",
+                        "role"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "source_l1_0",
+                    "source_l1_1",
+                    "source_l1_2",
+                    "source_l2_0",
+                    "source_l2_1",
+                    "source_l2_2"
+                  ],
+                  "additionalProperties": false
+                },
+                "initial_assistance": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "block": {
+                        "type": "string"
+                      },
+                      "center_asset_id": {
+                        "type": "integer"
+                      },
+                      "direction": {
+                        "type": "array",
+                        "items": {
+                          "type": "number"
+                        },
+                        "minItems": 3,
+                        "maxItems": 3
+                      },
+                      "height_difference_m": {
+                        "type": "number"
+                      },
+                      "initial_offset_m": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "block",
+                      "center_asset_id",
+                      "direction",
+                      "height_difference_m",
+                      "initial_offset_m"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "minItems": 2,
+                  "maxItems": 4
+                },
+                "insertion_count": {
+                  "type": "integer"
+                },
+                "layer_order": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 1,
+                  "maxItems": 2
+                },
+                "measured_assets": {
+                  "type": "boolean"
+                },
+                "measured_dimensions_unchanged": {
+                  "type": "boolean"
+                },
+                "movable_layers": {
+                  "type": "integer"
+                },
+                "nominal_body_quarter_turn_excludes_bases": {
+                  "type": "boolean"
+                },
+                "pickup_base_fixed": {
+                  "type": "boolean"
+                },
+                "placement_mode": {
+                  "type": "string"
+                },
+                "privileged_state_feedback": {
+                  "type": "boolean"
+                },
+                "push_targets": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "arm": {
+                        "type": "integer"
+                      },
+                      "arm_name": {
+                        "type": "string"
+                      },
+                      "block_id": {
+                        "type": "string"
+                      },
+                      "block_index": {
+                        "type": "integer"
+                      },
+                      "contact_face": {
+                        "type": "string"
+                      },
+                      "direction": {
+                        "type": "array",
+                        "items": {
+                          "type": "number"
+                        },
+                        "minItems": 3,
+                        "maxItems": 3
+                      },
+                      "layer": {
+                        "type": "integer"
+                      },
+                      "order": {
+                        "type": "integer"
+                      },
+                      "slot": {
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "arm",
+                      "arm_name",
+                      "block_id",
+                      "block_index",
+                      "contact_face",
+                      "direction",
+                      "layer",
+                      "order",
+                      "slot"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "minItems": 6,
+                  "maxItems": 9
+                },
+                "robot_bases_canonical": {
+                  "type": "boolean"
+                },
+                "single_arm": {
+                  "type": [
+                    "null",
+                    "string"
+                  ]
+                },
+                "source_base_common_initial_transform": {
+                  "type": "boolean"
+                },
+                "source_base_fixed_during_execution": {
+                  "type": "boolean"
+                },
+                "source_base_follows_body_transform": {
+                  "type": "boolean"
+                },
+                "source_base_moves_with_body": {
+                  "type": "boolean"
+                },
+                "source_center_bond": {
+                  "type": "object",
+                  "properties": {
+                    "amendment_sha256": {
+                      "type": "string"
+                    },
+                    "block_indices": {
+                      "type": "array",
+                      "items": {
+                        "type": "integer"
+                      },
+                      "minItems": 2,
+                      "maxItems": 2
+                    },
+                    "model": {
+                      "type": "string"
+                    },
+                    "revision": {
+                      "type": "integer"
+                    },
+                    "world_anchor": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "amendment_sha256",
+                    "block_indices",
+                    "model",
+                    "revision",
+                    "world_anchor"
+                  ],
+                  "additionalProperties": false
+                },
+                "source_movable_rotation_deg": {
+                  "type": "integer"
+                },
+                "task6_protrusion_m": {
+                  "type": "number"
+                },
+                "task7_transfer_table": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "arm": {
+                        "type": "integer"
+                      },
+                      "block_id": {
+                        "type": "string"
+                      },
+                      "block_index": {
+                        "type": "integer"
+                      },
+                      "destination_layer": {
+                        "type": "integer"
+                      },
+                      "destination_slot": {
+                        "type": "integer"
+                      },
+                      "goal_pose": {
+                        "type": "array",
+                        "items": {
+                          "type": "number"
+                        },
+                        "minItems": 7,
+                        "maxItems": 7
+                      },
+                      "order": {
+                        "type": "integer"
+                      },
+                      "source_layer": {
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "arm",
+                      "block_id",
+                      "block_index",
+                      "destination_layer",
+                      "destination_slot",
+                      "goal_pose",
+                      "order",
+                      "source_layer"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "minItems": 2,
+                  "maxItems": 4
+                },
+                "task_id": {
+                  "type": "string"
+                },
+                "task_variant": {
+                  "type": "string"
+                },
+                "tool_indices": {
+                  "type": "object",
+                  "properties": {
+                    "back": {
+                      "type": "integer"
+                    },
+                    "left": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "back",
+                    "left"
+                  ],
+                  "additionalProperties": false
+                },
+                "tool_initial_state": {
+                  "type": "object",
+                  "properties": {
+                    "back": {
+                      "type": "object",
+                      "properties": {
+                        "initial_pose": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 7,
+                          "maxItems": 7
+                        },
+                        "pivot": {
+                          "type": "string"
+                        },
+                        "translation_m": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 2,
+                          "maxItems": 2
+                        },
+                        "yaw_deg": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "initial_pose",
+                        "pivot",
+                        "translation_m",
+                        "yaw_deg"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "left": {
+                      "type": "object",
+                      "properties": {
+                        "initial_pose": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 7,
+                          "maxItems": 7
+                        },
+                        "pivot": {
+                          "type": "string"
+                        },
+                        "translation_m": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 2,
+                          "maxItems": 2
+                        },
+                        "yaw_deg": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "initial_pose",
+                        "pivot",
+                        "translation_m",
+                        "yaw_deg"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "back",
+                    "left"
+                  ],
+                  "additionalProperties": false
+                },
+                "total_layers_including_foundation": {
+                  "type": "integer"
+                },
+                "tower_centers_m": {
+                  "type": "array",
+                  "items": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 3,
+                    "maxItems": 3
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
+                },
+                "transfer_arms": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 1,
+                  "maxItems": 3
+                },
+                "unused_base_canonical": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "catalog_task",
+                "evaluation_task",
+                "movable_layers"
+              ],
+              "additionalProperties": false
+            },
+            "transfers": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "arm": {
+                    "type": "integer"
+                  },
+                  "block_id": {
+                    "type": "string"
+                  },
+                  "block_index": {
+                    "type": "integer"
+                  },
+                  "destination_layer": {
+                    "type": "integer"
+                  },
+                  "goal": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 7,
+                    "maxItems": 7
+                  },
+                  "source_layer": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "arm",
+                  "block_id",
+                  "block_index",
+                  "destination_layer",
+                  "goal",
+                  "source_layer"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 0,
+              "maxItems": 6
+            }
+          },
+          "required": [
+            "blocks",
+            "layout_metadata",
+            "transfers"
+          ],
+          "additionalProperties": false
+        },
+        "physics": {
+          "type": "object",
+          "properties": {
+            "destination_base_0": {
+              "type": "object",
+              "properties": {
+                "dynamic_friction": {
+                  "type": "number"
+                },
+                "restitution": {
+                  "type": "number"
+                },
+                "static_friction": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "dynamic_friction",
+                "restitution",
+                "static_friction"
+              ],
+              "additionalProperties": false
+            },
+            "destination_base_1": {
+              "type": "object",
+              "properties": {
+                "dynamic_friction": {
+                  "type": "number"
+                },
+                "restitution": {
+                  "type": "number"
+                },
+                "static_friction": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "dynamic_friction",
+                "restitution",
+                "static_friction"
+              ],
+              "additionalProperties": false
+            },
+            "destination_base_2": {
+              "type": "object",
+              "properties": {
+                "dynamic_friction": {
+                  "type": "number"
+                },
+                "restitution": {
+                  "type": "number"
+                },
+                "static_friction": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "dynamic_friction",
+                "restitution",
+                "static_friction"
+              ],
+              "additionalProperties": false
+            },
+            "pusher_lower": {
+              "type": "object",
+              "properties": {
+                "dynamic_friction": {
+                  "type": "number"
+                },
+                "restitution": {
+                  "type": "number"
+                },
+                "static_friction": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "dynamic_friction",
+                "restitution",
+                "static_friction"
+              ],
+              "additionalProperties": false
+            },
+            "pusher_upper": {
+              "type": "object",
+              "properties": {
+                "dynamic_friction": {
+                  "type": "number"
+                },
+                "restitution": {
+                  "type": "number"
+                },
+                "static_friction": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "dynamic_friction",
+                "restitution",
+                "static_friction"
+              ],
+              "additionalProperties": false
+            },
+            "source_base_0": {
+              "type": "object",
+              "properties": {
+                "dynamic_friction": {
+                  "type": "number"
+                },
+                "restitution": {
+                  "type": "number"
+                },
+                "static_friction": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "dynamic_friction",
+                "restitution",
+                "static_friction"
+              ],
+              "additionalProperties": false
+            },
+            "source_base_1": {
+              "type": "object",
+              "properties": {
+                "dynamic_friction": {
+                  "type": "number"
+                },
+                "restitution": {
+                  "type": "number"
+                },
+                "static_friction": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "dynamic_friction",
+                "restitution",
+                "static_friction"
+              ],
+              "additionalProperties": false
+            },
+            "source_base_2": {
+              "type": "object",
+              "properties": {
+                "dynamic_friction": {
+                  "type": "number"
+                },
+                "restitution": {
+                  "type": "number"
+                },
+                "static_friction": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "dynamic_friction",
+                "restitution",
+                "static_friction"
+              ],
+              "additionalProperties": false
+            },
+            "source_l1_0": {
+              "type": "object",
+              "properties": {
+                "dynamic_friction": {
+                  "type": "number"
+                },
+                "restitution": {
+                  "type": "number"
+                },
+                "static_friction": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "dynamic_friction",
+                "restitution",
+                "static_friction"
+              ],
+              "additionalProperties": false
+            },
+            "source_l1_1": {
+              "type": "object",
+              "properties": {
+                "dynamic_friction": {
+                  "type": "number"
+                },
+                "restitution": {
+                  "type": "number"
+                },
+                "static_friction": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "dynamic_friction",
+                "restitution",
+                "static_friction"
+              ],
+              "additionalProperties": false
+            },
+            "source_l1_2": {
+              "type": "object",
+              "properties": {
+                "dynamic_friction": {
+                  "type": "number"
+                },
+                "restitution": {
+                  "type": "number"
+                },
+                "static_friction": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "dynamic_friction",
+                "restitution",
+                "static_friction"
+              ],
+              "additionalProperties": false
+            },
+            "source_l2_0": {
+              "type": "object",
+              "properties": {
+                "dynamic_friction": {
+                  "type": "number"
+                },
+                "restitution": {
+                  "type": "number"
+                },
+                "static_friction": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "dynamic_friction",
+                "restitution",
+                "static_friction"
+              ],
+              "additionalProperties": false
+            },
+            "source_l2_1": {
+              "type": "object",
+              "properties": {
+                "dynamic_friction": {
+                  "type": "number"
+                },
+                "restitution": {
+                  "type": "number"
+                },
+                "static_friction": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "dynamic_friction",
+                "restitution",
+                "static_friction"
+              ],
+              "additionalProperties": false
+            },
+            "source_l2_2": {
+              "type": "object",
+              "properties": {
+                "dynamic_friction": {
+                  "type": "number"
+                },
+                "restitution": {
+                  "type": "number"
+                },
+                "static_friction": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "dynamic_friction",
+                "restitution",
+                "static_friction"
+              ],
+              "additionalProperties": false
+            },
+            "source_l3_0": {
+              "type": "object",
+              "properties": {
+                "dynamic_friction": {
+                  "type": "number"
+                },
+                "restitution": {
+                  "type": "number"
+                },
+                "static_friction": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "dynamic_friction",
+                "restitution",
+                "static_friction"
+              ],
+              "additionalProperties": false
+            },
+            "source_l3_1": {
+              "type": "object",
+              "properties": {
+                "dynamic_friction": {
+                  "type": "number"
+                },
+                "restitution": {
+                  "type": "number"
+                },
+                "static_friction": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "dynamic_friction",
+                "restitution",
+                "static_friction"
+              ],
+              "additionalProperties": false
+            },
+            "source_l3_2": {
+              "type": "object",
+              "properties": {
+                "dynamic_friction": {
+                  "type": "number"
+                },
+                "restitution": {
+                  "type": "number"
+                },
+                "static_friction": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "dynamic_friction",
+                "restitution",
+                "static_friction"
+              ],
+              "additionalProperties": false
+            },
+            "src_L1_0": {
+              "type": "object",
+              "properties": {
+                "dynamic_friction": {
+                  "type": "number"
+                },
+                "restitution": {
+                  "type": "number"
+                },
+                "static_friction": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "dynamic_friction",
+                "restitution",
+                "static_friction"
+              ],
+              "additionalProperties": false
+            },
+            "src_L1_1": {
+              "type": "object",
+              "properties": {
+                "dynamic_friction": {
+                  "type": "number"
+                },
+                "restitution": {
+                  "type": "number"
+                },
+                "static_friction": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "dynamic_friction",
+                "restitution",
+                "static_friction"
+              ],
+              "additionalProperties": false
+            },
+            "src_L1_2": {
+              "type": "object",
+              "properties": {
+                "dynamic_friction": {
+                  "type": "number"
+                },
+                "restitution": {
+                  "type": "number"
+                },
+                "static_friction": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "dynamic_friction",
+                "restitution",
+                "static_friction"
+              ],
+              "additionalProperties": false
+            },
+            "src_L2_0": {
+              "type": "object",
+              "properties": {
+                "dynamic_friction": {
+                  "type": "number"
+                },
+                "restitution": {
+                  "type": "number"
+                },
+                "static_friction": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "dynamic_friction",
+                "restitution",
+                "static_friction"
+              ],
+              "additionalProperties": false
+            },
+            "src_L2_1": {
+              "type": "object",
+              "properties": {
+                "dynamic_friction": {
+                  "type": "number"
+                },
+                "restitution": {
+                  "type": "number"
+                },
+                "static_friction": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "dynamic_friction",
+                "restitution",
+                "static_friction"
+              ],
+              "additionalProperties": false
+            },
+            "src_L2_2": {
+              "type": "object",
+              "properties": {
+                "dynamic_friction": {
+                  "type": "number"
+                },
+                "restitution": {
+                  "type": "number"
+                },
+                "static_friction": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "dynamic_friction",
+                "restitution",
+                "static_friction"
+              ],
+              "additionalProperties": false
+            },
+            "src_L3_0": {
+              "type": "object",
+              "properties": {
+                "dynamic_friction": {
+                  "type": "number"
+                },
+                "restitution": {
+                  "type": "number"
+                },
+                "static_friction": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "dynamic_friction",
+                "restitution",
+                "static_friction"
+              ],
+              "additionalProperties": false
+            },
+            "src_L3_1": {
+              "type": "object",
+              "properties": {
+                "dynamic_friction": {
+                  "type": "number"
+                },
+                "restitution": {
+                  "type": "number"
+                },
+                "static_friction": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "dynamic_friction",
+                "restitution",
+                "static_friction"
+              ],
+              "additionalProperties": false
+            },
+            "src_L3_2": {
+              "type": "object",
+              "properties": {
+                "dynamic_friction": {
+                  "type": "number"
+                },
+                "restitution": {
+                  "type": "number"
+                },
+                "static_friction": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "dynamic_friction",
+                "restitution",
+                "static_friction"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "destination_base_0",
+            "destination_base_1",
+            "destination_base_2",
+            "source_base_0",
+            "source_base_1",
+            "source_base_2"
+          ],
+          "additionalProperties": false
+        },
+        "schema": {
+          "type": "string",
+          "const": "tower-evaluation-state-v2"
+        },
+        "task7_scene": {
+          "type": "object",
+          "properties": {
+            "blocks": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "asset_reference": {
+                    "type": "string",
+                    "pattern": "sha256:[0-9a-f]{64}"
+                  },
+                  "asset_scale": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 3,
+                    "maxItems": 3
+                  },
+                  "asset_sha256": {
+                    "type": "string",
+                    "pattern": "[0-9a-f]{64}"
+                  },
+                  "diagonal_inertia_kg_m2": {
+                    "type": [
+                      "array",
+                      "null"
+                    ],
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 3,
+                    "maxItems": 3
+                  },
+                  "dimensions_m": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 3,
+                    "maxItems": 3
+                  },
+                  "fixed_on_table": {
+                    "type": "boolean"
+                  },
+                  "layer": {
+                    "type": "integer"
+                  },
+                  "mass_kg": {
+                    "type": "number"
+                  },
+                  "measured_asset_id": {
+                    "type": [
+                      "integer",
+                      "null"
+                    ]
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "pose": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 7,
+                    "maxItems": 7
+                  },
+                  "slot": {
+                    "type": "integer"
+                  },
+                  "texture_atlas": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "pattern": "sha256:[0-9a-f]{64}"
+                  },
+                  "texture_sha256": {
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "pattern": "[0-9a-f]{64}"
+                  },
+                  "texture_variant": {
+                    "type": "null"
+                  },
+                  "tower": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "asset_reference",
+                  "asset_scale",
+                  "asset_sha256",
+                  "diagonal_inertia_kg_m2",
+                  "dimensions_m",
+                  "fixed_on_table",
+                  "layer",
+                  "mass_kg",
+                  "measured_asset_id",
+                  "name",
+                  "pose",
+                  "slot",
+                  "texture_atlas",
+                  "texture_sha256",
+                  "texture_variant",
+                  "tower"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 14,
+              "maxItems": 17
+            },
+            "cycles": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "cycle": {
+                    "type": "integer"
+                  },
+                  "direction": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 3,
+                    "maxItems": 3
+                  },
+                  "extract_arm": {
+                    "type": "string"
+                  },
+                  "extract_order": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  },
+                  "layer": {
+                    "type": "integer"
+                  },
+                  "push_order": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  },
+                  "tool_arm": {
+                    "type": "string"
+                  },
+                  "tool_index": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "cycle",
+                  "direction",
+                  "extract_arm",
+                  "extract_order",
+                  "layer",
+                  "push_order",
+                  "tool_arm",
+                  "tool_index"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 1,
+              "maxItems": 2
+            },
+            "initial_support": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "area_m2": {
+                    "type": "number"
+                  },
+                  "block": {
+                    "type": "string"
+                  },
+                  "com_margin_m": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "area_m2",
+                  "block",
+                  "com_margin_m"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 6,
+              "maxItems": 9
+            },
+            "layout_metadata": {
+              "type": "object",
+              "properties": {
+                "body_transform": {
+                  "type": "object",
+                  "properties": {
+                    "translation_m": {
+                      "type": "array",
+                      "items": {
+                        "type": "number"
+                      },
+                      "minItems": 2,
+                      "maxItems": 2
+                    },
+                    "yaw_deg": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "translation_m",
+                    "yaw_deg"
+                  ],
+                  "additionalProperties": false
+                },
+                "catalog_task": {
+                  "type": "integer"
+                },
+                "contact_model": {
+                  "type": "string"
+                },
+                "cycles": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "cycle": {
+                        "type": "integer"
+                      },
+                      "direction": {
+                        "type": "array",
+                        "items": {
+                          "type": "number"
+                        },
+                        "minItems": 3,
+                        "maxItems": 3
+                      },
+                      "extract_arm": {
+                        "type": "string"
+                      },
+                      "extract_order": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "minItems": 2,
+                        "maxItems": 2
+                      },
+                      "layer": {
+                        "type": "integer"
+                      },
+                      "push_order": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "minItems": 2,
+                        "maxItems": 2
+                      },
+                      "tool_arm": {
+                        "type": "string"
+                      },
+                      "tool_index": {
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "cycle",
+                      "direction",
+                      "extract_arm",
+                      "extract_order",
+                      "layer",
+                      "push_order",
+                      "tool_arm",
+                      "tool_index"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "minItems": 1,
+                  "maxItems": 2
+                },
+                "destination_base_canonical": {
+                  "type": "boolean"
+                },
+                "foundation_yaw_degrees": {
+                  "type": "object",
+                  "properties": {
+                    "destination": {
+                      "type": "integer"
+                    },
+                    "source": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "destination",
+                    "source"
+                  ],
+                  "additionalProperties": false
+                },
+                "identity": {
+                  "type": "object",
+                  "properties": {
+                    "source_l1_0": {
+                      "type": "object",
+                      "properties": {
+                        "authored_slot": {
+                          "type": "integer"
+                        },
+                        "layer": {
+                          "type": "integer"
+                        },
+                        "role": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "authored_slot",
+                        "layer",
+                        "role"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "source_l1_1": {
+                      "type": "object",
+                      "properties": {
+                        "authored_slot": {
+                          "type": "integer"
+                        },
+                        "layer": {
+                          "type": "integer"
+                        },
+                        "role": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "authored_slot",
+                        "layer",
+                        "role"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "source_l1_2": {
+                      "type": "object",
+                      "properties": {
+                        "authored_slot": {
+                          "type": "integer"
+                        },
+                        "layer": {
+                          "type": "integer"
+                        },
+                        "role": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "authored_slot",
+                        "layer",
+                        "role"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "source_l2_0": {
+                      "type": "object",
+                      "properties": {
+                        "authored_slot": {
+                          "type": "integer"
+                        },
+                        "layer": {
+                          "type": "integer"
+                        },
+                        "role": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "authored_slot",
+                        "layer",
+                        "role"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "source_l2_1": {
+                      "type": "object",
+                      "properties": {
+                        "authored_slot": {
+                          "type": "integer"
+                        },
+                        "layer": {
+                          "type": "integer"
+                        },
+                        "role": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "authored_slot",
+                        "layer",
+                        "role"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "source_l2_2": {
+                      "type": "object",
+                      "properties": {
+                        "authored_slot": {
+                          "type": "integer"
+                        },
+                        "layer": {
+                          "type": "integer"
+                        },
+                        "role": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "authored_slot",
+                        "layer",
+                        "role"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "source_l3_0": {
+                      "type": "object",
+                      "properties": {
+                        "authored_slot": {
+                          "type": "integer"
+                        },
+                        "layer": {
+                          "type": "integer"
+                        },
+                        "role": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "authored_slot",
+                        "layer",
+                        "role"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "source_l3_1": {
+                      "type": "object",
+                      "properties": {
+                        "authored_slot": {
+                          "type": "integer"
+                        },
+                        "layer": {
+                          "type": "integer"
+                        },
+                        "role": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "authored_slot",
+                        "layer",
+                        "role"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "source_l3_2": {
+                      "type": "object",
+                      "properties": {
+                        "authored_slot": {
+                          "type": "integer"
+                        },
+                        "layer": {
+                          "type": "integer"
+                        },
+                        "role": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "authored_slot",
+                        "layer",
+                        "role"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "source_l1_0",
+                    "source_l1_1",
+                    "source_l1_2",
+                    "source_l2_0",
+                    "source_l2_1",
+                    "source_l2_2"
+                  ],
+                  "additionalProperties": false
+                },
+                "initial_assistance": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "block": {
+                        "type": "string"
+                      },
+                      "center_asset_id": {
+                        "type": "integer"
+                      },
+                      "direction": {
+                        "type": "array",
+                        "items": {
+                          "type": "number"
+                        },
+                        "minItems": 3,
+                        "maxItems": 3
+                      },
+                      "height_difference_m": {
+                        "type": "number"
+                      },
+                      "initial_offset_m": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "block",
+                      "center_asset_id",
+                      "direction",
+                      "height_difference_m",
+                      "initial_offset_m"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "minItems": 2,
+                  "maxItems": 4
+                },
+                "movable_layers": {
+                  "type": "integer"
+                },
+                "privileged_state_feedback": {
+                  "type": "boolean"
+                },
+                "robot_bases_canonical": {
+                  "type": "boolean"
+                },
+                "source_base_common_initial_transform": {
+                  "type": "boolean"
+                },
+                "source_base_fixed_during_execution": {
+                  "type": "boolean"
+                },
+                "source_center_bond": {
+                  "type": "object",
+                  "properties": {
+                    "amendment_sha256": {
+                      "type": "string"
+                    },
+                    "block_indices": {
+                      "type": "array",
+                      "items": {
+                        "type": "integer"
+                      },
+                      "minItems": 2,
+                      "maxItems": 2
+                    },
+                    "model": {
+                      "type": "string"
+                    },
+                    "revision": {
+                      "type": "integer"
+                    },
+                    "world_anchor": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "amendment_sha256",
+                    "block_indices",
+                    "model",
+                    "revision",
+                    "world_anchor"
+                  ],
+                  "additionalProperties": false
+                },
+                "tool_indices": {
+                  "type": "object",
+                  "properties": {
+                    "back": {
+                      "type": "integer"
+                    },
+                    "left": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "back",
+                    "left"
+                  ],
+                  "additionalProperties": false
+                },
+                "tool_initial_state": {
+                  "type": "object",
+                  "properties": {
+                    "back": {
+                      "type": "object",
+                      "properties": {
+                        "initial_pose": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 7,
+                          "maxItems": 7
+                        },
+                        "pivot": {
+                          "type": "string"
+                        },
+                        "translation_m": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 2,
+                          "maxItems": 2
+                        },
+                        "yaw_deg": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "initial_pose",
+                        "pivot",
+                        "translation_m",
+                        "yaw_deg"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "left": {
+                      "type": "object",
+                      "properties": {
+                        "initial_pose": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 7,
+                          "maxItems": 7
+                        },
+                        "pivot": {
+                          "type": "string"
+                        },
+                        "translation_m": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 2,
+                          "maxItems": 2
+                        },
+                        "yaw_deg": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "initial_pose",
+                        "pivot",
+                        "translation_m",
+                        "yaw_deg"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "back",
+                    "left"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "body_transform",
+                "catalog_task",
+                "contact_model",
+                "cycles",
+                "destination_base_canonical",
+                "foundation_yaw_degrees",
+                "identity",
+                "initial_assistance",
+                "movable_layers",
+                "privileged_state_feedback",
+                "robot_bases_canonical",
+                "source_base_common_initial_transform",
+                "source_base_fixed_during_execution",
+                "tool_indices",
+                "tool_initial_state"
+              ],
+              "additionalProperties": false
+            },
+            "physics": {
+              "type": "object",
+              "properties": {
+                "destination_base_0": {
+                  "type": "object",
+                  "properties": {
+                    "dynamic_friction": {
+                      "type": "number"
+                    },
+                    "restitution": {
+                      "type": "number"
+                    },
+                    "static_friction": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "dynamic_friction",
+                    "restitution",
+                    "static_friction"
+                  ],
+                  "additionalProperties": false
+                },
+                "destination_base_1": {
+                  "type": "object",
+                  "properties": {
+                    "dynamic_friction": {
+                      "type": "number"
+                    },
+                    "restitution": {
+                      "type": "number"
+                    },
+                    "static_friction": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "dynamic_friction",
+                    "restitution",
+                    "static_friction"
+                  ],
+                  "additionalProperties": false
+                },
+                "destination_base_2": {
+                  "type": "object",
+                  "properties": {
+                    "dynamic_friction": {
+                      "type": "number"
+                    },
+                    "restitution": {
+                      "type": "number"
+                    },
+                    "static_friction": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "dynamic_friction",
+                    "restitution",
+                    "static_friction"
+                  ],
+                  "additionalProperties": false
+                },
+                "pusher_lower": {
+                  "type": "object",
+                  "properties": {
+                    "dynamic_friction": {
+                      "type": "number"
+                    },
+                    "restitution": {
+                      "type": "number"
+                    },
+                    "static_friction": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "dynamic_friction",
+                    "restitution",
+                    "static_friction"
+                  ],
+                  "additionalProperties": false
+                },
+                "pusher_upper": {
+                  "type": "object",
+                  "properties": {
+                    "dynamic_friction": {
+                      "type": "number"
+                    },
+                    "restitution": {
+                      "type": "number"
+                    },
+                    "static_friction": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "dynamic_friction",
+                    "restitution",
+                    "static_friction"
+                  ],
+                  "additionalProperties": false
+                },
+                "source_base_0": {
+                  "type": "object",
+                  "properties": {
+                    "dynamic_friction": {
+                      "type": "number"
+                    },
+                    "restitution": {
+                      "type": "number"
+                    },
+                    "static_friction": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "dynamic_friction",
+                    "restitution",
+                    "static_friction"
+                  ],
+                  "additionalProperties": false
+                },
+                "source_base_1": {
+                  "type": "object",
+                  "properties": {
+                    "dynamic_friction": {
+                      "type": "number"
+                    },
+                    "restitution": {
+                      "type": "number"
+                    },
+                    "static_friction": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "dynamic_friction",
+                    "restitution",
+                    "static_friction"
+                  ],
+                  "additionalProperties": false
+                },
+                "source_base_2": {
+                  "type": "object",
+                  "properties": {
+                    "dynamic_friction": {
+                      "type": "number"
+                    },
+                    "restitution": {
+                      "type": "number"
+                    },
+                    "static_friction": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "dynamic_friction",
+                    "restitution",
+                    "static_friction"
+                  ],
+                  "additionalProperties": false
+                },
+                "source_l1_0": {
+                  "type": "object",
+                  "properties": {
+                    "dynamic_friction": {
+                      "type": "number"
+                    },
+                    "restitution": {
+                      "type": "number"
+                    },
+                    "static_friction": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "dynamic_friction",
+                    "restitution",
+                    "static_friction"
+                  ],
+                  "additionalProperties": false
+                },
+                "source_l1_1": {
+                  "type": "object",
+                  "properties": {
+                    "dynamic_friction": {
+                      "type": "number"
+                    },
+                    "restitution": {
+                      "type": "number"
+                    },
+                    "static_friction": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "dynamic_friction",
+                    "restitution",
+                    "static_friction"
+                  ],
+                  "additionalProperties": false
+                },
+                "source_l1_2": {
+                  "type": "object",
+                  "properties": {
+                    "dynamic_friction": {
+                      "type": "number"
+                    },
+                    "restitution": {
+                      "type": "number"
+                    },
+                    "static_friction": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "dynamic_friction",
+                    "restitution",
+                    "static_friction"
+                  ],
+                  "additionalProperties": false
+                },
+                "source_l2_0": {
+                  "type": "object",
+                  "properties": {
+                    "dynamic_friction": {
+                      "type": "number"
+                    },
+                    "restitution": {
+                      "type": "number"
+                    },
+                    "static_friction": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "dynamic_friction",
+                    "restitution",
+                    "static_friction"
+                  ],
+                  "additionalProperties": false
+                },
+                "source_l2_1": {
+                  "type": "object",
+                  "properties": {
+                    "dynamic_friction": {
+                      "type": "number"
+                    },
+                    "restitution": {
+                      "type": "number"
+                    },
+                    "static_friction": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "dynamic_friction",
+                    "restitution",
+                    "static_friction"
+                  ],
+                  "additionalProperties": false
+                },
+                "source_l2_2": {
+                  "type": "object",
+                  "properties": {
+                    "dynamic_friction": {
+                      "type": "number"
+                    },
+                    "restitution": {
+                      "type": "number"
+                    },
+                    "static_friction": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "dynamic_friction",
+                    "restitution",
+                    "static_friction"
+                  ],
+                  "additionalProperties": false
+                },
+                "source_l3_0": {
+                  "type": "object",
+                  "properties": {
+                    "dynamic_friction": {
+                      "type": "number"
+                    },
+                    "restitution": {
+                      "type": "number"
+                    },
+                    "static_friction": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "dynamic_friction",
+                    "restitution",
+                    "static_friction"
+                  ],
+                  "additionalProperties": false
+                },
+                "source_l3_1": {
+                  "type": "object",
+                  "properties": {
+                    "dynamic_friction": {
+                      "type": "number"
+                    },
+                    "restitution": {
+                      "type": "number"
+                    },
+                    "static_friction": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "dynamic_friction",
+                    "restitution",
+                    "static_friction"
+                  ],
+                  "additionalProperties": false
+                },
+                "source_l3_2": {
+                  "type": "object",
+                  "properties": {
+                    "dynamic_friction": {
+                      "type": "number"
+                    },
+                    "restitution": {
+                      "type": "number"
+                    },
+                    "static_friction": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "dynamic_friction",
+                    "restitution",
+                    "static_friction"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "destination_base_0",
+                "destination_base_1",
+                "destination_base_2",
+                "pusher_lower",
+                "pusher_upper",
+                "source_base_0",
+                "source_base_1",
+                "source_base_2",
+                "source_l1_0",
+                "source_l1_1",
+                "source_l1_2",
+                "source_l2_0",
+                "source_l2_1",
+                "source_l2_2"
+              ],
+              "additionalProperties": false
+            },
+            "source_center_bond": {
+              "type": [
+                "null",
+                "object"
+              ],
+              "properties": {
+                "amendment_sha256": {
+                  "type": "string"
+                },
+                "block_indices": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
+                },
+                "model": {
+                  "type": "string"
+                },
+                "revision": {
+                  "type": "integer"
+                },
+                "world_anchor": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "amendment_sha256",
+                "block_indices",
+                "model",
+                "revision",
+                "world_anchor"
+              ],
+              "additionalProperties": false
+            },
+            "task": {
+              "type": "string"
+            },
+            "transfers": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "arm": {
+                    "type": "integer"
+                  },
+                  "block_id": {
+                    "type": "string"
+                  },
+                  "block_index": {
+                    "type": "integer"
+                  },
+                  "destination_layer": {
+                    "type": "integer"
+                  },
+                  "destination_slot": {
+                    "type": "integer"
+                  },
+                  "goal_pose": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 7,
+                    "maxItems": 7
+                  },
+                  "order": {
+                    "type": "integer"
+                  },
+                  "source_layer": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "arm",
+                  "block_id",
+                  "block_index",
+                  "destination_layer",
+                  "destination_slot",
+                  "goal_pose",
+                  "order",
+                  "source_layer"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 2,
+              "maxItems": 4
+            }
+          },
+          "required": [
+            "blocks",
+            "cycles",
+            "initial_support",
+            "layout_metadata",
+            "physics",
+            "source_center_bond",
+            "task",
+            "transfers"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "episode_spec",
+        "physics",
+        "schema"
+      ],
+      "additionalProperties": false
+    },
+    "initial_state": {
+      "type": "object",
+      "properties": {
+        "coordinate_frame": {
+          "type": "string"
+        },
+        "eef": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 7,
+            "maxItems": 7
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "lifter_mm": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "lifter_valid": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "physical_qpos": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 16,
+          "maxItems": 16
+        },
+        "privileged_state_feedback_enabled": {
+          "type": "boolean"
+        },
+        "qpos": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 16,
+          "maxItems": 16
+        },
+        "world_robot_bases": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "physical_qpos",
+        "qpos"
+      ],
+      "additionalProperties": false
+    },
+    "scene_id": {
+      "type": "string",
+      "pattern": "scene-0[0-4][0-9]"
+    },
+    "schema": {
+      "type": "string",
+      "const": "tower-scene-v2"
+    },
+    "task": {
+      "type": "string",
+      "enum": [
+        "task1-2",
+        "task1-3",
+        "task2-2",
+        "task2-3",
+        "task4-2",
+        "task4-3",
+        "task5-2",
+        "task5-3",
+        "task6-2",
+        "task6-3",
+        "task7-2",
+        "task7-3"
+      ]
+    }
+  },
+  "required": [
+    "episode",
+    "initial_state",
+    "scene_id",
+    "schema",
+    "task"
+  ],
+  "additionalProperties": false
+}

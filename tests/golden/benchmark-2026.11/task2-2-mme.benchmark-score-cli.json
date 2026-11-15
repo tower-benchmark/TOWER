@@ -1,0 +1,149 @@
+{
+  "disturbances": [
+    {
+      "baseline_sample": 174,
+      "block": "src_L1_0",
+      "operation": "src_L2_0:place",
+      "sample": 177,
+      "time_s": 8.85,
+      "translation_m": 0.010188169777393341
+    }
+  ],
+  "duration_s": 60.0,
+  "events": [
+    {
+      "group": "G",
+      "operation": "src_L2_0:grasp",
+      "sample": 173,
+      "time_s": 8.65
+    }
+  ],
+  "operations": [
+    {
+      "active_end": 173,
+      "arm": 0,
+      "end": 173,
+      "id": "src_L2_0:grasp",
+      "start": 110,
+      "target": 7
+    },
+    {
+      "active_end": 185,
+      "arm": 0,
+      "end": 1200,
+      "id": "src_L2_0:place",
+      "start": 174,
+      "target": 7
+    }
+  ],
+  "planned_g": 2,
+  "planned_p": 2,
+  "planned_pushes_by_arm": {
+    "0": 0,
+    "1": 0
+  },
+  "prescribed_order": true,
+  "protocol": "tower-sim-trajectory-v5",
+  "push_successes_by_arm": {
+    "0": 0,
+    "1": 0
+  },
+  "rules": {
+    "angular_velocity_rad_s": 0.05,
+    "approach_margin_m": 0.025,
+    "approach_s": 0.1,
+    "closed_width_m": 0.07,
+    "disturbance_contact_m": 0.002,
+    "disturbance_m": 0.01,
+    "disturbance_motion_m": 0.00025,
+    "disturbance_motion_window_s": 0.2,
+    "disturbance_quiet_s": 0.3,
+    "effort_fraction": 0.8,
+    "effort_gap_s": 0.1,
+    "grasp_surface_distance_m": 0.015,
+    "hold_s": 0.3,
+    "jaw_effort_n": 0.5,
+    "lift_m": 0.005,
+    "linear_velocity_m_s": 0.005,
+    "maximum_sample_gap_s": 0.1,
+    "minimum_carry_m": 0.005,
+    "minimum_push_m": 0.005,
+    "minimum_support_fraction": 0.2,
+    "open_width_m": 0.075,
+    "orientation_deg": 10.0,
+    "paired_spacing_m": 0.02,
+    "placement_dwell_s": 10.0,
+    "position_m": 0.01,
+    "push_clearance_s": 0.1,
+    "push_coast_s": 0.5,
+    "push_face_margin_m": 0.015,
+    "relative_range_m": 0.01,
+    "release_clearance_m": 0.04,
+    "roof_height_m": 0.015,
+    "slot_clearance_m": 0.0005,
+    "stable_rotation_deg": 2.0,
+    "stable_translation_m": 0.002,
+    "support_com_margin_m": 0.002,
+    "support_height_m": 0.008,
+    "time_limit_s": 420.0,
+    "tool_protrusion_m": 0.025,
+    "tool_return_dwell_s": 0.3,
+    "tool_tip_local_m": [
+      0.0,
+      -0.166,
+      0.01
+    ]
+  },
+  "scores": {
+    "C": 1,
+    "D": 1,
+    "E": 2,
+    "g": 1,
+    "p": 0,
+    "s": 0
+  },
+  "source_hashes": {
+    "episode/states.hdf5": "c3f441223227b91e86ea1181a29ea4a64582289264b2276afd66cf70c8f5d668",
+    "episode_spec.json": "706b135cce9d6fb1eb0452b3f5aed96cd28acbe0d389656d619154c7ec263d3b",
+    "finger-feedback.npz": "44504767e56274552185694b0adf429e04e4b0c4cbd7862b751ba0d3b0d74ff7",
+    "finger-link-poses.npz": "44a74ae917106888334a7b87e6dc2034f258d01278835e3b6c4a2896e0d89077",
+    "finger_geometry.json": "516a0107606663b005efcd9ad48bd600d0686885e74b26ac7263760135680ba1",
+    "status.json": "f4f4f55220d87317733df4f4e603f1114061cadaef5b66cef3d2c098e231a515"
+  },
+  "target_intervals": [
+    {
+      "arm": 0,
+      "end": 173,
+      "start": 110,
+      "target": 7
+    },
+    {
+      "arm": 0,
+      "end": 184,
+      "start": 174,
+      "target": 7
+    }
+  ],
+  "targets": [
+    {
+      "arm": 0,
+      "attempt_sample": 112,
+      "block": "src_L2_0",
+      "carry_sample": 173,
+      "grasp_sample": 173,
+      "place_sample": null,
+      "terminal_position_error_m": 1055.013719102937,
+      "terminal_released_geometry_s": 0.0
+    },
+    {
+      "arm": 1,
+      "attempt_sample": null,
+      "block": "src_L1_0",
+      "grasp_sample": null,
+      "place_sample": null
+    }
+  ],
+  "task": "task2-2",
+  "terminal_geometry": false,
+  "valid": true
+}

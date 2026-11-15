@@ -1,0 +1,717 @@
+{
+  "disturbances": [
+    {
+      "baseline_sample": 125,
+      "block": "src_L2_1",
+      "operation": "src_L3_2:push",
+      "sample": 150,
+      "time_s": 7.5,
+      "translation_m": 0.010301955044269562
+    },
+    {
+      "baseline_sample": 125,
+      "block": "src_L2_2",
+      "operation": "src_L3_2:push",
+      "sample": 150,
+      "time_s": 7.5,
+      "translation_m": 0.010400807484984398
+    },
+    {
+      "baseline_sample": 125,
+      "block": "src_L3_1",
+      "operation": "src_L3_2:push",
+      "sample": 150,
+      "time_s": 7.5,
+      "translation_m": 0.01020799670368433
+    },
+    {
+      "baseline_sample": 125,
+      "block": "src_L2_0",
+      "operation": "src_L3_2:push",
+      "sample": 151,
+      "time_s": 7.55,
+      "translation_m": 0.013226784765720367
+    },
+    {
+      "baseline_sample": 125,
+      "block": "src_L3_0",
+      "operation": "src_L3_2:push",
+      "sample": 152,
+      "time_s": 7.6,
+      "translation_m": 0.010567356832325459
+    },
+    {
+      "baseline_sample": 274,
+      "block": "src_L2_0",
+      "operation": "src_L1_1:push",
+      "sample": 286,
+      "time_s": 14.3,
+      "translation_m": 0.012938762083649635
+    },
+    {
+      "baseline_sample": 274,
+      "block": "src_L3_0",
+      "operation": "src_L1_1:push",
+      "sample": 298,
+      "time_s": 14.9,
+      "translation_m": 0.010141255334019661
+    },
+    {
+      "baseline_sample": 274,
+      "block": "src_L3_1",
+      "operation": "src_L1_1:push",
+      "sample": 298,
+      "time_s": 14.9,
+      "translation_m": 0.011863546445965767
+    },
+    {
+      "baseline_sample": 274,
+      "block": "src_L3_2",
+      "operation": "src_L1_1:push",
+      "sample": 298,
+      "time_s": 14.9,
+      "translation_m": 0.012321332469582558
+    },
+    {
+      "baseline_sample": 411,
+      "block": "src_L2_1",
+      "operation": "src_L1_0:push",
+      "sample": 431,
+      "time_s": 21.55,
+      "translation_m": 0.011179009452462196
+    },
+    {
+      "baseline_sample": 411,
+      "block": "src_L3_0",
+      "operation": "src_L1_0:push",
+      "sample": 431,
+      "time_s": 21.55,
+      "translation_m": 0.010681664571166039
+    },
+    {
+      "baseline_sample": 411,
+      "block": "src_L2_0",
+      "operation": "src_L1_0:push",
+      "sample": 453,
+      "time_s": 22.65,
+      "translation_m": 0.011759623885154724
+    },
+    {
+      "baseline_sample": 411,
+      "block": "src_L3_2",
+      "operation": "src_L1_0:push",
+      "sample": 455,
+      "time_s": 22.75,
+      "translation_m": 0.012054924853146076
+    }
+  ],
+  "duration_s": 64.0,
+  "events": [
+    {
+      "group": "P",
+      "operation": "src_L1_1:push",
+      "sample": 321,
+      "time_s": 16.05
+    },
+    {
+      "group": "P",
+      "operation": "src_L1_0:push",
+      "sample": 459,
+      "time_s": 22.95
+    }
+  ],
+  "final_state": {
+    "expected_blocks": 9,
+    "geometry": "Existing full-block/source-footprint SAT, or direct tabletop contact polygon containing COM (qualified Task4 support40 rule)",
+    "passed": false,
+    "remaining_blocks": [
+      "src_L1_2"
+    ],
+    "removed_blocks": 8,
+    "sample": 1280,
+    "scope": "Final recorded state only; no inferred early stop, contact-force claim, or new tabletop/stability requirement",
+    "targets": [
+      {
+        "block": "src_L3_2",
+        "block_index": 14,
+        "deep_base_overlap": false,
+        "final_pose": [
+          0.6002444624900818,
+          -0.5031068325042725,
+          0.014749973081052303,
+          -0.40946581959724426,
+          0.9123254418373108,
+          -5.396277629188262e-07,
+          2.2528843146574218e-07
+        ],
+        "off_source_base": true,
+        "off_source_footprint": true,
+        "removal_route": "clear_source_footprint",
+        "source_base_blocks": [
+          "source_base_0",
+          "source_base_1",
+          "source_base_2"
+        ],
+        "table_support": {
+          "bottom_to_table_m": -5.794061595613964e-08,
+          "com_margin_m": 0.024549982755343223,
+          "contact_polygon_m": [
+            [
+              0.6318859754534466,
+              -0.4306047205195238
+            ],
+            [
+              0.5319187840361203,
+              -0.5429734022779729
+            ],
+            [
+              0.5686029746899517,
+              -0.5756089680930472
+            ],
+            [
+              0.6685701661072782,
+              -0.4632402863345981
+            ]
+          ],
+          "contact_tolerance_m": 0.005,
+          "passed": true
+        }
+      },
+      {
+        "block": "src_L3_1",
+        "block_index": 13,
+        "deep_base_overlap": false,
+        "final_pose": [
+          0.45306044816970825,
+          -0.5407354235649109,
+          0.014800001867115498,
+          -6.947132202839157e-09,
+          -2.4077078819573217e-07,
+          -0.9999904036521912,
+          0.0043817912228405476
+        ],
+        "off_source_base": true,
+        "off_source_footprint": true,
+        "removal_route": "clear_source_footprint",
+        "source_base_blocks": [
+          "source_base_0",
+          "source_base_1",
+          "source_base_2"
+        ],
+        "table_support": {
+          "bottom_to_table_m": -1.136849504118631e-08,
+          "com_margin_m": 0.02499999287415126,
+          "contact_polygon_m": [
+            [
+              0.37794423671236965,
+              -0.5163927767185659
+            ],
+            [
+              0.3783824116264523,
+              -0.5663908567091425
+            ],
+            [
+              0.528176659278237,
+              -0.5650780846665517
+            ],
+            [
+              0.5277384843641544,
+              -0.5150800046759753
+            ]
+          ],
+          "contact_tolerance_m": 0.005,
+          "passed": true
+        }
+      },
+      {
+        "block": "src_L3_0",
+        "block_index": 12,
+        "deep_base_overlap": false,
+        "final_pose": [
+          0.5800854563713074,
+          -0.43840616941452026,
+          0.07440892606973648,
+          0.0006211065337993205,
+          0.002898854436352849,
+          -0.999740481376648,
+          0.0225822776556015
+        ],
+        "off_source_base": true,
+        "off_source_footprint": true,
+        "removal_route": "clear_source_footprint",
+        "source_base_blocks": [
+          "source_base_0",
+          "source_base_1",
+          "source_base_2"
+        ],
+        "table_support": {
+          "bottom_to_table_m": 0.059361375698528715,
+          "com_margin_m": null,
+          "contact_tolerance_m": 0.005,
+          "passed": false
+        }
+      },
+      {
+        "block": "src_L2_2",
+        "block_index": 11,
+        "deep_base_overlap": false,
+        "final_pose": [
+          0.45846036076545715,
+          -0.45288074016571045,
+          0.02500000037252903,
+          -0.07656346261501312,
+          -0.7029498219490051,
+          0.7029492855072021,
+          0.07656310498714447
+        ],
+        "off_source_base": true,
+        "off_source_footprint": true,
+        "removal_route": "clear_source_footprint",
+        "source_base_blocks": [
+          "source_base_0",
+          "source_base_1",
+          "source_base_2"
+        ],
+        "table_support": {
+          "bottom_to_table_m": -4.318868916663998e-08,
+          "com_margin_m": 0.014849979776361105,
+          "contact_polygon_m": [
+            [
+              0.3820220408547271,
+              -0.4512364861822656
+            ],
+            [
+              0.5285048790798517,
+              -0.48352856114668985
+            ],
+            [
+              0.5348987099227962,
+              -0.4545249591781199
+            ],
+            [
+              0.38841587169767167,
+              -0.4222328842136957
+            ]
+          ],
+          "contact_tolerance_m": 0.005,
+          "passed": true
+        }
+      },
+      {
+        "block": "src_L2_1",
+        "block_index": 10,
+        "deep_base_overlap": false,
+        "final_pose": [
+          0.5709083080291748,
+          -0.4281039237976074,
+          0.04470846429467201,
+          0.00011273736163275316,
+          -0.0029652186203747988,
+          0.9745929837226868,
+          0.22396357357501984
+        ],
+        "off_source_base": true,
+        "off_source_footprint": true,
+        "removal_route": "clear_source_footprint",
+        "source_base_blocks": [
+          "source_base_0",
+          "source_base_1",
+          "source_base_2"
+        ],
+        "table_support": {
+          "bottom_to_table_m": 0.02949939985362882,
+          "com_margin_m": null,
+          "contact_tolerance_m": 0.005,
+          "passed": false
+        }
+      },
+      {
+        "block": "src_L2_0",
+        "block_index": 9,
+        "deep_base_overlap": false,
+        "final_pose": [
+          0.7141385674476624,
+          -0.38420403003692627,
+          0.03155673295259476,
+          0.11401735991239548,
+          -0.010243230499327183,
+          0.98944091796875,
+          0.08889181166887283
+        ],
+        "off_source_base": true,
+        "off_source_footprint": true,
+        "removal_route": "clear_source_footprint",
+        "source_base_blocks": [
+          "source_base_0",
+          "source_base_1",
+          "source_base_2"
+        ],
+        "table_support": {
+          "bottom_to_table_m": 2.6278934819878863e-08,
+          "com_margin_m": null,
+          "contact_tolerance_m": 0.005,
+          "passed": false
+        }
+      },
+      {
+        "block": "src_L1_2",
+        "block_index": 8,
+        "deep_base_overlap": false,
+        "final_pose": [
+          0.40962648391723633,
+          -0.2700348496437073,
+          0.04450000077486038,
+          2.2161489710015303e-07,
+          -2.1632237690027978e-07,
+          -0.1107964739203453,
+          0.9938430786132812
+        ],
+        "off_source_base": false,
+        "off_source_footprint": false,
+        "removal_route": null,
+        "source_base_blocks": [
+          "source_base_0",
+          "source_base_1",
+          "source_base_2"
+        ],
+        "table_support": {
+          "bottom_to_table_m": 0.029499959955033097,
+          "com_margin_m": null,
+          "contact_tolerance_m": 0.005,
+          "passed": false
+        }
+      },
+      {
+        "block": "src_L1_1",
+        "block_index": 7,
+        "deep_base_overlap": false,
+        "final_pose": [
+          0.5810489058494568,
+          -0.3642360270023346,
+          0.014999927021563053,
+          -1.6168839920283062e-06,
+          -2.33161898677281e-07,
+          -0.10346909612417221,
+          0.9946326613426208
+        ],
+        "off_source_base": true,
+        "off_source_footprint": true,
+        "removal_route": "clear_source_footprint",
+        "source_base_blocks": [
+          "source_base_0",
+          "source_base_1",
+          "source_base_2"
+        ],
+        "table_support": {
+          "bottom_to_table_m": -2.1222199065966396e-07,
+          "com_margin_m": 0.025049952477456245,
+          "contact_polygon_m": [
+            [
+              0.5128107644646049,
+              -0.3242853776582379
+            ],
+            [
+              0.502498807315536,
+              -0.3733126510856943
+            ],
+            [
+              0.6492870511110835,
+              -0.40418677428627353
+            ],
+            [
+              0.6595990082601526,
+              -0.35515950085881715
+            ]
+          ],
+          "contact_tolerance_m": 0.005,
+          "passed": true
+        }
+      },
+      {
+        "block": "src_L1_0",
+        "block_index": 6,
+        "deep_base_overlap": false,
+        "final_pose": [
+          0.5329906940460205,
+          -0.4225108325481415,
+          0.014650002121925354,
+          3.983335545854061e-07,
+          -7.517029132486641e-08,
+          -0.1927812248468399,
+          0.981241762638092
+        ],
+        "off_source_base": true,
+        "off_source_footprint": true,
+        "removal_route": "clear_source_footprint",
+        "source_base_blocks": [
+          "source_base_0",
+          "source_base_1",
+          "source_base_2"
+        ],
+        "table_support": {
+          "bottom_to_table_m": -1.84793674147532e-08,
+          "com_margin_m": 0.02484998812315064,
+          "contact_polygon_m": [
+            [
+              0.4728743214612526,
+              -0.3710953207752621
+            ],
+            [
+              0.45407132151844276,
+              -0.41710115946068405
+            ],
+            [
+              0.593107075453104,
+              -0.47392632226573306
+            ],
+            [
+              0.6119100753959138,
+              -0.4279204835803111
+            ]
+          ],
+          "contact_tolerance_m": 0.005,
+          "passed": true
+        }
+      }
+    ],
+    "time_s": 64.0
+  },
+  "odr": {
+    "D": 13,
+    "E": 3,
+    "denominator_rule": "legacy C + 1 - s, C = g + p",
+    "detected_operation_windows": 5,
+    "note": "E is the legacy count formula, not a measured count of all attempted pushes",
+    "undefined_reason": null,
+    "value": 4.333333333333333
+  },
+  "operations": [
+    {
+      "active_end": 234,
+      "arm": 0,
+      "end": 234,
+      "id": "src_L3_2:push",
+      "start": 125,
+      "target": 14
+    },
+    {
+      "active_end": 273,
+      "arm": 0,
+      "end": 273,
+      "id": "src_L3_1:push",
+      "start": 235,
+      "target": 13
+    },
+    {
+      "active_end": 410,
+      "arm": 0,
+      "end": 410,
+      "id": "src_L3_0:push",
+      "start": 379,
+      "target": 12
+    },
+    {
+      "active_end": 378,
+      "arm": 0,
+      "end": 378,
+      "id": "src_L1_1:push",
+      "start": 274,
+      "target": 7
+    },
+    {
+      "active_end": 1280,
+      "arm": 0,
+      "end": 1280,
+      "id": "src_L1_0:push",
+      "start": 411,
+      "target": 6
+    }
+  ],
+  "original_protocol": "tower-sim-trajectory-v5",
+  "original_scores": {
+    "C": 2,
+    "D": 13,
+    "E": 3,
+    "g": 0,
+    "p": 2,
+    "s": 0
+  },
+  "original_terminal_geometry": false,
+  "planned_g": 6,
+  "planned_p": 3,
+  "planned_pushes_by_arm": {
+    "0": 6,
+    "1": 3
+  },
+  "prescribed_order": true,
+  "protocol": "tower-task4-final-state-v3",
+  "push_successes_by_arm": {
+    "0": 2,
+    "1": 0
+  },
+  "recorded_terminal_status": "task_failure",
+  "rules": {
+    "angular_velocity_rad_s": 0.05,
+    "approach_margin_m": 0.025,
+    "approach_s": 0.1,
+    "closed_width_m": 0.07,
+    "disturbance_contact_m": 0.002,
+    "disturbance_m": 0.01,
+    "disturbance_motion_m": 0.00025,
+    "disturbance_motion_window_s": 0.2,
+    "disturbance_quiet_s": 0.3,
+    "effort_fraction": 0.8,
+    "effort_gap_s": 0.1,
+    "grasp_surface_distance_m": 0.015,
+    "hold_s": 0.3,
+    "jaw_effort_n": 0.5,
+    "lift_m": 0.005,
+    "linear_velocity_m_s": 0.005,
+    "maximum_sample_gap_s": 0.1,
+    "minimum_carry_m": 0.005,
+    "minimum_push_m": 0.005,
+    "minimum_support_fraction": 0.2,
+    "open_width_m": 0.075,
+    "orientation_deg": 10.0,
+    "paired_spacing_m": 0.02,
+    "placement_dwell_s": 10.0,
+    "position_m": 0.01,
+    "push_clearance_s": 0.1,
+    "push_coast_s": 0.5,
+    "push_face_margin_m": 0.015,
+    "relative_range_m": 0.01,
+    "release_clearance_m": 0.04,
+    "roof_height_m": 0.015,
+    "slot_clearance_m": 0.0005,
+    "stable_rotation_deg": 2.0,
+    "stable_translation_m": 0.002,
+    "support_com_margin_m": 0.002,
+    "support_height_m": 0.008,
+    "time_limit_s": 420.0,
+    "tool_protrusion_m": 0.025,
+    "tool_return_dwell_s": 0.3,
+    "tool_tip_local_m": [
+      0.0,
+      -0.166,
+      0.01
+    ]
+  },
+  "scores": {
+    "C": 2,
+    "D": 13,
+    "E": 3,
+    "g": 0,
+    "p": 2,
+    "s": 0
+  },
+  "scoring_revision": "tower-task4-final-state-v3",
+  "scoring_scope": "entire recorded trajectory; success from final block state",
+  "source_hashes": {
+    "episode/states.hdf5": "df53aa6772f13f44452537a62373ab8c4460f58ee670f743124ebf368b197650",
+    "episode_spec.json": "8e5b9f766a4182c08cd72c17836bc8f72684949fdcf804cb102d4baf6ab4714f",
+    "finger-feedback.npz": "9445359b1479e646cd397d744bb7ed34afe5a6a5cde6c779b8794b65661c5c22",
+    "finger-link-poses.npz": "c0b82013a8da16830b45956474df8c858c6f48ec223db5422d2309a08f910a7f",
+    "finger_geometry.json": "516a0107606663b005efcd9ad48bd600d0686885e74b26ac7263760135680ba1",
+    "status.json": "f625d650f16af181ecd9f6281ae1b31b7aec4396e1dd40453d31b64b51dc0a85"
+  },
+  "success_requires_prescribed_order": false,
+  "success_requires_push_credit": false,
+  "target_intervals": [
+    {
+      "arm": 0,
+      "end": 223,
+      "start": 125,
+      "target": 14
+    },
+    {
+      "arm": 0,
+      "end": 336,
+      "start": 274,
+      "target": 7
+    },
+    {
+      "arm": 0,
+      "end": 471,
+      "start": 411,
+      "target": 6
+    }
+  ],
+  "targets": [
+    {
+      "arm": 0,
+      "attempt_sample": 127,
+      "block": "src_L3_2",
+      "grasp_sample": null,
+      "phase": "G",
+      "place_sample": null,
+      "push_sample": null
+    },
+    {
+      "arm": 0,
+      "attempt_sample": 237,
+      "block": "src_L3_1",
+      "grasp_sample": null,
+      "phase": "G",
+      "place_sample": null,
+      "push_sample": null
+    },
+    {
+      "arm": 0,
+      "attempt_sample": 381,
+      "block": "src_L3_0",
+      "grasp_sample": null,
+      "phase": "G",
+      "place_sample": null,
+      "push_sample": null
+    },
+    {
+      "arm": 1,
+      "attempt_sample": null,
+      "block": "src_L2_2",
+      "grasp_sample": null,
+      "place_sample": null
+    },
+    {
+      "arm": 1,
+      "attempt_sample": null,
+      "block": "src_L2_1",
+      "grasp_sample": null,
+      "place_sample": null
+    },
+    {
+      "arm": 1,
+      "attempt_sample": null,
+      "block": "src_L2_0",
+      "grasp_sample": null,
+      "place_sample": null
+    },
+    {
+      "arm": 0,
+      "attempt_sample": null,
+      "block": "src_L1_2",
+      "grasp_sample": null,
+      "place_sample": null
+    },
+    {
+      "arm": 0,
+      "attempt_sample": 276,
+      "block": "src_L1_1",
+      "grasp_sample": null,
+      "phase": "P",
+      "place_sample": null,
+      "push_sample": 321
+    },
+    {
+      "arm": 0,
+      "attempt_sample": 413,
+      "block": "src_L1_0",
+      "grasp_sample": null,
+      "phase": "P",
+      "place_sample": null,
+      "push_sample": 459
+    }
+  ],
+  "task": "task4-3",
+  "terminal_geometry": false,
+  "valid": true
+}

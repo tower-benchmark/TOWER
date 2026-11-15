@@ -1,0 +1,286 @@
+{
+  "disturbances": [
+    {
+      "baseline_sample": 265,
+      "block": "src_L3_0",
+      "operation": "src_L1_1:place",
+      "sample": 451,
+      "time_s": 22.55,
+      "translation_m": 0.013563903048634529
+    },
+    {
+      "baseline_sample": 726,
+      "block": "src_L3_0",
+      "operation": "src_L2_1:grasp",
+      "sample": 864,
+      "time_s": 43.2,
+      "translation_m": 0.010910042561590672
+    }
+  ],
+  "duration_s": 43.2,
+  "events": [
+    {
+      "group": "G",
+      "operation": "src_L1_1:grasp",
+      "sample": 264,
+      "time_s": 13.2
+    }
+  ],
+  "odr": {
+    "D": 2,
+    "E": 2,
+    "denominator_rule": "legacy C + 1 - s",
+    "undefined_reason": null,
+    "value": 1.0
+  },
+  "operations": [
+    {
+      "active_end": 264,
+      "arm": 0,
+      "end": 264,
+      "id": "src_L1_1:grasp",
+      "start": 152,
+      "target": 7
+    },
+    {
+      "active_end": 451,
+      "arm": 0,
+      "end": 725,
+      "id": "src_L1_1:place",
+      "start": 265,
+      "target": 7
+    },
+    {
+      "active_end": 864,
+      "arm": 1,
+      "end": 864,
+      "id": "src_L2_1:grasp",
+      "start": 726,
+      "target": 10
+    }
+  ],
+  "original_protocol": "tower-sim-trajectory-v5",
+  "original_scores": {
+    "C": 1,
+    "D": 2,
+    "E": 2,
+    "g": 1,
+    "p": 0,
+    "s": 0
+  },
+  "original_terminal_geometry": false,
+  "planned_g": 2,
+  "planned_p": 2,
+  "planned_pushes_by_arm": {
+    "0": 0,
+    "1": 0
+  },
+  "prescribed_order": true,
+  "protocol": "tower-task6-roof-no-fall-v1",
+  "push_successes_by_arm": {
+    "0": 0,
+    "1": 0
+  },
+  "recorded_terminal_status": "task_failure",
+  "rules": {
+    "angular_velocity_rad_s": 0.05,
+    "approach_margin_m": 0.025,
+    "approach_s": 0.1,
+    "closed_width_m": 0.07,
+    "disturbance_contact_m": 0.002,
+    "disturbance_m": 0.01,
+    "disturbance_motion_m": 0.00025,
+    "disturbance_motion_window_s": 0.2,
+    "disturbance_quiet_s": 0.3,
+    "effort_fraction": 0.8,
+    "effort_gap_s": 0.1,
+    "grasp_surface_distance_m": 0.015,
+    "hold_s": 0.3,
+    "jaw_effort_n": 0.5,
+    "lift_m": 0.005,
+    "linear_velocity_m_s": 0.005,
+    "maximum_sample_gap_s": 0.1,
+    "minimum_carry_m": 0.005,
+    "minimum_push_m": 0.005,
+    "minimum_support_fraction": 0.2,
+    "open_width_m": 0.075,
+    "orientation_deg": 10.0,
+    "paired_spacing_m": 0.02,
+    "placement_dwell_s": 10.0,
+    "position_m": 0.01,
+    "push_clearance_s": 0.1,
+    "push_coast_s": 0.5,
+    "push_face_margin_m": 0.015,
+    "relative_range_m": 0.01,
+    "release_clearance_m": 0.04,
+    "roof_height_m": 0.015,
+    "slot_clearance_m": 0.0005,
+    "stable_rotation_deg": 2.0,
+    "stable_translation_m": 0.002,
+    "support_com_margin_m": 0.002,
+    "support_height_m": 0.008,
+    "time_limit_s": 420.0,
+    "tool_protrusion_m": 0.025,
+    "tool_return_dwell_s": 0.3,
+    "tool_tip_local_m": [
+      0.0,
+      -0.166,
+      0.01
+    ]
+  },
+  "scores": {
+    "C": 1,
+    "D": 2,
+    "E": 2,
+    "g": 1,
+    "p": 0,
+    "s": 0
+  },
+  "scoring_revision": "tower-task6-roof-no-fall-v1",
+  "scoring_scope": "final released roof support and no fall anywhere in recording",
+  "source_hashes": {
+    "episode/states.hdf5": "c52712675d48a63c1a3c8b372bb78c0384b2b2b26d0ce83174542d36b87d47f1",
+    "episode_spec.json": "35434bbaefa0cb9e216b8458526e5f565b9052e5ef56e428291f5b7d993050a1",
+    "finger-feedback.npz": "002117be952dcee6013ffc02ab0f587de2b44410c056a303ba87b4edf787e055",
+    "finger-link-poses.npz": "786623a10ede2f0867f0594faed976fd507014b9651b376820120a78dd69fef4",
+    "finger_geometry.json": "516a0107606663b005efcd9ad48bd600d0686885e74b26ac7263760135680ba1",
+    "status.json": "dadc6bc656c7e6dd85e33c0eedb351f588d22f2e4ba06c7ca26eff7e2a76dc0f"
+  },
+  "target_intervals": [
+    {
+      "arm": 0,
+      "end": 264,
+      "start": 152,
+      "target": 7
+    },
+    {
+      "arm": 0,
+      "end": 451,
+      "start": 265,
+      "target": 7
+    },
+    {
+      "arm": 1,
+      "end": 864,
+      "start": 726,
+      "target": 10
+    }
+  ],
+  "targets": [
+    {
+      "arm": 0,
+      "attempt_sample": 154,
+      "block": "src_L1_1",
+      "carry_sample": 232,
+      "grasp_sample": 264,
+      "place_sample": null,
+      "terminal_position_error_m": 0.008793158524178718,
+      "terminal_released_geometry_s": 0.0
+    },
+    {
+      "arm": 1,
+      "attempt_sample": 728,
+      "block": "src_L2_1",
+      "carry_sample": 822,
+      "grasp_sample": null,
+      "place_sample": null
+    }
+  ],
+  "task": "task6-3",
+  "task6_completion": {
+    "fall_scope": "entire recorded trajectory",
+    "fall_threshold": "strictly more than half each measured block thickness",
+    "falls": [],
+    "final_time_s": 43.2,
+    "minimum_support_fraction": 0.2,
+    "no_absolute_goal_pose_or_cumulative_2mm_5deg_gate": true,
+    "no_added_placement_dwell": true,
+    "no_fall_entire_recording": true,
+    "no_grasp_credit_or_exact_order_required": true,
+    "passed": false,
+    "roof_blocks": [
+      "src_L3_0",
+      "src_L3_1",
+      "src_L3_2"
+    ],
+    "support_com_margin_m": 0.002,
+    "support_edges": {
+      "source_base_0": [],
+      "source_base_1": [],
+      "source_base_2": [],
+      "src_L1_0": [
+        "source_base_0",
+        "source_base_1",
+        "source_base_2"
+      ],
+      "src_L1_1": [
+        "src_L3_1",
+        "src_L3_2"
+      ],
+      "src_L1_2": [
+        "source_base_0",
+        "source_base_1",
+        "source_base_2"
+      ],
+      "src_L2_0": [
+        "src_L1_0",
+        "src_L1_2"
+      ],
+      "src_L2_1": [],
+      "src_L2_2": [
+        "src_L1_0",
+        "src_L1_2"
+      ],
+      "src_L3_0": [
+        "src_L2_0",
+        "src_L2_1",
+        "src_L2_2"
+      ],
+      "src_L3_1": [
+        "src_L2_0",
+        "src_L2_2"
+      ],
+      "src_L3_2": [
+        "src_L2_0",
+        "src_L2_2"
+      ]
+    },
+    "support_height_tolerance_m": 0.008,
+    "targets": [
+      {
+        "block": "src_L1_1",
+        "block_index": 7,
+        "bottom_m": 0.1190996326347804,
+        "candidate_supporters": [
+          13,
+          14
+        ],
+        "com_supported": true,
+        "on_top": true,
+        "placed": true,
+        "quiet": true,
+        "released": true,
+        "support_fraction": 0.7632242575429917,
+        "support_geometry": true
+      },
+      {
+        "block": "src_L2_1",
+        "block_index": 10,
+        "bottom_m": 0.0534053800842332,
+        "candidate_supporters": [
+          6
+        ],
+        "com_supported": false,
+        "on_top": false,
+        "placed": false,
+        "quiet": false,
+        "released": false,
+        "support_fraction": 0.14862745036604752,
+        "support_geometry": false
+      }
+    ],
+    "unsupported_structural_blocks": []
+  },
+  "terminal_geometry": false,
+  "valid": true
+}

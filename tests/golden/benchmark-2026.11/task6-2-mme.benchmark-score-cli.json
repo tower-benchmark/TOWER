@@ -1,0 +1,257 @@
+{
+  "disturbances": [
+    {
+      "baseline_sample": 144,
+      "block": "src_L2_1",
+      "operation": "src_L1_1:grasp",
+      "sample": 233,
+      "time_s": 11.65,
+      "translation_m": 0.010045488364994526
+    },
+    {
+      "baseline_sample": 144,
+      "block": "src_L2_0",
+      "operation": "src_L1_1:grasp",
+      "sample": 234,
+      "time_s": 11.7,
+      "translation_m": 0.010296851396560669
+    },
+    {
+      "baseline_sample": 254,
+      "block": "src_L2_0",
+      "operation": "src_L1_1:place",
+      "sample": 281,
+      "time_s": 14.05,
+      "translation_m": 0.010091566480696201
+    }
+  ],
+  "duration_s": 40.0,
+  "events": [
+    {
+      "group": "G",
+      "operation": "src_L1_1:grasp",
+      "sample": 253,
+      "time_s": 12.65
+    }
+  ],
+  "odr": {
+    "D": 3,
+    "E": 2,
+    "denominator_rule": "legacy C + 1 - s",
+    "undefined_reason": null,
+    "value": 1.5
+  },
+  "operations": [
+    {
+      "active_end": 253,
+      "arm": 0,
+      "end": 253,
+      "id": "src_L1_1:grasp",
+      "start": 144,
+      "target": 7
+    },
+    {
+      "active_end": 502,
+      "arm": 0,
+      "end": 800,
+      "id": "src_L1_1:place",
+      "start": 254,
+      "target": 7
+    }
+  ],
+  "original_protocol": "tower-sim-trajectory-v5",
+  "original_scores": {
+    "C": 1,
+    "D": 3,
+    "E": 2,
+    "g": 1,
+    "p": 0,
+    "s": 0
+  },
+  "original_terminal_geometry": false,
+  "planned_g": 1,
+  "planned_p": 1,
+  "planned_pushes_by_arm": {
+    "0": 0,
+    "1": 0
+  },
+  "prescribed_order": true,
+  "protocol": "tower-task6-roof-no-fall-v1",
+  "push_successes_by_arm": {
+    "0": 0,
+    "1": 0
+  },
+  "recorded_terminal_status": "duration_reached",
+  "rules": {
+    "angular_velocity_rad_s": 0.05,
+    "approach_margin_m": 0.025,
+    "approach_s": 0.1,
+    "closed_width_m": 0.07,
+    "disturbance_contact_m": 0.002,
+    "disturbance_m": 0.01,
+    "disturbance_motion_m": 0.00025,
+    "disturbance_motion_window_s": 0.2,
+    "disturbance_quiet_s": 0.3,
+    "effort_fraction": 0.8,
+    "effort_gap_s": 0.1,
+    "grasp_surface_distance_m": 0.015,
+    "hold_s": 0.3,
+    "jaw_effort_n": 0.5,
+    "lift_m": 0.005,
+    "linear_velocity_m_s": 0.005,
+    "maximum_sample_gap_s": 0.1,
+    "minimum_carry_m": 0.005,
+    "minimum_push_m": 0.005,
+    "minimum_support_fraction": 0.2,
+    "open_width_m": 0.075,
+    "orientation_deg": 10.0,
+    "paired_spacing_m": 0.02,
+    "placement_dwell_s": 10.0,
+    "position_m": 0.01,
+    "push_clearance_s": 0.1,
+    "push_coast_s": 0.5,
+    "push_face_margin_m": 0.015,
+    "relative_range_m": 0.01,
+    "release_clearance_m": 0.04,
+    "roof_height_m": 0.015,
+    "slot_clearance_m": 0.0005,
+    "stable_rotation_deg": 2.0,
+    "stable_translation_m": 0.002,
+    "support_com_margin_m": 0.002,
+    "support_height_m": 0.008,
+    "time_limit_s": 420.0,
+    "tool_protrusion_m": 0.025,
+    "tool_return_dwell_s": 0.3,
+    "tool_tip_local_m": [
+      0.0,
+      -0.166,
+      0.01
+    ]
+  },
+  "scores": {
+    "C": 1,
+    "D": 3,
+    "E": 2,
+    "g": 1,
+    "p": 0,
+    "s": 0
+  },
+  "scoring_revision": "tower-task6-roof-no-fall-v1",
+  "scoring_scope": "final released roof support and no fall anywhere in recording",
+  "source_hashes": {
+    "episode/states.hdf5": "673f7588ca43a0ef775a2cf53835f8317a48a8c140badff2fc00d144ad2fa2f6",
+    "episode_spec.json": "0da52e0fe346f2ec3e84522bf2039ecb5c552efdfc14c61f11737d6a5f15d9a9",
+    "finger-feedback.npz": "95f49034e0e225d06c4c6712db2978762c8918d514ddd6c77e964513be841104",
+    "finger-link-poses.npz": "17e8b9933afe2c96d6a5748a633001a98dcacd6e8c4a21aeaae321dd87a19536",
+    "finger_geometry.json": "516a0107606663b005efcd9ad48bd600d0686885e74b26ac7263760135680ba1",
+    "status.json": "194c105e8339857e4fe05947ddc2044f124cd54c6ed35e651dc7e196711a530a"
+  },
+  "target_intervals": [
+    {
+      "arm": 0,
+      "end": 253,
+      "start": 144,
+      "target": 7
+    },
+    {
+      "arm": 0,
+      "end": 502,
+      "start": 254,
+      "target": 7
+    }
+  ],
+  "targets": [
+    {
+      "arm": 0,
+      "attempt_sample": 146,
+      "block": "src_L1_1",
+      "carry_sample": 224,
+      "grasp_sample": 253,
+      "place_sample": null,
+      "terminal_position_error_m": 0.007334773742465941,
+      "terminal_released_geometry_s": 0.0
+    }
+  ],
+  "task": "task6-2",
+  "task6_completion": {
+    "fall_scope": "entire recorded trajectory",
+    "fall_threshold": "strictly more than half each measured block thickness",
+    "falls": [
+      {
+        "block": "src_L2_0",
+        "block_index": 9,
+        "descent_m": 0.02587311342358589,
+        "reference_sample": 264,
+        "role": "structural",
+        "sample": 331,
+        "threshold_m": 0.0149,
+        "time_s": 16.55
+      }
+    ],
+    "final_time_s": 40.0,
+    "minimum_support_fraction": 0.2,
+    "no_absolute_goal_pose_or_cumulative_2mm_5deg_gate": true,
+    "no_added_placement_dwell": true,
+    "no_fall_entire_recording": false,
+    "no_grasp_credit_or_exact_order_required": true,
+    "passed": false,
+    "roof_blocks": [
+      "src_L2_0",
+      "src_L2_1",
+      "src_L2_2"
+    ],
+    "support_com_margin_m": 0.002,
+    "support_edges": {
+      "source_base_0": [],
+      "source_base_1": [],
+      "source_base_2": [],
+      "src_L1_0": [
+        "source_base_0",
+        "source_base_1",
+        "source_base_2"
+      ],
+      "src_L1_1": [
+        "src_L2_1",
+        "src_L2_2"
+      ],
+      "src_L1_2": [
+        "source_base_0",
+        "source_base_1",
+        "source_base_2"
+      ],
+      "src_L2_0": [],
+      "src_L2_1": [
+        "src_L1_0",
+        "src_L1_2"
+      ],
+      "src_L2_2": [
+        "src_L1_0",
+        "src_L1_2"
+      ]
+    },
+    "support_height_tolerance_m": 0.008,
+    "targets": [
+      {
+        "block": "src_L1_1",
+        "block_index": 7,
+        "bottom_m": 0.08904666762835356,
+        "candidate_supporters": [
+          10,
+          11
+        ],
+        "com_supported": true,
+        "on_top": true,
+        "placed": true,
+        "quiet": true,
+        "released": true,
+        "support_fraction": 0.6755117999932212,
+        "support_geometry": true
+      }
+    ],
+    "unsupported_structural_blocks": [
+      "src_L2_0"
+    ]
+  },
+  "terminal_geometry": true,
+  "valid": true
+}

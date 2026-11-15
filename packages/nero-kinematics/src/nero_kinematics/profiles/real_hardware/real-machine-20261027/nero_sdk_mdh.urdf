@@ -1,0 +1,23 @@
+<robot name="nero_v120_sdk_mdh"><link name="base_link"/>
+<link name="pre1"/><link name="link1"/>
+<joint name="fixed1" type="fixed"><parent link="base_link"/><child link="pre1"/><origin xyz="0.0 0 0" rpy="0.0 0 0"/></joint>
+<joint name="joint1" type="revolute"><parent link="pre1"/><child link="link1"/><origin xyz="0 0 0.138" rpy="0 0 0.0"/><axis xyz="0 0 1"/><limit lower="-2.70526" upper="2.70526" effort="1" velocity="5"/></joint>
+<link name="pre2"/><link name="link2"/>
+<joint name="fixed2" type="fixed"><parent link="link1"/><child link="pre2"/><origin xyz="0.0 0 0" rpy="1.5707963267948966 0 0"/></joint>
+<joint name="joint2" type="revolute"><parent link="pre2"/><child link="link2"/><origin xyz="0 0 0.0" rpy="0 0 3.141592653589793"/><axis xyz="0 0 1"/><limit lower="-1.74" upper="1.74" effort="1" velocity="5"/></joint>
+<link name="pre3"/><link name="link3"/>
+<joint name="fixed3" type="fixed"><parent link="link2"/><child link="pre3"/><origin xyz="0.0 0 0" rpy="1.5707963267948966 0 0"/></joint>
+<joint name="joint3" type="revolute"><parent link="pre3"/><child link="link3"/><origin xyz="0 0 0.31" rpy="0 0 3.141592653589793"/><axis xyz="0 0 1"/><limit lower="-2.75" upper="2.75" effort="1" velocity="5"/></joint>
+<link name="pre4"/><link name="link4"/>
+<joint name="fixed4" type="fixed"><parent link="link3"/><child link="pre4"/><origin xyz="0.0 0 0" rpy="1.5707963267948966 0 0"/></joint>
+<joint name="joint4" type="revolute"><parent link="pre4"/><child link="link4"/><origin xyz="0 0 0.0" rpy="0 0 3.141592653589793"/><axis xyz="0 0 1"/><limit lower="-1.01" upper="2.14" effort="1" velocity="5"/></joint>
+<link name="pre5"/><link name="link5"/>
+<joint name="fixed5" type="fixed"><parent link="link4"/><child link="pre5"/><origin xyz="0.0 0 0" rpy="1.5707963267948966 0 0"/></joint>
+<joint name="joint5" type="revolute"><parent link="pre5"/><child link="link5"/><origin xyz="0 0 0.27001" rpy="0 0 1.5707963267948966"/><axis xyz="0 0 1"/><limit lower="-2.75" upper="2.75" effort="1" velocity="5"/></joint>
+<link name="pre6"/><link name="link6"/>
+<joint name="fixed6" type="fixed"><parent link="link5"/><child link="pre6"/><origin xyz="0.0 0 0" rpy="1.5707963267948966 0 0"/></joint>
+<joint name="joint6" type="revolute"><parent link="pre6"/><child link="link6"/><origin xyz="0 0 0.0" rpy="0 0 1.5707963267948966"/><axis xyz="0 0 1"/><limit lower="-0.73" upper="0.95" effort="1" velocity="5"/></joint>
+<link name="pre7"/><link name="link7"/>
+<joint name="fixed7" type="fixed"><parent link="link6"/><child link="pre7"/><origin xyz="0.0 0 0" rpy="1.5707963267948966 0 0"/></joint>
+<joint name="joint7" type="revolute"><parent link="pre7"/><child link="link7"/><origin xyz="0 0 0.0235" rpy="0 0 0.0"/><axis xyz="0 0 1"/><limit lower="-1.5707963" upper="1.5707963" effort="1" velocity="5"/></joint>
+</robot>

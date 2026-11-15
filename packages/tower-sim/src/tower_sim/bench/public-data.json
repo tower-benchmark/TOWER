@@ -1,0 +1,144 @@
+{
+  "data_version": "benchmark-2026.11.1",
+  "protocol": "benchmarks/2026.11.1/protocol.json",
+  "scene_index": "benchmarks/2026.11.1/scene-index.json",
+  "files": {
+    "benchmarks/2026.11.1/protocol.json": "61b6cfd4b5d8a5f11923ae5a94ead1bc07e7ae153d6fa3540fe7c0b7b92503df",
+    "benchmarks/2026.11.1/scene-index.json": "0bad41c69640cd51b702fde8527e3b354c7c619743f18d66b080f929a7d46cc3",
+    "benchmarks/2026.11.1/scene-equivalence.json": "1d64c3925a52762c0738c8ed5c44e385468910a1d974e88c2a4a00df7fca5d2e",
+    "benchmarks/2026.11.1/data-manifest.json": "865ad9c077868d2e39f6fcbefec4a2ede50496027761e35a67e543326ec9b256",
+    "benchmarks/2026.11.1/validation.json": "0a74b2c901fb93f06e374f539289b796fa8c468d90a5a107a57093c15946db41",
+    "benchmarks/2026.11.1/assets.lock.json": {
+      "manifest_sha256": "5c62e0fa27f890c55994a952e21bf3f91cc559fb20cde6de4e36714ed2e6b842"
+    }
+  },
+  "payload_files": {
+    "scenes/task1-2.json": {
+      "sha256": "10ca0a0bf66cc3c7ae77d250a68d9673bea99ba50577b4bd2006f1381db7c557",
+      "size": 550756
+    },
+    "scenes/task1-3.json": {
+      "sha256": "79d54ec8e408f5abb39d1c23c7fb7b993430c7886cf89ab8093f90a0182dba42",
+      "size": 660471
+    },
+    "scenes/task2-2.json": {
+      "sha256": "cbd4e15487c9c048214b8edf85235007ce063b3e58e4c982825fbc3161495aad",
+      "size": 438204
+    },
+    "scenes/task2-3.json": {
+      "sha256": "4a25ddac52c39dc270da5f2536afab9d828bbde97996a866b3a09e1c837248b8",
+      "size": 491968
+    },
+    "scenes/task4-2.json": {
+      "sha256": "bf78a131e321fc5b806604cc5f0baa210816efff4b705d94040b13b6e4414231",
+      "size": 650874
+    },
+    "scenes/task4-3.json": {
+      "sha256": "74c37cb9f447ccfb736eeab15a531ee1bc8dbf1cd59e64d7fc022fc77b4ff7af",
+      "size": 812517
+    },
+    "scenes/task5-2.json": {
+      "sha256": "4afac9e660796029403a2ff636eb1a8b8da64ca90c84efcbd51ded12fd6f0025",
+      "size": 592796
+    },
+    "scenes/task5-3.json": {
+      "sha256": "d57d1518fe4ddc08de5f007ddaac70339739469f8e236085e33e5d11a5348a42",
+      "size": 733929
+    },
+    "scenes/task6-2.json": {
+      "sha256": "43dbd01aa03fbbd82bcb97a9359a2363bc1e4f5bf8fc1c252075766c2c09b833",
+      "size": 617822
+    },
+    "scenes/task6-3.json": {
+      "sha256": "b4ff53da1c0bbcbbbc853a60a9bf6185d57ba9376fffbfbeb71e8dbc22dc1122",
+      "size": 762636
+    },
+    "scenes/task7-2.json": {
+      "sha256": "7ee3b783795a3578812158392c2e194c6d3b429d573d7eed06d58b420e981d50",
+      "size": 1577046
+    },
+    "scenes/task7-3.json": {
+      "sha256": "764a8b0813228c6d49d7214fe3d166700d3298b4d0f5733cbb7aac5f07fe5d8f",
+      "size": 2036591
+    }
+  },
+  "manifest_sha256": "5c62e0fa27f890c55994a952e21bf3f91cc559fb20cde6de4e36714ed2e6b842",
+  "upload_files": {
+    "README.md": {
+      "sha256": "a47598ea1831c463da909f8159517b90ee9ed28b7b553c48353539ce744f1573",
+      "size": 1666
+    },
+    "data-manifest.json": {
+      "sha256": "865ad9c077868d2e39f6fcbefec4a2ede50496027761e35a67e543326ec9b256",
+      "size": 1454
+    },
+    "protocol.json": {
+      "sha256": "61b6cfd4b5d8a5f11923ae5a94ead1bc07e7ae153d6fa3540fe7c0b7b92503df",
+      "size": 4659
+    },
+    "scene-equivalence.json": {
+      "sha256": "1d64c3925a52762c0738c8ed5c44e385468910a1d974e88c2a4a00df7fca5d2e",
+      "size": 172303
+    },
+    "scene-index.json": {
+      "sha256": "0bad41c69640cd51b702fde8527e3b354c7c619743f18d66b080f929a7d46cc3",
+      "size": 124269
+    },
+    "scene-v2.schema.json": {
+      "sha256": "0eebcda93bfb6797db643657b1de20d860e0b849b2ca4271b6613a469047d20c",
+      "size": 85111
+    },
+    "scenes/task1-2.json": {
+      "sha256": "10ca0a0bf66cc3c7ae77d250a68d9673bea99ba50577b4bd2006f1381db7c557",
+      "size": 550756
+    },
+    "scenes/task1-3.json": {
+      "sha256": "79d54ec8e408f5abb39d1c23c7fb7b993430c7886cf89ab8093f90a0182dba42",
+      "size": 660471
+    },
+    "scenes/task2-2.json": {
+      "sha256": "cbd4e15487c9c048214b8edf85235007ce063b3e58e4c982825fbc3161495aad",
+      "size": 438204
+    },
+    "scenes/task2-3.json": {
+      "sha256": "4a25ddac52c39dc270da5f2536afab9d828bbde97996a866b3a09e1c837248b8",
+      "size": 491968
+    },
+    "scenes/task4-2.json": {
+      "sha256": "bf78a131e321fc5b806604cc5f0baa210816efff4b705d94040b13b6e4414231",
+      "size": 650874
+    },
+    "scenes/task4-3.json": {
+      "sha256": "74c37cb9f447ccfb736eeab15a531ee1bc8dbf1cd59e64d7fc022fc77b4ff7af",
+      "size": 812517
+    },
+    "scenes/task5-2.json": {
+      "sha256": "4afac9e660796029403a2ff636eb1a8b8da64ca90c84efcbd51ded12fd6f0025",
+      "size": 592796
+    },
+    "scenes/task5-3.json": {
+      "sha256": "d57d1518fe4ddc08de5f007ddaac70339739469f8e236085e33e5d11a5348a42",
+      "size": 733929
+    },
+    "scenes/task6-2.json": {
+      "sha256": "43dbd01aa03fbbd82bcb97a9359a2363bc1e4f5bf8fc1c252075766c2c09b833",
+      "size": 617822
+    },
+    "scenes/task6-3.json": {
+      "sha256": "b4ff53da1c0bbcbbbc853a60a9bf6185d57ba9376fffbfbeb71e8dbc22dc1122",
+      "size": 762636
+    },
+    "scenes/task7-2.json": {
+      "sha256": "7ee3b783795a3578812158392c2e194c6d3b429d573d7eed06d58b420e981d50",
+      "size": 1577046
+    },
+    "scenes/task7-3.json": {
+      "sha256": "764a8b0813228c6d49d7214fe3d166700d3298b4d0f5733cbb7aac5f07fe5d8f",
+      "size": 2036591
+    },
+    "validation.json": {
+      "sha256": "0a74b2c901fb93f06e374f539289b796fa8c468d90a5a107a57093c15946db41",
+      "size": 218
+    }
+  }
+}

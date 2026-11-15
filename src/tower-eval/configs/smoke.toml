@@ -1,0 +1,11 @@
+schema = "tower-eval-v1"
+seed = 0
+duration_seconds = 1.0
+output = "../../outputs/smoke"
+
+[environment]
+backend = "cpu-smoke"
+task = "tower_transfer_2"
+
+[policy]
+adapter = "reference"

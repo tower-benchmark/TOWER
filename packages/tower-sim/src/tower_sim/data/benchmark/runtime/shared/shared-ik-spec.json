@@ -1,0 +1,190 @@
+{
+  "schema": "tower_shared_ik_spec_v1",
+  "status": "frozen_v1_implementation_pending_qualification",
+  "created": "2026-10-29",
+  "scope": "every task, every arm: generation, sim eval, replay checks; real robot only after an approved hardware test",
+  "joint_order": [
+    "joint1",
+    "joint2",
+    "joint3",
+    "joint4",
+    "joint5",
+    "joint6",
+    "joint7"
+  ],
+  "coordinate_frame": "encoder_joint_radians",
+  "limits": {
+    "base_soft_cap_urdf": {
+      "rule": "max(hard+0.03 rad real soft margin, sim URDF) per joint",
+      "lower_rad": [
+        -2.67526,
+        -1.71,
+        -2.72,
+        -0.98,
+        -2.72,
+        -0.7,
+        -1.5407963
+      ],
+      "upper_rad": [
+        2.67526,
+        1.71,
+        2.72,
+        2.1100000000000003,
+        2.72,
+        0.8726646,
+        1.5407963
+      ],
+      "source": "redacted",
+      "source_sha256": "5ef8ccfa79714a171062f58268c1f9d0dcc1414733aca5ba1200654da8da7bb4",
+      "hard_limits_source_sha256": "072d35502650494e5ca0ba5a9bb7b352cff61aba6937d38c1ab98f87b43fde4c"
+    },
+    "ik_command": {
+      "rule": "real normal soft intersection URDF inset 1.5deg; J2 intersection with Tower hard limits inset 5deg",
+      "inset_deg": 1.5,
+      "lower_rad": [
+        -2.649080061220085,
+        -1.6527335374002836,
+        -2.693820061220085,
+        -0.953820061220085,
+        -2.693820061220085,
+        -0.673820061220085,
+        -1.5146163612200851
+      ],
+      "upper_rad": [
+        2.649080061220085,
+        1.6527335374002836,
+        2.693820061220085,
+        2.0838200612200852,
+        2.693820061220085,
+        0.846484661220085,
+        1.5146163612200851
+      ]
+    },
+    "kill_line": {
+      "rule": "base, applied to commands",
+      "lower_rad": [
+        -2.67526,
+        -1.71,
+        -2.72,
+        -0.98,
+        -2.72,
+        -0.7,
+        -1.5407963
+      ],
+      "upper_rad": [
+        2.67526,
+        1.71,
+        2.72,
+        2.1100000000000003,
+        2.72,
+        0.8726646,
+        1.5407963
+      ]
+    },
+    "observed_joint_tolerance": {
+      "deg": 0.5,
+      "applies_to": "simulation observed joints only"
+    }
+  },
+  "solver": {
+    "name": "posture_ipopt",
+    "implementation": "redacted",
+    "implementation_sha256": "a90c3bb1fd4c8eda9237556e42a13838da4829de52cbe1192f45b2b0f83075a9",
+    "libraries": {
+      "pinocchio": "FK model built in solver",
+      "casadi": "nlpsol ipopt"
+    },
+    "cost": {
+      "position_m": 1.0,
+      "rotation_frobenius": 0.05,
+      "seed_pull": 1e-05,
+      "reference_posture_pull_normalized_by_span": 1e-05,
+      "limit_hinge": {
+        "weight": 0.0001,
+        "margin_deg": 10
+      }
+    },
+    "ipopt": {
+      "max_iter": 80,
+      "max_cpu_time_s": 0.2,
+      "tol": 1e-08,
+      "acceptable_iter": 0
+    },
+    "step_cap": {
+      "rad_per_row": 0.2,
+      "row_dt_s": 0.1,
+      "equivalent_rad_s": 2.0,
+      "note": "Shared runtime online calls at 10Hz; dense export uses interpolated commands and independent checks, not a different IK solver",
+      "online_hz": 10
+    },
+    "acceptance": {
+      "position_error_m": 0.001,
+      "rotation_error_rad": 0.0005,
+      "latency_s": 0.2,
+      "within_ik_command_limits": true
+    }
+  },
+  "reference_posture": {
+    "rule": "median of six task medians; equal task weighting; no task overrides",
+    "per_arm_rad": {
+      "left": [
+        -0.023714772425591946,
+        -0.7116723656654358,
+        -0.0011010423768312632,
+        1.6472321152687073,
+        -0.02773957420140505,
+        -0.06115551106631756,
+        1.1808686256408691
+      ],
+      "back": [
+        -0.04901006445288658,
+        -0.6749516554176808,
+        0.04488321952521801,
+        1.6698074340820312,
+        0.014143675030209139,
+        -0.013674826838541756,
+        1.2524489611387253
+      ]
+    }
+  },
+  "protocol_id": "v5-shared-ik-v1",
+  "generation": {
+    "tasks": [
+      "task1-2",
+      "task2-2"
+    ],
+    "episodes_per_task": 64,
+    "same_original_seeds_first": true,
+    "failed_attempts_preserved": true,
+    "grasp_candidates": 16,
+    "along_offset_m": [
+      -0.002,
+      0.002
+    ],
+    "along_expansion_if_needed_m": [
+      -0.01,
+      0.01
+    ],
+    "nonheld_clearance_hard_m": 0.002,
+    "nonheld_clearance_target_m": 0.005,
+    "nonheld_target_fraction": 0.95,
+    "target_block_preclose_clearance_m": 0.002,
+    "grasp_coverage_min_m": 0.015,
+    "headroom_joints": [
+      4,
+      6,
+      7
+    ],
+    "headroom_deg": 3,
+    "headroom_reference": "ik_command_bounds",
+    "parity_max_rad": 0.0001,
+    "diversity_relative_tolerance": 0.1,
+    "no_policy_smoothing": true,
+    "training_distribution_unchanged": true,
+    "cpu_workers_max": 16,
+    "hardware_authorized": false,
+    "training_authorized": false,
+    "publication_authorized": false,
+    "physics_and_exports_authorized_by": "2026-10-29 user now lets generation 64 task1-2 and task2-2"
+  }
+}

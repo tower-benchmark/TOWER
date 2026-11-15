@@ -1,0 +1,167 @@
+[project]
+name = "tower-monorepo"
+version = "0.1.0"
+description = "TOWER robotics simulation benchmark monorepo"
+requires-python = ">=3.11,<3.13"
+dependencies = ["tower-eval", "tower-sim"]
+
+[tool.uv]
+package = false
+
+[tool.uv.workspace]
+members = [
+  "src/tower-eval",
+  "packages/nero-kinematics",
+  "packages/tower-sim",
+]
+
+[tool.uv.sources]
+tower-eval = { workspace = true }
+tower-sim = { workspace = true }
+
+[dependency-groups]
+dev = [
+  "pytest>=8,<9",
+  "pytest-xdist>=3.6,<4",
+  "msgpack>=1.0.8",
+  "msgpack-numpy>=0.4.8",
+  "pydantic>=2.5,<3",
+  "pre-commit>=4,<5",
+  "pyyaml>=6,<7",
+  "ruff>=0.6",
+  "pyright>=1.1",
+  "websockets>=15,<16",
+  "h5py>=3.11,<4",
+  "av>=14,<17",
+  "opencv-python-headless>=4.10,<4.12",
+  "pillow>=10,<13",
+  "usd-core==26.8",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+exclude = ["third_party/XPolicyLab", ".venv", "packages/tower-sim/src/tower_sim/backend/backend.py", "runs", "assets", "validation", "provenance", "local",
+]
+force-exclude = true
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RET", "PTH", "T20", "BLE"]
+ignore = ["E501", "B905", "UP024"]
+
+[tool.ruff.lint.per-file-ignores]
+# Verbatim shared backend moves; preserve existing diagnostics/import order.
+"packages/tower-sim/src/tower_sim/backend/assets.py" = ["I001", "T20"]
+"packages/tower-sim/src/tower_sim/backend/camera_batch.py" = ["I001"]
+"packages/tower-sim/src/tower_sim/backend/runtime_profiles.py" = ["I001"]
+"packages/tower-sim/src/tower_sim/bench/environment.py" = ["I001"]
+# Verbatim replay worker retains its diagnostic prints.
+"packages/tower-sim/src/tower_sim/replay/dual_replay_worker.py" = ["T20"]
+# Entry points and maintainer commands intentionally write user-facing output.
+"**/cli.py" = ["T20"]
+"**/__main__.py" = ["T20"]
+"tools/**" = ["T20"]
+"scripts/maintainer/**" = ["T20"]
+"packages/nero-kinematics/examples/**" = ["T20"]
+"tests/characterization/golden_compare.py" = ["T20"]
+
+# Preserve bytes referenced by historical/source manifests.
+"reproduction/paper_metrics/metrics.py" = ["I001"]
+
+# Preserve bytes referenced by historical/source manifests.
+"reproduction/paper_metrics/tests/test_paper_metrics.py" = ["I001"]
+
+# Preserve bytes referenced by historical/source manifests.
+"packages/tower-sim/src/tower_sim/backend/tasks.py" = ["UP037", "I001"]
+
+# Preserve bytes referenced by historical/source manifests.
+"src/tower-eval/src/tower_eval/scoring/_paper_annotations.py" = ["RET504"]
+"src/tower-eval/src/tower_eval/scoring/_paper_cli.py" = ["T20"]
+
+# Scripts/tests establish import roots or native thread settings before imports.
+# Entry points disable bytecode before importing checkout modules.
+"tools/simulator/benchmark_environment.py" = ["E402"]
+"tools/simulator/benchmark_diagnostic.py" = ["E402"]
+"tools/simulator/benchmark.py" = ["E402"]
+"tools/simulator/benchmark_candidate.py" = ["E402"]
+"tools/simulator/benchmark_portable.py" = ["E402"]
+"tools/simulator/benchmark_assets.py" = ["E402"]
+"tools/simulator/benchmark_diagnostic_score.py" = ["E402"]
+"scripts/maintainer/candidate_replay.py" = ["E402"]
+"scripts/maintainer/candidate_release.py" = ["E402"]
+"scripts/maintainer/candidate_policy.py" = ["E402"]
+"scripts/maintainer/bench_scoring_replay.py" = ["E402"]
+"scripts/maintainer/check_golden_exact.py" = ["E402"]
+"scripts/maintainer/gpu_baseline.py" = ["E402"]
+"scripts/maintainer/snapshot_characterization.py" = ["E402"]
+"tests/characterization/ik_scenarios.py" = ["E402"]
+"tests/test_eula_consent.py" = ["E402"]
+"tools/simulator/tests/test_scene_contract.py" = ["E402"]
+
+# Preserve controller/scorer branch structure until their dedicated refactor phases.
+"src/tower-eval/src/tower_eval/controllers/controller.py" = ["SIM102"]
+"src/tower-eval/src/tower_eval/scoring/__init__.py" = ["SIM114"]
+
+[tool.ruff.format]
+# Hash-pinned reference sources and historical byte-identical counterparts.
+exclude = [
+  "reproduction/paper_metrics/__init__.py",
+  "reproduction/paper_metrics/__main__.py",
+  "reproduction/paper_metrics/metrics.py",
+  "reproduction/paper_metrics/protocol.py",
+  "reproduction/paper_metrics/tests/test_paper_metrics.py",
+  "packages/tower-sim/src/tower_sim/backend/tasks.py",
+  "src/tower-eval/src/tower_eval/scoring/metrics.py",
+  "src/tower-eval/src/tower_eval/scoring/offline/__init__.py",
+  "src/tower-eval/src/tower_eval/scoring/offline/annotations.py",
+  "src/tower-eval/src/tower_eval/scoring/outcomes.py",
+  "tools/simulator/benchmark_diagnostic_score.py",
+]
+
+[tool.pyright]
+include = [
+  "src/tower-eval/src/tower_eval",
+  "packages/nero-kinematics/src",
+  "packages/tower-sim/src",
+  "scripts/maintainer",
+  "tests/characterization",
+]
+exclude = ["**/__pycache__", "runs", "assets"]
+typeCheckingMode = "basic"
+pythonVersion = "3.11"
+extraPaths = ["src/tower-eval/src", "packages/nero-kinematics/src", "packages/tower-sim/src"]
+# Shrinking debt: legacy profile-dependent controller fields and immutable scorer snapshots.
+ignore = [
+  "packages/tower-sim/src/tower_sim/backend/tasks.py",
+  # Mechanical replay moves were outside type checking.
+  "packages/tower-sim/src/tower_sim/replay/dual_core.py",
+  "packages/tower-sim/src/tower_sim/replay/dual_replay_worker.py",
+  "packages/tower-sim/src/tower_sim/replay/replay_actions.py",
+  # Mechanical backend moves: these native/HDF5 files were outside type checking.
+  "packages/tower-sim/src/tower_sim/backend/assets.py",
+  "packages/tower-sim/src/tower_sim/backend/backend.py",
+  "packages/tower-sim/src/tower_sim/backend/camera_batch.py",
+  "packages/tower-sim/src/tower_sim/backend/grasp_geometry.py",
+  "packages/tower-sim/src/tower_sim/backend/material_contract.py",
+  "packages/tower-sim/src/tower_sim/backend/physics_scene.py",
+  "packages/tower-sim/src/tower_sim/backend/profiles.py",
+  "src/tower-eval/src/tower_eval/controllers/controller.py",  # Optional fields depend on validated gripper profiles.
+  "src/tower-eval/src/tower_eval/scoring/metrics.py",  # Historical hash-matched source; optional metric aggregation.
+
+]
+venvPath = "."
+venv = ".venv"
+
+[tool.pytest.ini_options]
+markers = [
+  "public_assets: requires public hash-pinned assets and scenes",
+  "golden: requires public hash-pinned scoring recordings","archive: test requires explicitly supplied private archive evidence"]
+testpaths = [
+  "tests",
+  "packages/nero-kinematics/tests",
+  "packages/tower-sim/tests",
+  "reproduction/paper_metrics/tests",
+  "tools/simulator/tests",
+  "tools/tests",
+  "src/tower-eval/tests",
+]

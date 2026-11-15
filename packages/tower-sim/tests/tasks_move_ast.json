@@ -1,0 +1,21 @@
+{
+  "source_path": "src/tower-datagenerator/jenga_generator/tasks.py",
+  "source_sha256": "e8add3052b6ed4c1b985206fff5cfb410745f123543482ada6a81da34ed948f7",
+  "symbols": {
+    "pose": "1e89da74ba656888ebad907c20b32ea4e3b37843b4091fc35a51b0fed6a99bc7",
+    "TowerTransfer": "6638d461ab70e7758ab6bd78e61b4079b18e07fdde7e443a4ba526474d96a4da",
+    "TowerTransfer.__init__": "3845b031fb0b7b4f5e866a5ea831ba95aa6c3d9a4a5d498b160ac43aebdb80c2",
+    "TowerTransfer._dimensions": "bd7de866a7786a5666882f19c0a0f8a469b264e7ce039f2cb101f5f86da5b17b",
+    "TowerTransfer._block": "112d09ce7a13258ce4581f3468678f3b2fa4719c171ea9d9f3e8144773d76fd6",
+    "TowerTransfer.build_layout": "6d1b2a67a4989a0abff70f5fbb2a7d58efccc6eef9de815fd3ee540cc2b7533d",
+    "TowerTransfer.evaluator": "83fe7941d6eebbf1b5e194c0aaa028a7bd8f617f9bf90d93086de1d93134a8d1",
+    "TowerTransfer.policy": "6c86351996c9c6a1d653f8db9f0f1f508527fb6863981f95689a664c552b1416",
+    "TowerTransfer.instruction": "627a75de3b528f391fa69c9de1e210831bc8ea4032deaabf3516556476354d6a",
+    "TowerTransfer2": "36b8cf58a236494cca4779f84f1134c97d5753d500ecf8087d7a88a88fec83c4",
+    "create_task": "5dfeb057c08df5d6b1a949cf4f5a53e32a3511f1425a452199b8479ca4f98dce",
+    "orientation_error": "208bb67822bef58778a89cf1aa4192f886edbf6710731f225aff5ec2b2f7b572",
+    "TransferEvaluator": "e1af4bca88611566af77b8a75a0fed231bd5f9532e923454101f2a8c478d1e91",
+    "TransferEvaluator.__init__": "1e2781ac7bcb1bdd88e40d68eedee85f018985e84a2e674502526557603c5c8f",
+    "TransferEvaluator.update": "d3367fc46fcca91a9560ba78f2088603568bf9b16d2a6b244667607eb87983f6"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "schema": "tower-task-catalog-v1",
+  "status": "layout-assets-pending-release",
+  "tasks": [
+    {"name": "tower_transfer_2", "family": "tower_transfer", "parameter": 2},
+    {"name": "tower_transfer_3", "family": "tower_transfer", "parameter": 3},
+    {"name": "cross_tower_transfer_2", "family": "cross_tower_transfer", "parameter": 2},
+    {"name": "cross_tower_transfer_3", "family": "cross_tower_transfer", "parameter": 3},
+    {"name": "aligned_stack_2", "family": "aligned_stack", "parameter": 2},
+    {"name": "aligned_stack_3", "family": "aligned_stack", "parameter": 3}
+  ],
+  "note": "The staged USDA files are task descriptors. Use the fixed evaluation scenes and verified assets described in docs/reference/bench-public.md."
+}

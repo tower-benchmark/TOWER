@@ -1,0 +1,497 @@
+{
+  "field_order": [
+    "task",
+    "stage",
+    "randomization_manifest",
+    "real_root",
+    "output",
+    "spool",
+    "profile_path",
+    "runtime_profile_dir",
+    "layers_above_base",
+    "targets",
+    "seed",
+    "rollouts",
+    "episode_start",
+    "episode_ids",
+    "gpus",
+    "envs_per_gpu",
+    "gpu_total_aggregate_pairs_capacity",
+    "gpu_found_lost_aggregate_pairs_capacity",
+    "motion_profile",
+    "free_space_planner",
+    "curobo_config",
+    "curobo_sequence",
+    "curobo_travel_speed_scale",
+    "curobo_placement_time_scale",
+    "curobo_transport_clearance_m",
+    "grasp_hold_force_n",
+    "max_seconds",
+    "placement_m",
+    "placement_degrees",
+    "placement_clearance_m",
+    "placement_release_compensation_m",
+    "placement_command_offsets_m",
+    "settle_seconds",
+    "final_settle_seconds",
+    "collapse_drop_m",
+    "collapse_degrees",
+    "collapse_seconds",
+    "reset_settle_seconds",
+    "tower_jitter_m",
+    "center_block_jitter_m",
+    "max_recoveries",
+    "jpeg_quality",
+    "worker_timeout_seconds",
+    "stress_grasp_offset_m",
+    "grasp_vertical_offset_m",
+    "grasp_point_offsets_m",
+    "randomized_grasp_clearance_m",
+    "grasp_geometry_source_id",
+    "post_verify_lift_m",
+    "gripper_open_width_m",
+    "gripper_closed_width_m",
+    "joint_command_max_speed_rad_s",
+    "joint_command_max_acceleration_rad_s2",
+    "joint_command_max_jerk_rad_s3",
+    "joint1_transport_max_speed_rad_s",
+    "joint_command_tracking_lead",
+    "gripper_close_speed_m_s",
+    "gripper_contact_width_m",
+    "gripper_contact_close_speed_m_s",
+    "gripper_open_speed_m_s",
+    "gripper_finger_effort_limit_n",
+    "render",
+    "physics_usd_writeback",
+    "physics_scene_mode",
+    "anti_aliasing",
+    "dlss_mode",
+    "render_subframes",
+    "lighting_samples",
+    "wrist_near_clip_mm",
+    "renderer",
+    "camera_batch_mode",
+    "replicator_sync_only",
+    "resume",
+    "keep_local_episodes"
+  ],
+  "fields": {
+    "anti_aliasing": {
+      "annotation": "int",
+      "default": "4",
+      "statement": "anti_aliasing: int = 4"
+    },
+    "camera_batch_mode": {
+      "annotation": "str",
+      "default": "'individual'",
+      "statement": "camera_batch_mode: str = 'individual'"
+    },
+    "center_block_jitter_m": {
+      "annotation": "float",
+      "default": "0.002",
+      "statement": "center_block_jitter_m: float = 0.002"
+    },
+    "collapse_degrees": {
+      "annotation": "float",
+      "default": "30.0",
+      "statement": "collapse_degrees: float = 30.0"
+    },
+    "collapse_drop_m": {
+      "annotation": "float",
+      "default": "0.015",
+      "statement": "collapse_drop_m: float = 0.015"
+    },
+    "collapse_seconds": {
+      "annotation": "float",
+      "default": "0.25",
+      "statement": "collapse_seconds: float = 0.25"
+    },
+    "curobo_config": {
+      "annotation": "str",
+      "default": "''",
+      "statement": "curobo_config: str = ''"
+    },
+    "curobo_placement_time_scale": {
+      "annotation": "float",
+      "default": "2.0",
+      "statement": "curobo_placement_time_scale: float = 2.0"
+    },
+    "curobo_sequence": {
+      "annotation": "str",
+      "default": "'compact'",
+      "statement": "curobo_sequence: str = 'compact'"
+    },
+    "curobo_transport_clearance_m": {
+      "annotation": "float",
+      "default": "0.1",
+      "statement": "curobo_transport_clearance_m: float = 0.1"
+    },
+    "curobo_travel_speed_scale": {
+      "annotation": "float",
+      "default": "1.0",
+      "statement": "curobo_travel_speed_scale: float = 1.0"
+    },
+    "dlss_mode": {
+      "annotation": "int",
+      "default": "2",
+      "statement": "dlss_mode: int = 2"
+    },
+    "envs_per_gpu": {
+      "annotation": "int",
+      "default": "4",
+      "statement": "envs_per_gpu: int = 4"
+    },
+    "episode_ids": {
+      "annotation": "list[int] | None",
+      "default": "None",
+      "statement": "episode_ids: list[int] | None = None"
+    },
+    "episode_start": {
+      "annotation": "int",
+      "default": "0",
+      "statement": "episode_start: int = 0"
+    },
+    "final_settle_seconds": {
+      "annotation": "float",
+      "default": "2.0",
+      "statement": "final_settle_seconds: float = 2.0"
+    },
+    "free_space_planner": {
+      "annotation": "str",
+      "default": "'lula'",
+      "statement": "free_space_planner: str = 'lula'"
+    },
+    "gpu_found_lost_aggregate_pairs_capacity": {
+      "annotation": "int",
+      "default": "1048576",
+      "statement": "gpu_found_lost_aggregate_pairs_capacity: int = 1048576"
+    },
+    "gpu_total_aggregate_pairs_capacity": {
+      "annotation": "int",
+      "default": "1048576",
+      "statement": "gpu_total_aggregate_pairs_capacity: int = 1048576"
+    },
+    "gpus": {
+      "annotation": "list[int]",
+      "default": "field(default_factory=lambda : list(range(8)))",
+      "statement": "gpus: list[int] = field(default_factory=lambda : list(range(8)))"
+    },
+    "grasp_geometry_source_id": {
+      "annotation": "str",
+      "default": "''",
+      "statement": "grasp_geometry_source_id: str = ''"
+    },
+    "grasp_hold_force_n": {
+      "annotation": "float",
+      "default": "1.5",
+      "statement": "grasp_hold_force_n: float = 1.5"
+    },
+    "grasp_point_offsets_m": {
+      "annotation": "dict[str, list[float]]",
+      "default": "field(default_factory=dict)",
+      "statement": "grasp_point_offsets_m: dict[str, list[float]] = field(default_factory=dict)"
+    },
+    "grasp_vertical_offset_m": {
+      "annotation": "float",
+      "default": "0.0",
+      "statement": "grasp_vertical_offset_m: float = 0.0"
+    },
+    "gripper_close_speed_m_s": {
+      "annotation": "float",
+      "default": "0.09",
+      "statement": "gripper_close_speed_m_s: float = 0.09"
+    },
+    "gripper_closed_width_m": {
+      "annotation": "float",
+      "default": "0.03",
+      "statement": "gripper_closed_width_m: float = 0.03"
+    },
+    "gripper_contact_close_speed_m_s": {
+      "annotation": "float",
+      "default": "0.01",
+      "statement": "gripper_contact_close_speed_m_s: float = 0.01"
+    },
+    "gripper_contact_width_m": {
+      "annotation": "float",
+      "default": "0.045",
+      "statement": "gripper_contact_width_m: float = 0.045"
+    },
+    "gripper_finger_effort_limit_n": {
+      "annotation": "float",
+      "default": "22.0",
+      "statement": "gripper_finger_effort_limit_n: float = 22.0"
+    },
+    "gripper_open_speed_m_s": {
+      "annotation": "float",
+      "default": "0.16",
+      "statement": "gripper_open_speed_m_s: float = 0.16"
+    },
+    "gripper_open_width_m": {
+      "annotation": "float",
+      "default": "0.1",
+      "statement": "gripper_open_width_m: float = 0.1"
+    },
+    "joint1_transport_max_speed_rad_s": {
+      "annotation": "float",
+      "default": "0.72",
+      "statement": "joint1_transport_max_speed_rad_s: float = 0.72"
+    },
+    "joint_command_max_acceleration_rad_s2": {
+      "annotation": "float",
+      "default": "3.0",
+      "statement": "joint_command_max_acceleration_rad_s2: float = 3.0"
+    },
+    "joint_command_max_jerk_rad_s3": {
+      "annotation": "float",
+      "default": "30.0",
+      "statement": "joint_command_max_jerk_rad_s3: float = 30.0"
+    },
+    "joint_command_max_speed_rad_s": {
+      "annotation": "float",
+      "default": "1.0",
+      "statement": "joint_command_max_speed_rad_s: float = 1.0"
+    },
+    "joint_command_tracking_lead": {
+      "annotation": "float",
+      "default": "0.0",
+      "statement": "joint_command_tracking_lead: float = 0.0"
+    },
+    "jpeg_quality": {
+      "annotation": "int",
+      "default": "95",
+      "statement": "jpeg_quality: int = 95"
+    },
+    "keep_local_episodes": {
+      "annotation": "bool",
+      "default": "False",
+      "statement": "keep_local_episodes: bool = False"
+    },
+    "layers_above_base": {
+      "annotation": "int",
+      "default": "3",
+      "statement": "layers_above_base: int = 3"
+    },
+    "lighting_samples": {
+      "annotation": "int | None",
+      "default": "16",
+      "statement": "lighting_samples: int | None = 16"
+    },
+    "max_recoveries": {
+      "annotation": "int",
+      "default": "0",
+      "statement": "max_recoveries: int = 0"
+    },
+    "max_seconds": {
+      "annotation": "float",
+      "default": "300.0",
+      "statement": "max_seconds: float = 300.0"
+    },
+    "motion_profile": {
+      "annotation": "str",
+      "default": "'human_like'",
+      "statement": "motion_profile: str = 'human_like'"
+    },
+    "output": {
+      "annotation": "str",
+      "default": "'simulator-runs/generated'",
+      "statement": "output: str = 'simulator-runs/generated'"
+    },
+    "physics_scene_mode": {
+      "annotation": "str",
+      "default": "'auto'",
+      "statement": "physics_scene_mode: str = 'auto'"
+    },
+    "physics_usd_writeback": {
+      "annotation": "str",
+      "default": "'auto'",
+      "statement": "physics_usd_writeback: str = 'auto'"
+    },
+    "placement_clearance_m": {
+      "annotation": "float",
+      "default": "0.001",
+      "statement": "placement_clearance_m: float = 0.001"
+    },
+    "placement_command_offsets_m": {
+      "annotation": "dict[str, list[float]]",
+      "default": "field(default_factory=dict)",
+      "statement": "placement_command_offsets_m: dict[str, list[float]] = field(default_factory=dict)"
+    },
+    "placement_degrees": {
+      "annotation": "float",
+      "default": "5.0",
+      "statement": "placement_degrees: float = 5.0"
+    },
+    "placement_m": {
+      "annotation": "float",
+      "default": "0.005",
+      "statement": "placement_m: float = 0.005"
+    },
+    "placement_release_compensation_m": {
+      "annotation": "float",
+      "default": "0.0",
+      "statement": "placement_release_compensation_m: float = 0.0"
+    },
+    "post_verify_lift_m": {
+      "annotation": "float",
+      "default": "0.04",
+      "statement": "post_verify_lift_m: float = 0.04"
+    },
+    "profile_path": {
+      "annotation": "str",
+      "default": "DEFAULT_PROFILE",
+      "statement": "profile_path: str = DEFAULT_PROFILE"
+    },
+    "randomization_manifest": {
+      "annotation": "str",
+      "default": "''",
+      "statement": "randomization_manifest: str = ''"
+    },
+    "randomized_grasp_clearance_m": {
+      "annotation": "float",
+      "default": "0.006",
+      "statement": "randomized_grasp_clearance_m: float = 0.006"
+    },
+    "real_root": {
+      "annotation": "str",
+      "default": "'review-data/real'",
+      "statement": "real_root: str = 'review-data/real'"
+    },
+    "render": {
+      "annotation": "bool",
+      "default": "True",
+      "statement": "render: bool = True"
+    },
+    "render_subframes": {
+      "annotation": "int",
+      "default": "4",
+      "statement": "render_subframes: int = 4"
+    },
+    "renderer": {
+      "annotation": "str",
+      "default": "'RaytracedLighting'",
+      "statement": "renderer: str = 'RaytracedLighting'"
+    },
+    "replicator_sync_only": {
+      "annotation": "bool",
+      "default": "False",
+      "statement": "replicator_sync_only: bool = False"
+    },
+    "reset_settle_seconds": {
+      "annotation": "float",
+      "default": "1.0",
+      "statement": "reset_settle_seconds: float = 1.0"
+    },
+    "resume": {
+      "annotation": "bool",
+      "default": "False",
+      "statement": "resume: bool = False"
+    },
+    "rollouts": {
+      "annotation": "int",
+      "default": "100",
+      "statement": "rollouts: int = 100"
+    },
+    "runtime_profile_dir": {
+      "annotation": "str",
+      "default": "DEFAULT_RUNTIME_PROFILES",
+      "statement": "runtime_profile_dir: str = DEFAULT_RUNTIME_PROFILES"
+    },
+    "seed": {
+      "annotation": "int",
+      "default": "0",
+      "statement": "seed: int = 0"
+    },
+    "settle_seconds": {
+      "annotation": "float",
+      "default": "0.5",
+      "statement": "settle_seconds: float = 0.5"
+    },
+    "spool": {
+      "annotation": "str",
+      "default": "'spool'",
+      "statement": "spool: str = 'spool'"
+    },
+    "stage": {
+      "annotation": "str",
+      "default": "DEFAULT_STAGE",
+      "statement": "stage: str = DEFAULT_STAGE"
+    },
+    "stress_grasp_offset_m": {
+      "annotation": "float",
+      "default": "0.0",
+      "statement": "stress_grasp_offset_m: float = 0.0"
+    },
+    "targets": {
+      "annotation": "list[str]",
+      "default": "field(default_factory=list)",
+      "statement": "targets: list[str] = field(default_factory=list)"
+    },
+    "task": {
+      "annotation": "str",
+      "default": "'tower_transfer_3'",
+      "statement": "task: str = 'tower_transfer_3'"
+    },
+    "tower_jitter_m": {
+      "annotation": "float",
+      "default": "0.003",
+      "statement": "tower_jitter_m: float = 0.003"
+    },
+    "worker_timeout_seconds": {
+      "annotation": "float",
+      "default": "1800.0",
+      "statement": "worker_timeout_seconds: float = 1800.0"
+    },
+    "wrist_near_clip_mm": {
+      "annotation": "float",
+      "default": "10.0",
+      "statement": "wrist_near_clip_mm: float = 10.0"
+    }
+  },
+  "original_model_sha256": "1a954ccd9f12e5c4de0ea03e275d24d08b2d9b27a1a04cdc5cca940f6de7225d",
+  "sim_fields": [
+    "anti_aliasing",
+    "camera_batch_mode",
+    "collapse_degrees",
+    "collapse_drop_m",
+    "collapse_seconds",
+    "dlss_mode",
+    "envs_per_gpu",
+    "final_settle_seconds",
+    "gpu_found_lost_aggregate_pairs_capacity",
+    "gpu_total_aggregate_pairs_capacity",
+    "gpus",
+    "gripper_finger_effort_limit_n",
+    "jpeg_quality",
+    "layers_above_base",
+    "lighting_samples",
+    "max_seconds",
+    "output",
+    "physics_scene_mode",
+    "physics_usd_writeback",
+    "placement_degrees",
+    "placement_m",
+    "profile_path",
+    "render",
+    "render_subframes",
+    "renderer",
+    "replicator_sync_only",
+    "reset_settle_seconds",
+    "runtime_profile_dir",
+    "seed",
+    "settle_seconds",
+    "stage",
+    "task",
+    "wrist_near_clip_mm"
+  ],
+  "validation_ast_sha256": "d13713edf65a8efe1a76e7d7c0bc2c569d98efdc92db8167580552b1067351e3",
+  "constants": {
+    "DEFAULT_STAGE": "ce674ec7c69dff4c747205e506b61f6e8d74a82d0c9d0270cb0272f87182296b",
+    "DEFAULT_PROFILE": "6994e0b4ae24c8d6994f9a01d8f8695ab57f71656a827f8df4f722d73f3931ca",
+    "DEFAULT_RUNTIME_PROFILES": "e4acd2d2a847cfdf70325a040e72cd3863f7cc56e16afe3c5094d3eaf08fc118",
+    "ARM_ORDER": "b2a87575b54677db06822ee7fa6e491a29f0452c5ac77021577b3fddbe58667a",
+    "JOINT_NAMES": "9b0c6d1cd0fc964d74110a59b1eaa414b903b2d0d0502112ecdd6783c320f892",
+    "CAMERAS": "dfc3963f327731c264e2e38c34c6bc99234b805daeb9a4b9a8e6bcbb974e8846",
+    "DT": "9d87473e9cafc00cbf9f264bda34a3e1b8ab08ba56220ea2a0b635e04bd54e73",
+    "TASK_ALIASES": "57094e2dfd879b2dee330ea5080b6ec357e74c6bf5e046468e3dbadcd49e05c7"
+  }
+}

@@ -1,0 +1,24 @@
+name: Bug report
+description: Report a reproducible problem with TOWER
+title: "[Bug] "
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Expected and actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Versions and environment
+      description: Include TOWER commit/package versions, benchmark revision, Python/uv, OS, and GPU/driver/Isaac versions if relevant.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: Include the command, config, task ID, seed, asset lock revision, and sanitized logs. Remove credentials and private paths.
+    validations:
+      required: true

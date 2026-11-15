@@ -1,0 +1,8 @@
+{
+  "name": "simulation-observation",
+  "source": "simulator/benchmark-202611/runtime/shared/shared-ik-spec.json#limits.observed_joint_tolerance",
+  "observation_tolerance": {
+    "deg": 0.5,
+    "applies_to": "simulation observed joints only"
+  }
+}

@@ -1,0 +1,21 @@
+TOWER-Assets dataset license
+
+Unless a file's asset manifest entry states otherwise, TOWER-authored assets
+in the TOWER-Assets dataset are licensed under the Creative Commons
+Attribution 4.0 International license (CC BY 4.0):
+
+https://creativecommons.org/licenses/by/4.0/
+
+Attribution: [TOWER ASSET AUTHORS AND AFFILIATIONS PENDING].
+# TODO(owner): supply the asset creators' names and affiliations for attribution.
+
+You must indicate if you modified the assets and must not imply endorsement
+by the TOWER Benchmark contributors.
+
+The station includes an AgileX arm model from
+https://github.com/agilexrobotics/agx_arm_urdf. That component is licensed
+under the MIT License, Copyright (c) 2026 aalicecc. The required notice is
+reproduced in `THIRD_PARTY_NOTICES.md`.
+
+Other third-party components, trademarks, and other rights are not granted by
+this notice and remain subject to their own terms.

@@ -1,0 +1,429 @@
+{
+  "environment.py:environment_class.MappedEnvironment.__init__": [
+    {
+      "old": [
+        "def __init__(self, app, config: Config, specs: list[EpisodeSpec], home: np.ndarray, cache: Path, *, instanceable_blocks: bool=True, isolate_camera_passes: bool=False, coupled_gripper_fingers: bool=False, block_physics_material: dict | None=None):"
+      ],
+      "new": [
+        "def __init__(self, app, config, specs, home, cache, *, model_factory, renderer, prepare_scene, apply_drives, clone_hook, resources, robot_config, instanceable_blocks: bool=True, isolate_camera_passes: bool=False, coupled_gripper_fingers: bool=False, block_physics_material: dict | None=None):",
+        "    if config.camera_batch_mode != 'individual' or isolate_camera_passes:",
+        "        raise ValueError('The bench bridge requires ordinary individual cameras')",
+        "    import omni.physx",
+        "    import omni.timeline"
+      ]
+    },
+    {
+      "old": [
+        "    import omni.timeline",
+        "    import omni.physx",
+        "    from pxr import Gf, Usd, UsdGeom, UsdPhysics, UsdShade, PhysxSchema"
+      ],
+      "new": []
+    },
+    {
+      "old": [
+        "    from tower_sim.replay.dual_replay_worker import ROBOT_PATHS, CAMERA_PATHS, _apply_gripper_linear_unit_scale, _create_wrist_camera_proxies, _create_calibrated_cameras, _configure_calibration_renderer"
+      ],
+      "new": [
+        "    from pxr import Gf, PhysxSchema, Usd, UsdGeom, UsdPhysics, UsdShade",
+        "    from tower_sim.replay.dual_replay_worker import CAMERA_PATHS, ROBOT_PATHS, _apply_gripper_linear_unit_scale, _create_calibrated_cameras, _create_wrist_camera_proxies"
+      ]
+    },
+    {
+      "old": [
+        "    self.report, _ = calibration()",
+        "    self.runtime_profile = load_runtime_profiles(config.runtime_profile_dir, checksum(Path(config.stage)))"
+      ],
+      "new": [
+        "    self.report = resources.read('calibration_report')",
+        "    self.runtime_profile = load_runtime_profiles(config.runtime_profile_dir, checksum(Path(config.stage)), calibration_report=resources.path('calibration_report'))"
+      ]
+    },
+    {
+      "old": [
+        "    self.lula = LulaModel(config.stage, cache)",
+        "    from .profiles import load_profile"
+      ],
+      "new": [
+        "    self.lula = model_factory(config.stage, cache)",
+        "    from jenga_generator.profiles import load_profile"
+      ]
+    },
+    {
+      "old": [],
+      "new": [
+        "    self.kinematics = self.lula",
+        "    self.robot_config = robot_config"
+      ]
+    },
+    {
+      "old": [
+        "    from .physics_output import PhysicsOutputPolicy"
+      ],
+      "new": [
+        "    from jenga_generator.physics_output import PhysicsOutputPolicy"
+      ]
+    },
+    {
+      "old": [
+        "    from .assets import block_reference"
+      ],
+      "new": [
+        "    from jenga_generator.assets import block_reference"
+      ]
+    },
+    {
+      "old": [
+        "            from .material_contract import bind_block_material"
+      ],
+      "new": [
+        "            from jenga_generator.material_contract import bind_block_material"
+      ]
+    },
+    {
+      "old": [
+        "    from .grasp_geometry import inspect_fingers"
+      ],
+      "new": [
+        "    from jenga_generator.grasp_geometry import inspect_fingers"
+      ]
+    },
+    {
+      "old": [
+        "    from .physics_capacity import configure_capacity"
+      ],
+      "new": [
+        "    from jenga_generator.physics_capacity import configure_capacity"
+      ]
+    },
+    {
+      "old": [
+        "    from .physics_scene import prepare_physics_scene",
+        "    self.physics_scene_report = prepare_physics_scene(stage, env0, render=config.render, mode=config.physics_scene_mode)"
+      ],
+      "new": [
+        "    from jenga_generator.physics_scene import prepare_physics_scene",
+        "    self.physics_scene_report = prepare_scene(prepare_physics_scene, stage, env0, render=config.render, mode=config.physics_scene_mode)"
+      ]
+    },
+    {
+      "old": [
+        "    cloner = Cloner(stage)"
+      ],
+      "new": [
+        "    cloner = clone_hook.factory(Cloner, stage)"
+      ]
+    },
+    {
+      "old": [],
+      "new": [
+        "    clone_hook.verify()"
+      ]
+    },
+    {
+      "old": [
+        "        _configure_calibration_renderer(stage, anti_aliasing=config.anti_aliasing, dlss_mode=config.dlss_mode)",
+        "    from .render_validation import SAMPLING_KEYS"
+      ],
+      "new": [
+        "        renderer(stage, anti_aliasing=config.anti_aliasing, dlss_mode=config.dlss_mode)",
+        "    from jenga_generator.render_validation import SAMPLING_KEYS"
+      ]
+    },
+    {
+      "old": [
+        "        if config.camera_batch_mode in ('tiled', 'tiled_split'):",
+        "            from .camera_batch import SplitTiledRgbaCapture, TiledRgbaCapture",
+        "            capture = SplitTiledRgbaCapture if config.camera_batch_mode == 'tiled_split' else TiledRgbaCapture",
+        "            self.tiled_capture = capture(self.cameras)",
+        "            for report in self.camera_report:",
+        "                for camera in report.values():",
+        "                    camera['capture_api'] = self.tiled_capture.report['capture_api']",
+        "                    camera['tiled_render_product'] = self.tiled_capture.report['render_product']",
+        "        elif isolate_camera_passes:",
+        "            from .camera_batch import IndividualCameraPasses",
+        "            self.camera_passes = IndividualCameraPasses(self.cameras)"
+      ],
+      "new": []
+    },
+    {
+      "old": [
+        "        print('ARTICULATION', arm, robot.count, robot.dof_names, robot.body_names, flush=True)",
+        "        self.calibration_provenance['runtime_readback'][arm] = apply_runtime_profile(robot, arm, self.runtime_profile, config.gripper_finger_effort_limit_n)",
+        "    print('RUNTIME_CALIBRATION', json.dumps(self.calibration_provenance), flush=True)"
+      ],
+      "new": [
+        "        self.calibration_provenance['runtime_readback'][arm] = apply_drives(robot, arm, self.runtime_profile, config.gripper_finger_effort_limit_n)"
+      ]
+    }
+  ],
+  "app.py:native_renderer.configure": [
+    {
+      "old": [
+        "def configure(stage, *a, **kw):",
+        "    original(stage, *a, **kw)"
+      ],
+      "new": [
+        "def configure(stage, *args, **kwargs):",
+        "    base(stage, *args, **kwargs)"
+      ]
+    },
+    {
+      "old": [
+        "    saved = Usd.Stage.Open(str(SCENE))"
+      ],
+      "new": [
+        "    saved = Usd.Stage.Open(str(resources.path('appearance_scene')))"
+      ]
+    },
+    {
+      "old": [
+        "    profile = json.loads((ASSET / 'renderer-controls.json').read_text())",
+        "    for key, value in profile.items():"
+      ],
+      "new": [
+        "    for key, value in resources.read('renderer_controls').items():"
+      ]
+    }
+  ],
+  "scene.py:prepare_physics_scene": [
+    {
+      "old": [
+        "def prepare(stage, root, **kwargs):",
+        "    from pxr import Usd, UsdPhysics, PhysxSchema",
+        "    report = original_prepare(stage, root, **kwargs)"
+      ],
+      "new": [
+        "def prepare_physics_scene(prepare, stage, root, **kwargs):",
+        "    from pxr import PhysxSchema, Usd, UsdPhysics",
+        "    report = prepare(stage, root, **kwargs)"
+      ]
+    }
+  ],
+  "task7.py:author_bonds": [
+    {
+      "old": [
+        "def author_bonds(stage, plans):",
+        "    from source_center_bond_c74_583 import install"
+      ],
+      "new": [
+        "def author_bonds(stage, plans, bond_path):"
+      ]
+    },
+    {
+      "old": [
+        "        path = Path(os.environ['TOWER_ASSET_ROOT']) / 'configuration/USER_CENTER_BOND_AMENDMENT_C74_583.json' if 'TOWER_ASSET_ROOT' in os.environ else SCENE_ROOT / 'revisions/eval-r001/USER_CENTER_BOND_AMENDMENT_C74_583.json'",
+        "        return install(stage, scenes, path)"
+      ],
+      "new": [
+        "        return install_bond(stage, scenes, bond_path)"
+      ]
+    }
+  ],
+  "scene.py:_digest": [],
+  "scene.py:_file_hash": [],
+  "scene.py:plans_for_candidates": [
+    {
+      "old": [
+        "def plans_for_candidates(candidates):"
+      ],
+      "new": [
+        "def plans_for_candidates(candidates, validate_spec):"
+      ]
+    },
+    {
+      "old": [
+        "        from six_task_contract import TASKS, validate_spec"
+      ],
+      "new": []
+    },
+    {
+      "old": [
+        "        expected_blocks = TASKS[task][2]",
+        "        if current != topology or len(current) != expected_blocks:"
+      ],
+      "new": [
+        "        if spec['layout_metadata'].get('movable_layers') != task_layers(task):",
+        "            raise ValueError('Task movable_layers mismatch')",
+        "        if current != topology or len(current) != benchmark_task(task).block_count:"
+      ]
+    }
+  ],
+  "scene.py:_author_block": [],
+  "scene.py:author_heterogeneous_blocks": [
+    {
+      "old": [
+        "def author_heterogeneous_blocks(stage, plans):"
+      ],
+      "new": [
+        "def author_heterogeneous_blocks(stage, plans, bond_path):"
+      ]
+    },
+    {
+      "old": [
+        "    from task7_runtime import author_bonds",
+        "    bond = author_bonds(stage, plans)"
+      ],
+      "new": [
+        "    from .task7 import author_bonds",
+        "    bond = author_bonds(stage, plans, bond_path)"
+      ]
+    }
+  ],
+  "scene.py:verify_usd_readback": [
+    {
+      "old": [
+        "def verify_usd_readback(stage, plans):"
+      ],
+      "new": [
+        "def verify_usd_readback(stage, plans) -> dict[str, Any]:"
+      ]
+    },
+    {
+      "old": [
+        "    from task7_runtime import verify_tools"
+      ],
+      "new": [
+        "    from .task7 import verify_tools"
+      ]
+    }
+  ],
+  "scene.py:verify_physics_readback": [
+    {
+      "old": [
+        "def verify_physics_readback(env, candidates):"
+      ],
+      "new": [
+        "def verify_physics_readback(env, candidates, validate_spec):"
+      ]
+    },
+    {
+      "old": [
+        "    plans = plans_for_candidates(candidates)"
+      ],
+      "new": [
+        "    plans = plans_for_candidates(candidates, validate_spec)"
+      ]
+    }
+  ],
+  "bootstrap.py:initialize_homes": [],
+  "bootstrap.py:verify_initial_readback": [],
+  "app.py:gpu_readback": [
+    {
+      "old": [
+        "    active = str(actual[keys[1]])",
+        "    if actual[keys[0]] != (len(group) > 1) or active != ','.join(map(str, group)) or actual[keys[2]] != len(group) or (actual[keys[3]] != group[0]) or (actual[keys[4]] != group[0]):"
+      ],
+      "new": [
+        "    if actual[keys[0]] != (len(group) > 1) or str(actual[keys[1]]) != ','.join(map(str, group)) or actual[keys[2]] != len(group) or (actual[keys[3]] != group[0]) or (actual[keys[4]] != group[0]):"
+      ]
+    }
+  ],
+  "bootstrap.py:adapt_config": [
+    {
+      "old": [
+        "def adapt_task12_config(configuration, config_class):",
+        "    \"\"\"Match serial field filtering, but reject unknown relevant settings.\"\"\"",
+        "    supported = {field.name for field in fields(config_class)}"
+      ],
+      "new": [
+        "def adapt_config(configuration, config_class, task):",
+        "    from tower_sim._config_v1 import defaults",
+        "    from tower_sim.config import SimConfig",
+        "    supported = set(defaults()) if config_class is SimConfig else {field.name for field in fields(config_class)}"
+      ]
+    },
+    {
+      "old": [
+        "    from six_task_contract import TASKS",
+        "    if configuration.get('task') not in TASKS:",
+        "        raise ValueError('This isolated worker requires an explicit six-task identity')",
+        "    if configuration.get('layers_above_base') != TASKS[configuration['task']][1]:"
+      ],
+      "new": [
+        "    if configuration.get('task') != task.name or configuration.get('layers_above_base') != scene.task_layers(task.name):"
+      ]
+    },
+    {
+      "old": [
+        "    effective = {key: value for key, value in configuration.items() if key in supported}",
+        "    return (config_class(**effective), {'omitted_unrelated_task6_defaults': {key: configuration[key] for key in sorted(unknown)}, 'relevant_settings_preserved': True})"
+      ],
+      "new": [
+        "    values = {key: value for key, value in configuration.items() if key in supported}",
+        "    config = SimConfig.from_v1(values) if config_class is SimConfig else config_class(**values)",
+        "    return (config, {'omitted_unrelated_task6_defaults': {key: configuration[key] for key in sorted(unknown)}, 'relevant_settings_preserved': True})"
+      ]
+    }
+  ],
+  "environment.py:environment_class.MappedEnvironment._commands": [
+    {
+      "old": [
+        "    return joint_commands(actions, robot_config['arms'][arm], self.robots[arm].dof_names, robot_config['stage_units_per_meter'])"
+      ],
+      "new": [
+        "    return joint_commands(actions, self.robot_config['arms'][arm], self.robots[arm].dof_names, self.robot_config['stage_units_per_meter'])"
+      ]
+    }
+  ],
+  "bootstrap.py:post_construction": [
+    {
+      "old": [
+        "env.context.set_simulation_dt(physics_dt=1 / HZ, rendering_dt=1 / 30)",
+        "readback = backend_hooks.verify_physics_readback(env, [r['candidate'] for r in rows])"
+      ],
+      "new": [
+        "env.context.set_simulation_dt(physics_dt=1 / 400, rendering_dt=1 / 30)",
+        "readback = factories.physics_readback(env, candidates, task.validate_spec)"
+      ]
+    },
+    {
+      "old": [
+        "    applied[name] = replay.placement_runtime.apply_usd(robot, name)"
+      ],
+      "new": [
+        "    applied[name] = drives.apply_usd(robot, name)"
+      ]
+    },
+    {
+      "old": [
+        "    mass_checks = {}"
+      ],
+      "new": [
+        "    checks = {}"
+      ]
+    },
+    {
+      "old": [
+        "        expected_mass = replay.placement_runtime.stage().GetPrimAtPath(replay.placement_runtime.robot_root(name) + '/' + link).GetAttribute('physics:mass').Get()"
+      ],
+      "new": [
+        "        expected_mass = drives.stage().GetPrimAtPath(drives.robot_root(name) + '/' + link).GetAttribute('physics:mass').Get()"
+      ]
+    },
+    {
+      "old": [
+        "        mass_checks[link] = measured.tolist()",
+        "    applied[name]['masses_kg_all_environments'] = mass_checks"
+      ],
+      "new": [
+        "        checks[link] = measured.tolist()",
+        "    applied[name]['masses_kg_all_environments'] = checks"
+      ]
+    },
+    {
+      "old": [
+        "expected, encoder = initialize_homes(env, rows, replay.j2comp)",
+        "env.context.physics_sim_view.update_articulations_kinematic()",
+        "import omni.physx",
+        "omni.physx.get_physx_interface().update_transformations(False, True, True, False)",
+        "verify_initial_readback(env, rows, replay.j2comp)"
+      ],
+      "new": [
+        "initialize_homes(env, rows, compensation)",
+        "(factories.synchronize or synchronize)(env)",
+        "verify_initial_readback(env, rows, compensation)"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+.venv/
+.venv-*/
+/archived-assets/
+**/.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.pyright/
+dist/
+build/
+*.egg-info/
+runs/
+outputs/
+local/
+validation/
+provenance/
+/assets/
+docs/assets/*.usdz
+docs/assets/*.usd
+*.hdf5
+*.mp4
+*.usd
+*.usdz
+
+# Local Hugging Face asset staging; binaries are published from this directory
+# but remain outside the source repository.
+.env
+hf-assets/**/*.usd
+hf-assets/**/*.usda
+hf-assets/**/*.usdz
+hf-assets/**/*.png
+hf-assets/**/*.jpg
+hf-assets/**/*.jpeg
+
+.venv-pin/
+
+# User model weights and generated benchmark artifacts never belong in Git.
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+/simulator-assets/
+/simulator-runs/

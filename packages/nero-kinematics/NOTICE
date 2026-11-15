@@ -1,0 +1,16 @@
+Nero EEF IK standalone package
+Copyright 2026 TOWER Benchmark contributors
+
+Solver code is Apache-2.0, extracted from TOWER source.
+Subsequent review fixes and the current source hash are recorded in PROVENANCE.json.
+Algorithm reference (independent implementation, no Piper code copied):
+https://github.com/agilexrobotics/piper_ros/blob/ac41fcbcdda598f01b51cf6175ed9a24d0dacadc/src/piper/scripts/piper_pinocchio/piper_pinocchio.py
+
+Reference URDF is a kinematics-only export of the TOWER station.
+AgileX model source: https://github.com/agilexrobotics/agx_arm_urdf
+MIT Copyright (c) 2026 aalicecc; full notice in THIRD_PARTY_NOTICES.md.
+TOWER-authored asset portions: CC BY 4.0, see LICENSE-ASSETS.
+No endorsement or real-hardware calibration is implied.
+
+Piper algorithm reference: MIT, Copyright (c) 2024 RosenYin.
+The complete reference license is retained in LICENSE.piper_ros.

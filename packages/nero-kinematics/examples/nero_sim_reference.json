@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "model_status": "simulation_reference_not_hardware_calibrated",
+  "units": {
+    "position": "m",
+    "joints": "rad",
+    "quaternion": "xyzw"
+  },
+  "urdf": "../src/nero_kinematics/models/nero_sim_reference.urdf",
+  "joint_names": [
+    "joint1",
+    "joint2",
+    "joint3",
+    "joint4",
+    "joint5",
+    "joint6",
+    "joint7"
+  ],
+  "lower": [
+    -2.7052597999572754,
+    -1.7399998903274536,
+    -2.749999761581421,
+    -1.0099998712539673,
+    -2.749999761581421,
+    -0.7299999594688416,
+    -1.5707961320877075
+  ],
+  "upper": [
+    2.7052597999572754,
+    1.7399998903274536,
+    2.749999761581421,
+    2.14,
+    2.749999761581421,
+    0.9499999284744263,
+    1.5707961320877075
+  ],
+  "base_frame": "base_link",
+  "tcp_frame": "gripper_base",
+  "tcp_pose": [
+    -1.0580705023046397e-05,
+    -0.02350069849424875,
+    -0.03700034336399502,
+    0.5000075513343589,
+    -0.5000042109560275,
+    0.5000017632052001,
+    0.49998647424360304
+  ],
+  "solver": {
+    "position_tolerance_m": 0.001,
+    "orientation_tolerance_rad": 0.01,
+    "position_weight": 1.0,
+    "orientation_weight": 0.1,
+    "seed_weight": 1e-05,
+    "max_iter": 80,
+    "max_time_s": 0.025
+  }
+}

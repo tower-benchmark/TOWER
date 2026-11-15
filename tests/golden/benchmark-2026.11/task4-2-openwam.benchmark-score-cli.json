@@ -1,0 +1,488 @@
+{
+  "disturbances": [
+    {
+      "baseline_sample": 135,
+      "block": "src_L1_0",
+      "operation": "src_L2_2:push",
+      "sample": 160,
+      "time_s": 8.0,
+      "translation_m": 0.011263290420174599
+    },
+    {
+      "baseline_sample": 135,
+      "block": "src_L1_1",
+      "operation": "src_L2_2:push",
+      "sample": 160,
+      "time_s": 8.0,
+      "translation_m": 0.011088493280112743
+    },
+    {
+      "baseline_sample": 135,
+      "block": "src_L1_2",
+      "operation": "src_L2_2:push",
+      "sample": 160,
+      "time_s": 8.0,
+      "translation_m": 0.011050150729715824
+    },
+    {
+      "baseline_sample": 135,
+      "block": "src_L2_0",
+      "operation": "src_L2_2:push",
+      "sample": 161,
+      "time_s": 8.05,
+      "translation_m": 0.010551867075264454
+    },
+    {
+      "baseline_sample": 135,
+      "block": "src_L2_1",
+      "operation": "src_L2_2:push",
+      "sample": 161,
+      "time_s": 8.05,
+      "translation_m": 0.013794095255434513
+    },
+    {
+      "baseline_sample": 1243,
+      "block": "src_L1_2",
+      "operation": "src_L1_0:push",
+      "sample": 1249,
+      "time_s": 62.45,
+      "translation_m": 0.016047729179263115
+    }
+  ],
+  "duration_s": 67.36,
+  "events": [
+    {
+      "group": "G",
+      "operation": "src_L2_2:push",
+      "sample": 187,
+      "time_s": 9.35
+    }
+  ],
+  "final_state": {
+    "expected_blocks": 6,
+    "geometry": "Existing full-block/source-footprint SAT, or direct tabletop contact polygon containing COM (qualified Task4 support40 rule)",
+    "passed": true,
+    "remaining_blocks": [],
+    "removed_blocks": 6,
+    "sample": 1348,
+    "scope": "Final recorded state only; no inferred early stop, contact-force claim, or new tabletop/stability requirement",
+    "targets": [
+      {
+        "block": "src_L2_2",
+        "block_index": 11,
+        "deep_base_overlap": false,
+        "final_pose": [
+          0.6322755813598633,
+          -0.41774889826774597,
+          0.044299930334091187,
+          -4.199959676043363e-06,
+          -2.1594210011244286e-06,
+          -0.6263775825500488,
+          0.7795196771621704
+        ],
+        "off_source_base": true,
+        "off_source_footprint": true,
+        "removal_route": "clear_source_footprint",
+        "source_base_blocks": [
+          "source_base_0",
+          "source_base_1",
+          "source_base_2"
+        ],
+        "table_support": {
+          "bottom_to_table_m": 0.029699188023308565,
+          "com_margin_m": null,
+          "contact_tolerance_m": 0.005,
+          "passed": false
+        }
+      },
+      {
+        "block": "src_L2_1",
+        "block_index": 10,
+        "deep_base_overlap": false,
+        "final_pose": [
+          0.5944099426269531,
+          -0.4859020411968231,
+          0.03660346195101738,
+          0.05823812633752823,
+          0.13148921728134155,
+          -0.5920794606208801,
+          0.7929443120956421
+        ],
+        "off_source_base": true,
+        "off_source_footprint": true,
+        "removal_route": "clear_source_footprint",
+        "source_base_blocks": [
+          "source_base_0",
+          "source_base_1",
+          "source_base_2"
+        ],
+        "table_support": {
+          "bottom_to_table_m": 2.8292689094322476e-09,
+          "com_margin_m": null,
+          "contact_tolerance_m": 0.005,
+          "passed": false
+        }
+      },
+      {
+        "block": "src_L2_0",
+        "block_index": 9,
+        "deep_base_overlap": false,
+        "final_pose": [
+          0.47130298614501953,
+          -0.5987100005149841,
+          0.01490000169724226,
+          1.172012460415317e-07,
+          -3.583739101031824e-07,
+          -0.9808192253112793,
+          0.19491919875144958
+        ],
+        "off_source_base": true,
+        "off_source_footprint": true,
+        "removal_route": "clear_source_footprint",
+        "source_base_blocks": [
+          "source_base_0",
+          "source_base_1",
+          "source_base_2"
+        ],
+        "table_support": {
+          "bottom_to_table_m": -2.3536377480662396e-08,
+          "com_margin_m": 0.024649988844516496,
+          "contact_polygon_m": [
+            [
+              0.3924382147099855,
+              -0.6046675230317136
+            ],
+            [
+              0.41128861465344135,
+              -0.6502213639451908
+            ],
+            [
+              0.5501677685945638,
+              -0.5927524975861105
+            ],
+            [
+              0.531317368651108,
+              -0.5471986566726332
+            ]
+          ],
+          "contact_tolerance_m": 0.005,
+          "passed": true
+        }
+      },
+      {
+        "block": "src_L1_0",
+        "block_index": 6,
+        "deep_base_overlap": false,
+        "final_pose": [
+          0.5681982040405273,
+          -0.4389806091785431,
+          0.01484992541372776,
+          -7.819814413778658e-07,
+          -3.987843228969723e-07,
+          0.25344517827033997,
+          0.967349648475647
+        ],
+        "off_source_base": true,
+        "off_source_footprint": true,
+        "removal_route": "clear_source_footprint",
+        "source_base_blocks": [
+          "source_base_0",
+          "source_base_1",
+          "source_base_2"
+        ],
+        "table_support": {
+          "bottom_to_table_m": -1.4559840262780288e-07,
+          "com_margin_m": 0.024999974531630907,
+          "contact_polygon_m": [
+            [
+              0.6213045430589543,
+              -0.3804168292605077
+            ],
+            [
+              0.4905748844142916,
+              -0.45396787514462006
+            ],
+            [
+              0.5150918997089333,
+              -0.497544428026129
+            ],
+            [
+              0.645821558353596,
+              -0.4239933821420167
+            ]
+          ],
+          "contact_tolerance_m": 0.005,
+          "passed": true
+        }
+      },
+      {
+        "block": "src_L1_1",
+        "block_index": 7,
+        "deep_base_overlap": false,
+        "final_pose": [
+          0.5642175674438477,
+          -0.31100186705589294,
+          0.02500000037252903,
+          0.6880837082862854,
+          0.16291460394859314,
+          0.1629142463207245,
+          0.688083291053772
+        ],
+        "off_source_base": true,
+        "off_source_footprint": true,
+        "removal_route": "clear_source_footprint",
+        "source_base_blocks": [
+          "source_base_0",
+          "source_base_1",
+          "source_base_2"
+        ],
+        "table_support": {
+          "bottom_to_table_m": -3.6530002609641565e-08,
+          "com_margin_m": 0.014799982732319573,
+          "contact_polygon_m": [
+            [
+              0.6245295908876085,
+              -0.264188311270855
+            ],
+            [
+              0.49063302355434363,
+              -0.33135786729414296
+            ],
+            [
+              0.5039055125949845,
+              -0.3578153999581245
+            ],
+            [
+              0.6378020799282494,
+              -0.29064584393483656
+            ]
+          ],
+          "contact_tolerance_m": 0.005,
+          "passed": true
+        }
+      },
+      {
+        "block": "src_L1_2",
+        "block_index": 8,
+        "deep_base_overlap": false,
+        "final_pose": [
+          0.5566987991333008,
+          -0.24545831978321075,
+          0.014850001782178879,
+          -1.8176534055669435e-08,
+          -1.1620961259950491e-07,
+          0.10739625990390778,
+          0.99421626329422
+        ],
+        "off_source_base": true,
+        "off_source_footprint": false,
+        "removal_route": "table_supported_despite_xy_overlap",
+        "source_base_blocks": [
+          "source_base_0",
+          "source_base_1",
+          "source_base_2"
+        ],
+        "table_support": {
+          "bottom_to_table_m": -1.6802025028239687e-08,
+          "com_margin_m": 0.02474999909260896,
+          "contact_polygon_m": [
+            [
+              0.6248298806256275,
+              -0.20523095103002392
+            ],
+            [
+              0.47799698821793707,
+              -0.2373275506503958
+            ],
+            [
+              0.48856772461985554,
+              -0.2856856888684987
+            ],
+            [
+              0.6354006170275459,
+              -0.25358908924812684
+            ]
+          ],
+          "contact_tolerance_m": 0.005,
+          "passed": true
+        }
+      }
+    ],
+    "time_s": 67.36
+  },
+  "odr": {
+    "D": 6,
+    "E": 1,
+    "denominator_rule": "legacy C + 1 - s, C = g + p",
+    "detected_operation_windows": 2,
+    "note": "E is the legacy count formula, not a measured count of all attempted pushes",
+    "undefined_reason": null,
+    "value": 6.0
+  },
+  "operations": [
+    {
+      "active_end": 1348,
+      "arm": 0,
+      "end": 1242,
+      "id": "src_L2_2:push",
+      "start": 135,
+      "target": 11
+    },
+    {
+      "active_end": 1348,
+      "arm": 1,
+      "end": 1348,
+      "id": "src_L1_0:push",
+      "start": 1243,
+      "target": 6
+    }
+  ],
+  "original_protocol": "tower-sim-trajectory-v5",
+  "original_scores": {
+    "C": 1,
+    "D": 6,
+    "E": 2,
+    "g": 1,
+    "p": 0,
+    "s": 0
+  },
+  "original_terminal_geometry": false,
+  "planned_g": 3,
+  "planned_p": 3,
+  "planned_pushes_by_arm": {
+    "0": 3,
+    "1": 3
+  },
+  "prescribed_order": true,
+  "protocol": "tower-task4-final-state-v3",
+  "push_successes_by_arm": {
+    "0": 1,
+    "1": 0
+  },
+  "recorded_terminal_status": "task_failure",
+  "rules": {
+    "angular_velocity_rad_s": 0.05,
+    "approach_margin_m": 0.025,
+    "approach_s": 0.1,
+    "closed_width_m": 0.07,
+    "disturbance_contact_m": 0.002,
+    "disturbance_m": 0.01,
+    "disturbance_motion_m": 0.00025,
+    "disturbance_motion_window_s": 0.2,
+    "disturbance_quiet_s": 0.3,
+    "effort_fraction": 0.8,
+    "effort_gap_s": 0.1,
+    "grasp_surface_distance_m": 0.015,
+    "hold_s": 0.3,
+    "jaw_effort_n": 0.5,
+    "lift_m": 0.005,
+    "linear_velocity_m_s": 0.005,
+    "maximum_sample_gap_s": 0.1,
+    "minimum_carry_m": 0.005,
+    "minimum_push_m": 0.005,
+    "minimum_support_fraction": 0.2,
+    "open_width_m": 0.075,
+    "orientation_deg": 10.0,
+    "paired_spacing_m": 0.02,
+    "placement_dwell_s": 10.0,
+    "position_m": 0.01,
+    "push_clearance_s": 0.1,
+    "push_coast_s": 0.5,
+    "push_face_margin_m": 0.015,
+    "relative_range_m": 0.01,
+    "release_clearance_m": 0.04,
+    "roof_height_m": 0.015,
+    "slot_clearance_m": 0.0005,
+    "stable_rotation_deg": 2.0,
+    "stable_translation_m": 0.002,
+    "support_com_margin_m": 0.002,
+    "support_height_m": 0.008,
+    "time_limit_s": 420.0,
+    "tool_protrusion_m": 0.025,
+    "tool_return_dwell_s": 0.3,
+    "tool_tip_local_m": [
+      0.0,
+      -0.166,
+      0.01
+    ]
+  },
+  "scores": {
+    "C": 1,
+    "D": 6,
+    "E": 1,
+    "g": 1,
+    "p": 0,
+    "s": 1
+  },
+  "scoring_revision": "tower-task4-final-state-v3",
+  "scoring_scope": "entire recorded trajectory; success from final block state",
+  "source_hashes": {
+    "episode/states.hdf5": "2bef61760e2cc8f72361a2878303c14b72f95551321a5c1774c3415dafe92d78",
+    "episode_spec.json": "fd8dd0b20679fb40c2f7ae669d6e7225fbaeef3f23bf769a04182b223882e7f9",
+    "finger-feedback.npz": "7f0daf59976eb92910678d1767a9f86397b6d7790d835a64e5bfde209a7a9463",
+    "finger-link-poses.npz": "151ac4f14f2e2c3319dfaeddba48adc177ddaa07a6c25dbbdeb20aba6baf29bf",
+    "finger_geometry.json": "516a0107606663b005efcd9ad48bd600d0686885e74b26ac7263760135680ba1",
+    "status.json": "81d542929395545b57a141d2a7e2a602d111f6bd164452b511f1d1a40bf72206"
+  },
+  "success_requires_prescribed_order": false,
+  "success_requires_push_credit": false,
+  "target_intervals": [
+    {
+      "arm": 0,
+      "end": 186,
+      "start": 135,
+      "target": 11
+    }
+  ],
+  "targets": [
+    {
+      "arm": 0,
+      "attempt_sample": 137,
+      "block": "src_L2_2",
+      "grasp_sample": null,
+      "phase": "G",
+      "place_sample": null,
+      "push_sample": 187
+    },
+    {
+      "arm": 0,
+      "attempt_sample": null,
+      "block": "src_L2_1",
+      "grasp_sample": null,
+      "place_sample": null
+    },
+    {
+      "arm": 0,
+      "attempt_sample": null,
+      "block": "src_L2_0",
+      "grasp_sample": null,
+      "place_sample": null
+    },
+    {
+      "arm": 1,
+      "attempt_sample": 1245,
+      "block": "src_L1_0",
+      "grasp_sample": null,
+      "phase": "P",
+      "place_sample": null,
+      "push_sample": null
+    },
+    {
+      "arm": 1,
+      "attempt_sample": null,
+      "block": "src_L1_1",
+      "grasp_sample": null,
+      "place_sample": null
+    },
+    {
+      "arm": 1,
+      "attempt_sample": null,
+      "block": "src_L1_2",
+      "grasp_sample": null,
+      "place_sample": null
+    }
+  ],
+  "task": "task4-2",
+  "terminal_geometry": true,
+  "valid": true
+}

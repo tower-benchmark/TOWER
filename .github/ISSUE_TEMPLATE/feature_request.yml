@@ -1,0 +1,15 @@
+name: Feature request
+description: Propose an improvement to TOWER
+title: "[Feature] "
+body:
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Use case and proposed behavior
+    validations:
+      required: true
+  - type: textarea
+    id: compatibility
+    attributes:
+      label: Alternatives and compatibility
+      description: Describe alternatives and any effect on existing APIs, benchmark revisions, or stored schemas.

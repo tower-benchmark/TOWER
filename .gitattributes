@@ -1,0 +1,8 @@
+# Frozen input data and imported simulator code have explicit SHA256 provenance.
+# Keep upstream URDF exporter comments byte-identical to their recorded hashes.
+tests/golden/benchmark-2026.11/** linguist-generated
+tests/golden/benchmark-2026.11/*.tar.xz -diff
+tests/golden/benchmark-2026.11/*.json.xz -diff
+
+# Library copies retain upstream exporter bytes and provenance.
+packages/nero-kinematics/src/nero_kinematics/models/agilex/* whitespace=-trailing-space

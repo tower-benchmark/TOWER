@@ -1,0 +1,121 @@
+name: Release
+
+# Package releases only; benchmark and asset tags have separate lifecycles.
+on:
+  push:
+    tags: ["v[0-9]*.[0-9]*.[0-9]*"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    env:
+      UV_PYTHON: "3.12"
+      PYTHONDONTWRITEBYTECODE: "1"
+      ASSET_LOCK: packages/tower-sim/src/tower_sim/data/benchmark/assets.lock.json
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          submodules: false
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: "3.12"
+      - uses: astral-sh/setup-uv@d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86 # v5.4.2
+        with:
+          version: "0.13.7"
+      - name: Check release version and notes
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          python - <<'PY'
+          import os
+          import re
+          import tomllib
+          from pathlib import Path
+
+          tag = os.environ["RELEASE_TAG"]
+          if not re.fullmatch(r"v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)", tag):
+              raise SystemExit("Expected a stable package release tag vMAJOR.MINOR.PATCH")
+          version = tag[1:]
+          for directory in ("packages/nero-kinematics", "src/tower-eval", "packages/tower-sim"):
+              project = tomllib.loads(Path(directory, "pyproject.toml").read_text())["project"]
+              if project["version"] != version:
+                  raise SystemExit(f"{project['name']} version does not match {tag}")
+          notes = Path("docs/release-notes", f"{version}.md")
+          if not notes.is_file() or "Status: Draft" in notes.read_text():
+              raise SystemExit("Final release notes are required before tagging")
+          PY
+      - name: Verify the locked public HF tag and manifest
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          import re
+          from pathlib import Path
+          from urllib.parse import quote
+          from urllib.request import urlopen
+
+          lock = json.loads(Path(os.environ["ASSET_LOCK"]).read_text())
+          if lock["schema"] != "tower-benchmark-asset-lock-v1":
+              raise SystemExit("Unsupported asset lock schema")
+          if not re.fullmatch(r"[0-9a-f]{40}", lock["revision"]):
+              raise SystemExit("HF revision must be an immutable commit")
+          repository = quote(lock["repository"], safe="/")
+          with urlopen(f"https://huggingface.co/api/datasets/{repository}/refs", timeout=60) as response:
+              refs = json.load(response)
+          tags = [ref for ref in refs["tags"] if ref["name"] == lock["tag"]]
+          if len(tags) != 1:
+              raise SystemExit("Locked HF tag is missing")
+          # Annotated tags expose a tag object in targetCommit; resolve it first.
+          target = quote(tags[0]["targetCommit"], safe="")
+          with urlopen(f"https://huggingface.co/api/datasets/{repository}/revision/{target}", timeout=60) as response:
+              resolved = json.load(response)
+          if resolved["sha"] != lock["revision"]:
+              raise SystemExit("HF tag differs from the locked commit")
+          directory = lock["directory"].strip("/")
+          prefix = "" if directory in ("", ".") else quote(directory, safe="/") + "/"
+          url = f"https://huggingface.co/datasets/{repository}/resolve/{lock['revision']}/{prefix}manifest.json"
+          with urlopen(url, timeout=60) as response:
+              digest = hashlib.sha256(response.read()).hexdigest()
+          if digest != lock["manifest_sha256"]:
+              raise SystemExit("HF manifest differs from the locked SHA-256")
+          print(f"Verified {lock['repository']} tag {lock['tag']} at {lock['revision']}")
+          PY
+      - name: Build wheels and source distributions
+        run: |
+          for package in nero-kinematics tower-eval tower-sim; do
+            uv build --no-sources --package "$package" --out-dir dist
+          done
+          cp "$ASSET_LOCK" dist/assets.lock.json
+          (cd dist && sha256sum *.whl *.tar.gz assets.lock.json > SHA256SUMS)
+      - name: Reject generation, archival modules and private identifiers
+        run: |
+          args=()
+          for wheel in dist/*.whl; do args+=(--wheel "$wheel"); done
+          uv run --locked python -m scripts.maintainer.check_public_tree "${args[@]}"
+      - name: Fetch and scan the complete pinned public asset folder
+        run: |
+          uv run --locked python tools/simulator/benchmark_assets.py download --assets release-assets
+          uv run --locked python -m scripts.maintainer.scan_public_assets release-assets --report asset-scan.json
+      - name: Create GitHub Release with distributions and asset pin
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          gh release create "$RELEASE_TAG" dist/*.whl dist/*.tar.gz dist/assets.lock.json dist/SHA256SUMS \
+            --verify-tag --title "TOWER $RELEASE_TAG" \
+            --notes-file "docs/release-notes/${RELEASE_TAG#v}.md"
+      # PyPI publication is deliberately absent; adding it requires owner approval.

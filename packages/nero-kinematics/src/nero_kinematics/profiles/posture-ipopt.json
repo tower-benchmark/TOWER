@@ -1,0 +1,63 @@
+{
+  "name": "posture-ipopt",
+  "source": "simulator/benchmark-202611/runtime/shared/controlled_solvers.py",
+  "cost": {
+    "position_m": 1.0,
+    "rotation_frobenius": 0.05,
+    "seed_pull": 1e-05,
+    "reference_posture_pull_normalized_by_span": 1e-05,
+    "limit_hinge": {
+      "weight": 0.0001,
+      "margin_deg": 10
+    }
+  },
+  "ipopt": {
+    "max_iter": 80,
+    "max_cpu_time_s": 0.2,
+    "tol": 1e-08,
+    "acceptable_iter": 0
+  },
+  "step_cap": {
+    "rad_per_row": 0.2,
+    "row_dt_s": 0.1,
+    "equivalent_rad_s": 2.0,
+    "note": "Shared runtime online calls at 10Hz; dense export uses interpolated commands and independent checks, not a different IK solver",
+    "online_hz": 10
+  },
+  "acceptance": {
+    "position_error_m": 0.001,
+    "rotation_error_rad": 0.0005,
+    "latency_s": 0.2,
+    "within_ik_command_limits": true
+  },
+  "bounds_profile": "command",
+  "reference_posture": {
+    "left": [
+      -0.023714772425591946,
+      -0.7116723656654358,
+      -0.0011010423768312632,
+      1.6472321152687073,
+      -0.02773957420140505,
+      -0.06115551106631756,
+      1.1808686256408691
+    ],
+    "back": [
+      -0.04901006445288658,
+      -0.6749516554176808,
+      0.04488321952521801,
+      1.6698074340820312,
+      0.014143675030209139,
+      -0.013674826838541756,
+      1.2524489611387253
+    ]
+  },
+  "offline_radius_rad": 10.0,
+  "pink": {
+    "iterations": 40,
+    "dt_s": 0.1,
+    "damping": 1e-08,
+    "convergence_rad": 1e-07,
+    "solver": "quadprog"
+  },
+  "bounds_roundoff_rad": 1e-07
+}

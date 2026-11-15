@@ -1,0 +1,58 @@
+{
+  "schema": "tower-recorded-tcp-v2",
+  "key": {
+    "fit_algorithm": "tower-tcp-median-rotation-mean-v1",
+    "coordinate_convention": "nero-base-link-gripper-base-to-eef-m-xyzw-rad-v1",
+    "stage_sha256": "59d3443b7020a365beb648ebbf428cae750559ca320824ca99d77824d4c26d27",
+    "kinematics_sha256": {
+      "nero.urdf": "7ae9414dbad6169fce19ee675dd439f1035ea1e07079eb5bcc99c55f39b179e7",
+      "nero.yaml": "452dc96369c43a643bc8cbe561cabf8a1b0db4c880a58a7cd5f2b27d40ea6111"
+    },
+    "kinematic_geometry_sha256": "7ae9414dbad6169fce19ee675dd439f1035ea1e07079eb5bcc99c55f39b179e7",
+    "fit_source": {
+      "episode_id": "9b870d85bab74d5abada00edc3974d4d",
+      "profile_channel_sha256": "bcff4180104f499961943a21e58f83ac0deac1e424f7f491e2d200e42bfc0c79",
+      "fit_channel_sha256": "54f417513366e0b3f52bbbe08f2cd7a64b797550fd748891d75f5f1ff0af6be1"
+    },
+    "profile_selection": {
+      "rule": "first-source-with-split-fit-v1",
+      "profile_channel_scope": "leader_qpos_observation_eef_gripper_timestamps",
+      "fit_channel_scope": "tower-tcp-observation-channels-v1"
+    }
+  },
+  "tcp": {
+    "fit_episode_id": "9b870d85bab74d5abada00edc3974d4d",
+    "source_channel_sha256": "bcff4180104f499961943a21e58f83ac0deac1e424f7f491e2d200e42bfc0c79",
+    "translation_m": [
+      -1.0580705023046397e-05,
+      -0.02350069849424875,
+      -0.03700034336399502
+    ],
+    "rotation_xyzw": [
+      0.5000075513343589,
+      -0.5000042109560275,
+      0.5000017632052001,
+      0.49998647424360304
+    ],
+    "position_residual_p50_p95_m": [
+      4.73708085854958e-06,
+      0.0009831412081483146
+    ],
+    "rotation_residual_p50_p95_deg": [
+      0.0020257715116356483,
+      0.1660522117661592
+    ]
+  },
+  "lineage": {
+    "path": "simulator/benchmark-202611/runtime/ik-capsule/tcp-cache.json",
+    "sha256": "91b12bb30921f4eb52616cbb75e5487e20ec50711292d85609510136f9d8aecf"
+  },
+  "release_provenance": {
+    "source_commit": "654455a19f686b8f257ad5c0c7918ac6d6048602",
+    "backend_sha256": "ad0ff012b95b2cddbfd4deaac8e6ba7ecc7911f5934f15d840715a3a36e45465",
+    "profile_sha256": "7207e528078029f8b81f43cb5bd1908a41382ae7dd5a84de8a0cbee9c3d05b06",
+    "note": "Provenance only; not part of calibration validity."
+  },
+  "fit_algorithm_spec": "docs/reference/tcp-calibration.md",
+  "fit_equivalence_receipt": "benchmarks/2026.11/calibration/fit-equivalence.json"
+}

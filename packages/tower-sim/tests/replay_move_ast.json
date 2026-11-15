@@ -1,0 +1,146 @@
+{
+  "environment": {
+    "original_path": "packages/tower-sim/src/tower_sim/bench/bridge.py",
+    "original_sha256": "6ddcb2932285d982cd3cdb8d4995f6b168ee304526f17ad5879e47d9be024c45",
+    "symbols": {
+      "config_class": "8744128a563b291c74714f9f30fd5e75f87176ffb35c08e28bbceb8a37b6f6a3",
+      "environment_class": "b5d92df96a98ffdf1886f3f70588b9624e1aa32d77ed2a52d9d8d8a546abcd07",
+      "environment_class.MappedEnvironment": "80a46e0f39f0f1162551172c628e2ba58090492d8a71952f257f8f94bfbf682a",
+      "environment_class.MappedEnvironment.__init__": "ff106a5b751d22f5fdacd0ff0761f4c6880a2c2e2c21ed6b8000b8cc98303404",
+      "environment_class.MappedEnvironment._commands": "f638177f43dc28ebf0898c9f52af1dad281a8e9a9a0754aee26e89da03564f8d",
+      "load_profile": "696aacccd94de76b9c42b1f22f3cc94280452b7002f4553bade0bcf9712dc8cd",
+      "native_spec": "65da7e6ed58b46fe912476e087baab697923a85cf561570ce1ed4bfe07820198",
+      "native_spec.construct": "04a22174d6c0ea42ed93c7749fc2b84a99d7e5a003996e9394ccee62951a0b17",
+      "renderer_base": "1268275b934b86c9b53c3b9a24182d1f786946e880e9789050341b07961d6509",
+      "wrist_guard": "6f5954b26b87ab0ca008f17eec3fe9b34f0a3808cda3d6de9e5a13c71c708304"
+    }
+  },
+  "eula": {
+    "original_path": "src/tower-datagenerator/jenga_generator/eula.py",
+    "original_sha256": "4f785c8d07ea04a9bef8ee44c6533651ba9c3f95109c89b0c6abffdd4b7b17d0",
+    "symbols": {
+      "require_eula": "2a8b530e2b6d99c2215c6b17ed987f9d4459db754accb039b255d0cbe6fc9128"
+    }
+  },
+  "modules": {
+    "__init__": {
+      "original_path": "redacted",
+      "original_sha256": "f946d26f23b813d345b9a5baebd8f434723485197e6a952dd66d30a9e28fb4ce",
+      "symbols": {
+        "__dir__": "cf8e1385fe799348aa914f025a2459402d1a83fc6bc7bd621c9b7e25650e055e",
+        "__getattr__": "9f4be1fdfb07449d9227589e805d53cde2e5c4a989d0f7ff85680c4fe250ddb7",
+        "__module__": "dd28c7e78b076e267d8f204c34cfd16fef43858e699a405f275d8eba3710517e"
+      }
+    },
+    "dual_core": {
+      "original_path": "redacted",
+      "original_sha256": "49edff6e76e93ecc8971d24888a333f4bb4a7a6ed354a4515a3306564ab4a544",
+      "symbols": {
+        "DualEpisode": "5c07a30db8715c410c700dfbbc1679529bd1a0517441a381b69bdae0c218bc0c",
+        "LifterSample": "a9487ae92fc0b38f6ebeab59919122c3d1f4a3e6e1a6cafaa630ac6dfe00477c",
+        "LinearLifterTrajectory": "ebb28d9fb85cc23e66a2edd4a8acf6708071804d02b947f55d41092e455b0f63",
+        "LinearLifterTrajectory.__init__": "8e425160245044371d4a5ee650787e7fed3eb35bce7d4645ff684eaf142324a4",
+        "LinearLifterTrajectory.sample": "4956fce3a5830cfb5acbbc7b0877cecd2acf67ce5c9d2f638e0836185d66efe7",
+        "__module__": "9913566ea8cd0e4c8744295554baeb71e7d73be662c122270f756ef04e23885a",
+        "_json_attr": "8336ec7d55d741c84ca3f9f518e9562e3cf01c34a25c44907051834f78566814",
+        "angular_quantity_numeric_scale": "f41a79f387d4c092296822c6f676fc0ccb58a0f44bf8ab6ab7a21771e1624197",
+        "camera_datasets_for_schema": "110c03a4b29fc3da2834c59de34e7dc7255b8bb322ff2e6b25502a70800c9631",
+        "expected_block_paths": "73b2c92c2b018c2812f5350a51e88661948f65f4f7024c7c512dbc09a0d6bdae",
+        "json_dump": "e2cdd72fc1d91193fd4ffde847f80717b1a6e3b4a84c41fa90927a7c51278cdb",
+        "lifter_zero_reference_mm": "1da0b11df3727e15f527628af7b8301b5acef35edc7bc1ce7bb4bf9370a65f0b",
+        "load_alignment_parameters": "fb06ba0fdb0690d0704d562a27c6db6801e6a614676614769e4a137fa6ae4d0d",
+        "load_config": "6f8b013caef5d8ca93e09b121fb45b691a1275a7c75156a0325e600756d1bd9f",
+        "load_dual_episode": "a0b7c1b1d75d7c9e35952b08b756b53fdd0bf350f92b88d22ed3f5553b370b2d",
+        "load_profile": "1e86e3a48c3cfc3045b3cccc07b269a75c6ac33aec160d1948e418f207f05686",
+        "load_robot_alignment3_dual_parameters": "f4936413e813596ef0586df5cde5bd32e71988ac8a8f90ab80cb4456b301103b",
+        "load_single_arm_replay_profile": "33984ae5d702519a14a1b7e6a2ca755c34442022adbed9f0cca539da4299fb6e",
+        "offset_block_poses_mm": "2f9f67971712276a8153d9d7417ef9631291fa962dea166c7ac9de0c10499a4d",
+        "profile_arm_parameters": "15ed4e816f3461932125b723bc386ab3df05712e8dba5e06be5e89e924458dca",
+        "profile_delays": "24303f0d73cca9f31079a28ffa57e5134e7edfc0917f1ce1937b940b709ad1fe",
+        "profile_gains": "f353203194c8e00b69a0c7c69b82524de474a336762294ddf525c329a63908a2",
+        "sha256_file": "19eec0347ca66563a3a03dd9e70a2b7719f9b9b3604bd7fb0ff1abe5c87056d8",
+        "split_arm_vectors": "60814a1ee06df1fd8077222c96696074520a571b1d935422bf93e40f938e5d2f",
+        "task_block_poses_data_mm": "4ad6a16085627a09029b0ccba5f91ee33c5efb561aa3b0a9847e98bb126e1b9f",
+        "validate_authored_scene_with_pxr": "8a244d9b4ae19e818c259f15138d543e7011bda6660e2a2b254779dfb48b5979",
+        "write_tower_transfer_3_overlay": "6e959e85f52070e09c4ae491b7066ab48bc54bb51ffcb04e7153017a3adf645b"
+      }
+    },
+    "dual_replay_worker": {
+      "original_path": "redacted",
+      "original_sha256": "3d455cd4e71c13ee0dab2ad48e6958ec8a523de6d10edd6cfdc9bff7d643b201",
+      "symbols": {
+        "__module__": "bca6868561e3259ffd92c182091437aca0cd8bfd9ec4fb3548ccf0ef79238abb",
+        "_apply_and_verify_profile": "318a4cb72a762df9c85922c0845d37479db33c63a0003f2ed12627d9adc266dd",
+        "_apply_gripper_linear_unit_scale": "a6672d7893068a5bfb8a48482d9a17eaacb7ac23932a970ce868692b9aea2c7e",
+        "_apply_gripper_mount": "6778d316d3dfd37c6bcf2022ae59f93fb3a57cfa654c2e0468b3ec8ec426afa6",
+        "_apply_gripper_physics_material": "787b488a95376c8f4f0650dd69e933bdca61afa7a8a077141429727969c6f5c0",
+        "_apply_gripper_visual_material_mode": "e3c4c5f01f79458229813d220852e4d5ad6f634b629e51d87827ab56045cbf34",
+        "_apply_jenga_physics_material": "bdda78e30315dd529b1c5e9c6994b459fee37de9b65e3b79fea76f7dcfe8b2aa",
+        "_apply_lifter_pose": "f91c066a4cf274f30a3ce16c63702bb52514794a927ad2b937eea9bda5814795",
+        "_apply_robot_base_link_world_xyz": "85ed032cdcdc986fb85a5b2547bf74d21a06710b5e0c721cc9b71696113b5e80",
+        "_apply_robot_visual_link_rebase": "1a55626f0e92cd421d384f7c10f897127216c229642034416137d2c4a1971f63",
+        "_apply_robot_visual_material_mode": "d4e9d5f722124e912fd724416e698c54249253704fc3dbbdfb9d958c0f8f6f08",
+        "_apply_robot_z_offsets": "dd894899f08836e04f23aed0b97f258ca3585c016bc9a2c713da0ed5f68c7faf",
+        "_apply_stand_height_offsets": "7b31d55d739340ff67a9f87c142cd9a77c9656d013eefb2dcdd9b95fb828e9bf",
+        "_apply_urdf_robot_visuals": "ecf43b82cb3c0c963d62faef87c2aaa87f790e66371f3df35f2197f9f6230597",
+        "_capture_absolute_z_binding": "f8d5333d4e14675fcf50170f2cb97904ec22af5fd99f472c1329557b8d1ab9b0",
+        "_capture_calibrated_camera_batches": "99f564646b0d056cbc83a17fb3f7c5491ae8defa47aaa8cc75cb1ec737930be4",
+        "_capture_calibrated_camera_batches.read": "6560663f82011efcd113d381e660cb26ca79dedadd0d5032e0b0c396acd80179",
+        "_capture_calibrated_camera_batches.render": "73b0067be91d0ab491b48260a4447074b6b3ca2cd36f827843130fd028fc7b6b",
+        "_capture_calibrated_cameras": "3c16a28ea1e3bae910820243a4a587062eea082a39d7e7c4575d531d130d6104",
+        "_collect_block_physics_poses": "9f385813efe5e7a60afa4ddfd0b818963532fffbf5f49309f6254cc63a3c6fc6",
+        "_configure_calibration_renderer": "ddd0606fb0a93c2bd40d00f3d0944fab7cc750345ea6abf7f045271c5e29ee4e",
+        "_create_calibrated_cameras": "b7ce9ceb221ec9231898760b3f1dd2c138a520d90be4b8e0735501bdaff06c6c",
+        "_create_viewports": "6c97d724f8196052b2c81fb822d75d278f145ebf8520f2c293f53addcb5f8109",
+        "_create_wrist_camera_proxies": "67c6ef0e8d7de171fc398dfc27fcb3da59f97105c29058567062a5f801eaa3c5",
+        "_finger_link_distance": "8233e77d96d702029e1f256fb081ba02f9ebfeed720b6f1b6ba6e838268ca74e",
+        "_gripper_limits_in_stage_units": "d8bcb461f2e5f3b3183dab1e86499065b3eaf2bcab88cb0b7daf14dd11283629",
+        "_initialize_robot": "48ee45fdd3935b025c78835c92780822ce8b102d872ac8b74c167214b9c7af5a",
+        "_load_lifter_control_bindings": "5e989ce5d051143d3a2cf7877c2e71c910edb0b4ae88e13bab882d6702c36f51",
+        "_measured_episode_vector": "e2ae2073e7d00eb2f9424e823f097421ba2f0ff74e66cbcc131fd4c55c00375d",
+        "_montage": "9176cc7ae71643210e0c82d0945bffd542dcc879afd877908def692f3eff95b0",
+        "_scale_gripper_command_for_stage": "7900e9b26e7faef25abefe6a92eb269fd230c9c468258eee4251f9f2867b8b8a",
+        "_set_absolute_z_binding": "6111ad6ad6e7315e24bf2afd8e5eaa973026808fad61af0c10cd72f3871b7f67",
+        "_shift_prim_world_z": "e0e14298b6a83d85601e7d534d6f765f5f1b5b86eed1e74e9bbf709dde7dc9c9",
+        "_stage_profile": "6e0b4050f8d92efc88dc284df30b3fada303f34ebfcba29b26e663e459b1f3d2",
+        "_update_wrist_camera_proxies": "b45d61c0cd3ac0b5e21ea5d94e3769e4c94e60579200dec4251b2ed252ed6d4c",
+        "_world_translation": "6290aa98b1027bb10d5dfd749b98a616d06a458050af154b6345bd997f5e2bca",
+        "_wrist_camera_self_mask_paths": "6b0953f56307cba4eb616e4ad40e9de35902e1e004e985803f1c5a22b3b5ea7e",
+        "main": "cbb7c189495932cf7c94e501a9a17d9865cf830743968e20b153fd050f454f44",
+        "run": "fb99a529ddb6657f47af796b039c021586fdc411a385ab2a7148f33e976581ac"
+      }
+    },
+    "replay_actions": {
+      "original_path": "redacted",
+      "original_sha256": "bf1a843e9c9105a994bd02a4a38772561c638de6feca4855d270d6ff58fc17cd",
+      "symbols": {
+        "CommandSample": "a87a868973c4f7481a4995cbfbaf7e83a9db6f4be5969a8349ae2350c69c21c3",
+        "CommandTrajectory": "4ccc0b90ec436922519d4df7f7edc3c2e4b9524cc922a5331a18a35441b3d7f7",
+        "CommandTrajectory.__init__": "f8fa8d3e6eba1ff44bfd262e517d3be7352937ccb70fea784479adf3dc4be30c",
+        "CommandTrajectory.sample": "af211f371862283e204fb8e98223ba134136e36f9624f119921e172dc282f839",
+        "H264VideoWriter": "2212a19f4ee6ed11143362395a9061bafb249149764375695e0b75dde7c1914f",
+        "H264VideoWriter.__init__": "8f486e68da5739b7c21be3edd1a4c3f32f8c411939e39bb0f17aed266aeb38be",
+        "H264VideoWriter.isOpened": "f0ec264e7addd583fab84eadf393b1e1551e250cf8d250e79a526f5133769d68",
+        "H264VideoWriter.release": "4c94e14ad6d75faa5f48092c050ee2457c4a47b15ade1654c8d3787872e06a49",
+        "H264VideoWriter.write": "cab31ba396057b10b65a9aaea0c4835242248b48ef48d0cf5e87cdd1871739c7",
+        "ReplayConfig": "1c8c6f8291ca2a914328703f9c35527c50e73f3e0de803ca58ca2d8276e115b6",
+        "ReplayConfig.__init__": "ff8e73ee3f093f29af22a16f82bd709f5ce87e737f37c256de38ec3df61a0ee7",
+        "__module__": "7e71cce56f1ec6b7c3da9111f425b9fa5f2b5efdf2c1401756ee7db22312c0b9",
+        "_apply_arm_dynamics_parameters": "fe19bd9aea249716062f6788b320ccb7d30518ff4cfe8e09eb277637b9745890",
+        "_apply_gripper_finger_limits": "2f9b2526b2e28c7ac407a8e837719f465b6e673cf57a3bb196d4f9f38d0eebe5",
+        "_articulation_dynamics_arrays": "b233857dfa2f18f07d61203209d41b33965586eed8c683ab1092fcaac52c9aa5",
+        "_articulation_limit_arrays": "5d45f7cc7613b4a2423b98b66e197d8c6765ab068f545a0cbfd4a0ad76e052f7",
+        "_as_numpy": "8709fd1997fa778a5f3665a639dafb2ca91a30c7c31687e01e35677333af7920",
+        "_controller_gains": "acc7715437c54aad6ac8a9c31f226b7783454dc184241b8a36f4ec693adf2dfb",
+        "_video_metadata": "b49a7e3174ca103c0e2856a0da9cd70259dcd762caf41efe992de8d707488e7f",
+        "command_for_state": "a45f670e78a573d8d13b57bbe6e83440de6c3c7430129768ad9df03c4f9f93d4",
+        "default_output_dir": "203367c5327f24bd2668fb7c59960110bc06c2fb690b4054dff8e8e40e6073c3",
+        "replay_hdf5": "3685b9d6a60d6782147c5cee130ccb80ba8471afec9c9e1ca45031f6d9f8692e"
+      }
+    }
+  },
+  "pure_commands": {
+    "joint_commands": "d4be56a126bb19550444844752cd6e88fc3389e4313e7ca042ba27c18e3ccc40",
+    "validate_initial_robot_state": "f2f4b49459e1add741d4e82f2d675886a01c82afe4e95fe6e2607704954e968a"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schema": "tower-station-block-inventory-v1",
+  "station_asset": "station/station.usdz",
+  "block_count": 6,
+  "foundation_count": 6,
+  "blocks": [
+    {"id": "Foundation01", "role": "foundation", "layer": 0, "slot": 0},
+    {"id": "Foundation02", "role": "foundation", "layer": 0, "slot": 1},
+    {"id": "Foundation03", "role": "foundation", "layer": 0, "slot": 2},
+    {"id": "RotatedBase01", "role": "foundation", "layer": 0, "slot": 3},
+    {"id": "RotatedBase02", "role": "foundation", "layer": 0, "slot": 4},
+    {"id": "RotatedBase03", "role": "foundation", "layer": 0, "slot": 5}
+  ],
+  "note": "Only the six foundation blocks are embedded in the frozen station asset. Task releases compose all upper blocks in separate USDA/session layers."
+}

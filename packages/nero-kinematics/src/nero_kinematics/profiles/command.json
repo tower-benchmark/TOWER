@@ -1,0 +1,56 @@
+{
+  "name": "command",
+  "coordinate_frame": "encoder_joint_radians",
+  "source": "simulator/benchmark-202611/runtime/shared/shared-ik-spec.json",
+  "source_sha256": "efa69beb12a5bb972a2f570a9b2310f9dcfa852a91bd095295b205a66b8a0d03",
+  "command_bounds": {
+    "rule": "real normal soft intersection URDF inset 1.5deg; J2 intersection with Tower hard limits inset 5deg",
+    "inset_deg": 1.5,
+    "lower_rad": [
+      -2.649080061220085,
+      -1.6527335374002836,
+      -2.693820061220085,
+      -0.953820061220085,
+      -2.693820061220085,
+      -0.673820061220085,
+      -1.5146163612200851
+    ],
+    "upper_rad": [
+      2.649080061220085,
+      1.6527335374002836,
+      2.693820061220085,
+      2.0838200612200852,
+      2.693820061220085,
+      0.846484661220085,
+      1.5146163612200851
+    ]
+  },
+  "kill_line": {
+    "rule": "base, applied to commands",
+    "lower_rad": [
+      -2.67526,
+      -1.71,
+      -2.72,
+      -0.98,
+      -2.72,
+      -0.7,
+      -1.5407963
+    ],
+    "upper_rad": [
+      2.67526,
+      1.71,
+      2.72,
+      2.1100000000000003,
+      2.72,
+      0.8726646,
+      1.5407963
+    ]
+  },
+  "derivation": {
+    "real_soft_margin_rad": 0.03,
+    "command_inset_deg": 1.5,
+    "j2_hard_inset_deg": 5.0,
+    "hard_limits_source": "simulator/benchmark-202611/runtime/ik-capsule/runtime-profiles/real-machine-20261027/pinocchio_config.json",
+    "urdf_source": "models/agilex/nero_description.urdf"
+  }
+}

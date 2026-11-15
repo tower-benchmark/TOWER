@@ -1,0 +1,389 @@
+{
+  "disturbances": [],
+  "duration_s": 166.0,
+  "events": [
+    {
+      "group": "G",
+      "operation": "src_L3_1:grasp",
+      "sample": 217,
+      "time_s": 10.85
+    },
+    {
+      "group": "P",
+      "operation": "src_L3_1:place",
+      "sample": 658,
+      "time_s": 32.9
+    },
+    {
+      "group": "G",
+      "operation": "src_L3_0:grasp",
+      "sample": 659,
+      "time_s": 32.95
+    },
+    {
+      "group": "P",
+      "operation": "src_L3_0:place",
+      "sample": 1076,
+      "time_s": 53.8
+    },
+    {
+      "group": "G",
+      "operation": "src_L2_1:grasp",
+      "sample": 1218,
+      "time_s": 60.9
+    },
+    {
+      "group": "P",
+      "operation": "src_L2_1:place",
+      "sample": 1699,
+      "time_s": 84.95
+    },
+    {
+      "group": "G",
+      "operation": "src_L2_0:grasp",
+      "sample": 1719,
+      "time_s": 85.95
+    },
+    {
+      "group": "P",
+      "operation": "src_L2_0:place",
+      "sample": 2196,
+      "time_s": 109.8
+    },
+    {
+      "group": "G",
+      "operation": "src_L1_1:grasp",
+      "sample": 2379,
+      "time_s": 118.95
+    },
+    {
+      "group": "P",
+      "operation": "src_L1_1:place",
+      "sample": 2811,
+      "time_s": 140.55
+    },
+    {
+      "group": "G",
+      "operation": "src_L1_0:grasp",
+      "sample": 2841,
+      "time_s": 142.05
+    },
+    {
+      "group": "P",
+      "operation": "src_L1_0:place",
+      "sample": 3303,
+      "time_s": 165.15
+    }
+  ],
+  "operations": [
+    {
+      "active_end": 217,
+      "arm": 0,
+      "end": 217,
+      "id": "src_L3_1:grasp",
+      "start": 147,
+      "target": 11
+    },
+    {
+      "active_end": 458,
+      "arm": 0,
+      "end": 592,
+      "id": "src_L3_1:place",
+      "start": 218,
+      "target": 11
+    },
+    {
+      "active_end": 659,
+      "arm": 0,
+      "end": 659,
+      "id": "src_L3_0:grasp",
+      "start": 593,
+      "target": 10
+    },
+    {
+      "active_end": 876,
+      "arm": 0,
+      "end": 1147,
+      "id": "src_L3_0:place",
+      "start": 660,
+      "target": 10
+    },
+    {
+      "active_end": 1218,
+      "arm": 1,
+      "end": 1218,
+      "id": "src_L2_1:grasp",
+      "start": 1148,
+      "target": 9
+    },
+    {
+      "active_end": 1499,
+      "arm": 1,
+      "end": 1633,
+      "id": "src_L2_1:place",
+      "start": 1219,
+      "target": 9
+    },
+    {
+      "active_end": 1719,
+      "arm": 1,
+      "end": 1719,
+      "id": "src_L2_0:grasp",
+      "start": 1634,
+      "target": 8
+    },
+    {
+      "active_end": 1988,
+      "arm": 1,
+      "end": 2316,
+      "id": "src_L2_0:place",
+      "start": 1720,
+      "target": 8
+    },
+    {
+      "active_end": 2379,
+      "arm": 0,
+      "end": 2379,
+      "id": "src_L1_1:grasp",
+      "start": 2317,
+      "target": 7
+    },
+    {
+      "active_end": 2611,
+      "arm": 0,
+      "end": 2775,
+      "id": "src_L1_1:place",
+      "start": 2380,
+      "target": 7
+    },
+    {
+      "active_end": 2841,
+      "arm": 0,
+      "end": 2841,
+      "id": "src_L1_0:grasp",
+      "start": 2776,
+      "target": 6
+    },
+    {
+      "active_end": 3097,
+      "arm": 0,
+      "end": 3320,
+      "id": "src_L1_0:place",
+      "start": 2842,
+      "target": 6
+    }
+  ],
+  "planned_g": 6,
+  "planned_p": 6,
+  "planned_pushes_by_arm": {
+    "0": 0,
+    "1": 0
+  },
+  "prescribed_order": true,
+  "protocol": "tower-sim-trajectory-v5",
+  "push_successes_by_arm": {
+    "0": 0,
+    "1": 0
+  },
+  "rules": {
+    "angular_velocity_rad_s": 0.05,
+    "approach_margin_m": 0.025,
+    "approach_s": 0.1,
+    "closed_width_m": 0.07,
+    "disturbance_contact_m": 0.002,
+    "disturbance_m": 0.01,
+    "disturbance_motion_m": 0.00025,
+    "disturbance_motion_window_s": 0.2,
+    "disturbance_quiet_s": 0.3,
+    "effort_fraction": 0.8,
+    "effort_gap_s": 0.1,
+    "grasp_surface_distance_m": 0.015,
+    "hold_s": 0.3,
+    "jaw_effort_n": 0.5,
+    "lift_m": 0.005,
+    "linear_velocity_m_s": 0.005,
+    "maximum_sample_gap_s": 0.1,
+    "minimum_carry_m": 0.005,
+    "minimum_push_m": 0.005,
+    "minimum_support_fraction": 0.2,
+    "open_width_m": 0.075,
+    "orientation_deg": 10.0,
+    "paired_spacing_m": 0.02,
+    "placement_dwell_s": 10.0,
+    "position_m": 0.01,
+    "push_clearance_s": 0.1,
+    "push_coast_s": 0.5,
+    "push_face_margin_m": 0.015,
+    "relative_range_m": 0.01,
+    "release_clearance_m": 0.04,
+    "roof_height_m": 0.015,
+    "slot_clearance_m": 0.0005,
+    "stable_rotation_deg": 2.0,
+    "stable_translation_m": 0.002,
+    "support_com_margin_m": 0.002,
+    "support_height_m": 0.008,
+    "time_limit_s": 420.0,
+    "tool_protrusion_m": 0.025,
+    "tool_return_dwell_s": 0.3,
+    "tool_tip_local_m": [
+      0.0,
+      -0.166,
+      0.01
+    ]
+  },
+  "scores": {
+    "C": 12,
+    "D": 0,
+    "E": 12,
+    "g": 6,
+    "p": 6,
+    "s": 1
+  },
+  "source_hashes": {
+    "episode/states.hdf5": "3295227f2128c1dfe72b5b9da3ab7c4c64625cab86d6a26dcdb45e205d3713f7",
+    "episode_spec.json": "f7909c847939066556e2d9ec631d548d7fd8d0da9d6ac06526c60ec5c09c6ed7",
+    "finger-feedback.npz": "4cd2e3eca26db2578e2c070c6baa9fa46860bae5fe2b33e9d00992328d319bb3",
+    "finger-link-poses.npz": "719cffc4e0843a306a5d2a57a7ef58ec7bb30163d534b75c5af8cf7215715abc",
+    "finger_geometry.json": "516a0107606663b005efcd9ad48bd600d0686885e74b26ac7263760135680ba1",
+    "status.json": "1568ecedc30e29f1cef925d0ea78850cfe33ce6da24607a5eb5c8d53906ca39f"
+  },
+  "target_intervals": [
+    {
+      "arm": 0,
+      "end": 217,
+      "start": 147,
+      "target": 11
+    },
+    {
+      "arm": 0,
+      "end": 458,
+      "start": 218,
+      "target": 11
+    },
+    {
+      "arm": 0,
+      "end": 659,
+      "start": 593,
+      "target": 10
+    },
+    {
+      "arm": 0,
+      "end": 876,
+      "start": 660,
+      "target": 10
+    },
+    {
+      "arm": 0,
+      "end": 2379,
+      "start": 2317,
+      "target": 7
+    },
+    {
+      "arm": 0,
+      "end": 2611,
+      "start": 2380,
+      "target": 7
+    },
+    {
+      "arm": 0,
+      "end": 2841,
+      "start": 2776,
+      "target": 6
+    },
+    {
+      "arm": 0,
+      "end": 3097,
+      "start": 2842,
+      "target": 6
+    },
+    {
+      "arm": 1,
+      "end": 1218,
+      "start": 1148,
+      "target": 9
+    },
+    {
+      "arm": 1,
+      "end": 1499,
+      "start": 1219,
+      "target": 9
+    },
+    {
+      "arm": 1,
+      "end": 1719,
+      "start": 1634,
+      "target": 8
+    },
+    {
+      "arm": 1,
+      "end": 1988,
+      "start": 1720,
+      "target": 8
+    }
+  ],
+  "targets": [
+    {
+      "arm": 0,
+      "attempt_sample": 149,
+      "block": "src_L3_1",
+      "carry_sample": 217,
+      "grasp_sample": 217,
+      "place_sample": 658,
+      "terminal_position_error_m": 0.019018754633279903,
+      "terminal_released_geometry_s": 36.05000000000001
+    },
+    {
+      "arm": 0,
+      "attempt_sample": 595,
+      "block": "src_L3_0",
+      "carry_sample": 648,
+      "grasp_sample": 659,
+      "place_sample": 1076,
+      "terminal_position_error_m": 0.007534758335750272,
+      "terminal_released_geometry_s": 10.849999999999994
+    },
+    {
+      "arm": 1,
+      "attempt_sample": 1150,
+      "block": "src_L2_1",
+      "carry_sample": 1218,
+      "grasp_sample": 1218,
+      "place_sample": 1699,
+      "terminal_position_error_m": 0.0035339183891374007,
+      "terminal_released_geometry_s": 10.849999999999994
+    },
+    {
+      "arm": 1,
+      "attempt_sample": 1636,
+      "block": "src_L2_0",
+      "carry_sample": 1719,
+      "grasp_sample": 1719,
+      "place_sample": 2196,
+      "terminal_position_error_m": 0.007787144289847478,
+      "terminal_released_geometry_s": 10.849999999999994
+    },
+    {
+      "arm": 0,
+      "attempt_sample": 2319,
+      "block": "src_L1_1",
+      "carry_sample": 2379,
+      "grasp_sample": 2379,
+      "place_sample": 2811,
+      "terminal_position_error_m": 0.006150515651958931,
+      "terminal_released_geometry_s": 10.849999999999994
+    },
+    {
+      "arm": 0,
+      "attempt_sample": 2778,
+      "block": "src_L1_0",
+      "carry_sample": 2824,
+      "grasp_sample": 2841,
+      "place_sample": 3303,
+      "terminal_position_error_m": 0.00585933632616676,
+      "terminal_released_geometry_s": 10.849999999999994
+    }
+  ],
+  "task": "task1-3",
+  "terminal_geometry": true,
+  "valid": true
+}

@@ -1,0 +1,26 @@
+[build-system]
+requires = ["hatchling>=1.26,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "nero-kinematics"
+version = "0.2.0"
+description = "Versioned Nero FK, IK, command bounds and grasp posture checks"
+readme = "README.md"
+requires-python = ">=3.11,<3.13"
+license = "Apache-2.0"
+license-files = ["LICENSE", "LICENSE.piper_ros", "NOTICE", "LICENSE-ASSETS", "THIRD_PARTY_NOTICES.md"]
+dependencies = ["numpy>=1.26,<3", "scipy>=1.11,<2"]
+
+[project.optional-dependencies]
+# Pinocchio CasADi bindings and IPOPT come from the reviewed conda environments.
+eef = ["casadi==3.7.2"]
+
+[project.scripts]
+eef-to-joint = "nero_eef_ik.__main__:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/nero_kinematics", "src/nero_eef_ik"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src/**", "examples/**", "tests/**", "README.md", "PROVENANCE.json", "environment.yml", "pyproject.toml", "LICENSE*", "NOTICE", "THIRD_PARTY_NOTICES.md"]

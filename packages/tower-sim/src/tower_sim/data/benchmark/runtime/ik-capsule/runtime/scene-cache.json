@@ -1,0 +1,834 @@
+{
+  "scene_sha256": "59d3443b7020a365beb648ebbf428cae750559ca320824ca99d77824d4c26d27",
+  "configuration": {
+    "command_hz": 200,
+    "foundation_height_m": 0.0304,
+    "gripper_inertials_unified": true,
+    "j2_arms": [
+      "left",
+      "back"
+    ],
+    "j2_fit_files": {
+      "back": "j2-fit.json",
+      "left": "j2-fit-left.json"
+    },
+    "j2_joint": 2,
+    "k2_rad_per_Nm": 0.0016238173681002114,
+    "k2_rad_per_Nm_by_arm": {
+      "back": 0.0016238173681002114,
+      "left": 0.0018425446789394828
+    },
+    "layout": {
+      "blocks": [
+        {
+          "asset_reference": null,
+          "asset_scale": null,
+          "diagonal_inertia_kg_m2": null,
+          "dimensions_m": [
+            0.15,
+            0.05,
+            0.0304
+          ],
+          "fixed_on_table": true,
+          "layer": 0,
+          "mass_kg": 0.10973865875766993,
+          "name": "source_base_0",
+          "pose": [
+            0.37430572509765625,
+            -0.27809998393058777,
+            0.0152,
+            -7.932072776384302e-10,
+            1.0441116859993826e-09,
+            -0.7071068286895752,
+            0.7071068286895752
+          ],
+          "slot": -1,
+          "texture_variant": null,
+          "tower": "source"
+        },
+        {
+          "asset_reference": null,
+          "asset_scale": null,
+          "diagonal_inertia_kg_m2": null,
+          "dimensions_m": [
+            0.15,
+            0.05,
+            0.0304
+          ],
+          "fixed_on_table": true,
+          "layer": 0,
+          "mass_kg": 0.09437204004259717,
+          "name": "source_base_1",
+          "pose": [
+            0.42430591583251953,
+            -0.27809998393058777,
+            0.0152,
+            -7.932072776384302e-10,
+            1.0441116859993826e-09,
+            -0.7071068286895752,
+            0.7071068286895752
+          ],
+          "slot": 0,
+          "texture_variant": null,
+          "tower": "source"
+        },
+        {
+          "asset_reference": null,
+          "asset_scale": null,
+          "diagonal_inertia_kg_m2": null,
+          "dimensions_m": [
+            0.15,
+            0.05,
+            0.0304
+          ],
+          "fixed_on_table": true,
+          "layer": 0,
+          "mass_kg": 0.09469659988320654,
+          "name": "source_base_2",
+          "pose": [
+            0.4743061065673828,
+            -0.27809998393058777,
+            0.0152,
+            -7.932072776384302e-10,
+            1.0441116859993826e-09,
+            -0.7071068286895752,
+            0.7071068286895752
+          ],
+          "slot": 1,
+          "texture_variant": null,
+          "tower": "source"
+        },
+        {
+          "asset_reference": null,
+          "asset_scale": null,
+          "diagonal_inertia_kg_m2": null,
+          "dimensions_m": [
+            0.15,
+            0.05,
+            0.03
+          ],
+          "fixed_on_table": true,
+          "layer": 0,
+          "mass_kg": 0.1138059136847915,
+          "name": "destination_base_0",
+          "pose": [
+            0.17691707611083984,
+            -0.5773221850395203,
+            0.015000001527369022,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "slot": -1,
+          "texture_variant": null,
+          "tower": "destination"
+        },
+        {
+          "asset_reference": null,
+          "asset_scale": null,
+          "diagonal_inertia_kg_m2": null,
+          "dimensions_m": [
+            0.15,
+            0.05,
+            0.03
+          ],
+          "fixed_on_table": true,
+          "layer": 0,
+          "mass_kg": 0.11582428837615272,
+          "name": "destination_base_1",
+          "pose": [
+            0.17691707611083984,
+            -0.5273221731185913,
+            0.015000001527369022,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "slot": 0,
+          "texture_variant": null,
+          "tower": "destination"
+        },
+        {
+          "asset_reference": null,
+          "asset_scale": null,
+          "diagonal_inertia_kg_m2": null,
+          "dimensions_m": [
+            0.15,
+            0.05,
+            0.03
+          ],
+          "fixed_on_table": true,
+          "layer": 0,
+          "mass_kg": 0.09106302180924546,
+          "name": "destination_base_2",
+          "pose": [
+            0.17691707611083984,
+            -0.4773221015930176,
+            0.015000001527369022,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "slot": 1,
+          "texture_variant": null,
+          "tower": "destination"
+        },
+        {
+          "asset_reference": null,
+          "asset_scale": null,
+          "diagonal_inertia_kg_m2": null,
+          "dimensions_m": [
+            0.15,
+            0.05,
+            0.03
+          ],
+          "fixed_on_table": false,
+          "layer": 1,
+          "mass_kg": 0.10492564762036011,
+          "name": "source_single_center",
+          "pose": [
+            0.4243059158,
+            -0.2780999839,
+            0.0454,
+            0.0,
+            0.0,
+            0.7071067811865475,
+            0.7071067811865476
+          ],
+          "slot": 0,
+          "texture_variant": null,
+          "tower": "source"
+        }
+      ],
+      "layout_metadata": {
+        "blocks_per_movable_layer": 1,
+        "catalog_task": 2,
+        "episode_data_used": false,
+        "foundation_fixed_on_table": true,
+        "foundation_yaw_degrees": {
+          "destination": 0,
+          "source": -90
+        },
+        "fresh_generation": true,
+        "geometry_source": "Fresh single-arm one-block derivative",
+        "initial_frame_comparison": {
+          "no_checkpoint_training_match_claim": true,
+          "source_movable_layers_rotated_world_z_degrees": 90
+        },
+        "motion_source": "online IK and live physics feedback",
+        "movable_layers": 1,
+        "runtime_sampling_manifest": "redacted",
+        "scene_manual_approval": false,
+        "single_arm": "back",
+        "source_movable_rotation_deg": 90,
+        "tower_centers_m": [
+          [
+            0.42700200872072136,
+            -0.2780634426320274,
+            0.0
+          ],
+          [
+            0.1764030608756654,
+            -0.5256707788688911,
+            0.0
+          ]
+        ],
+        "tower_jitter_m": 0.003,
+        "transfer_arms": [
+          1
+        ]
+      },
+      "logical_id": 1,
+      "seed": 9401,
+      "transfers": [
+        {
+          "arm": 1,
+          "block_id": "source_single_center",
+          "block_index": 6,
+          "destination_layer": 1,
+          "goal": [
+            0.1764030609,
+            -0.5256707789,
+            0.045,
+            0.0,
+            0.0,
+            0.7071067811865475,
+            0.7071067811865476
+          ],
+          "source_layer": 1
+        }
+      ]
+    },
+    "layout_variants": {
+      "left_pick_place": {
+        "blocks": [
+          {
+            "asset_reference": null,
+            "asset_scale": null,
+            "diagonal_inertia_kg_m2": null,
+            "dimensions_m": [
+              0.15,
+              0.05,
+              0.0304
+            ],
+            "fixed_on_table": true,
+            "layer": 0,
+            "mass_kg": 0.10973865875766993,
+            "name": "source_base_0",
+            "pose": [
+              0.37430572509765625,
+              -0.27809998393058777,
+              0.0152,
+              -7.932072776384302e-10,
+              1.0441116859993826e-09,
+              -0.7071068286895752,
+              0.7071068286895752
+            ],
+            "slot": -1,
+            "texture_variant": null,
+            "tower": "source"
+          },
+          {
+            "asset_reference": null,
+            "asset_scale": null,
+            "diagonal_inertia_kg_m2": null,
+            "dimensions_m": [
+              0.15,
+              0.05,
+              0.0304
+            ],
+            "fixed_on_table": true,
+            "layer": 0,
+            "mass_kg": 0.09437204004259717,
+            "name": "source_base_1",
+            "pose": [
+              0.42430591583251953,
+              -0.27809998393058777,
+              0.0152,
+              -7.932072776384302e-10,
+              1.0441116859993826e-09,
+              -0.7071068286895752,
+              0.7071068286895752
+            ],
+            "slot": 0,
+            "texture_variant": null,
+            "tower": "source"
+          },
+          {
+            "asset_reference": null,
+            "asset_scale": null,
+            "diagonal_inertia_kg_m2": null,
+            "dimensions_m": [
+              0.15,
+              0.05,
+              0.0304
+            ],
+            "fixed_on_table": true,
+            "layer": 0,
+            "mass_kg": 0.09469659988320654,
+            "name": "source_base_2",
+            "pose": [
+              0.4743061065673828,
+              -0.27809998393058777,
+              0.0152,
+              -7.932072776384302e-10,
+              1.0441116859993826e-09,
+              -0.7071068286895752,
+              0.7071068286895752
+            ],
+            "slot": 1,
+            "texture_variant": null,
+            "tower": "source"
+          },
+          {
+            "asset_reference": null,
+            "asset_scale": null,
+            "diagonal_inertia_kg_m2": null,
+            "dimensions_m": [
+              0.15,
+              0.05,
+              0.03
+            ],
+            "fixed_on_table": true,
+            "layer": 0,
+            "mass_kg": 0.1138059136847915,
+            "name": "destination_base_0",
+            "pose": [
+              0.17691707611083984,
+              -0.5773221850395203,
+              0.015000001527369022,
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "slot": -1,
+            "texture_variant": null,
+            "tower": "destination"
+          },
+          {
+            "asset_reference": null,
+            "asset_scale": null,
+            "diagonal_inertia_kg_m2": null,
+            "dimensions_m": [
+              0.15,
+              0.05,
+              0.03
+            ],
+            "fixed_on_table": true,
+            "layer": 0,
+            "mass_kg": 0.11582428837615272,
+            "name": "destination_base_1",
+            "pose": [
+              0.17691707611083984,
+              -0.5273221731185913,
+              0.015000001527369022,
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "slot": 0,
+            "texture_variant": null,
+            "tower": "destination"
+          },
+          {
+            "asset_reference": null,
+            "asset_scale": null,
+            "diagonal_inertia_kg_m2": null,
+            "dimensions_m": [
+              0.15,
+              0.05,
+              0.03
+            ],
+            "fixed_on_table": true,
+            "layer": 0,
+            "mass_kg": 0.09106302180924546,
+            "name": "destination_base_2",
+            "pose": [
+              0.17691707611083984,
+              -0.4773221015930176,
+              0.015000001527369022,
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "slot": 1,
+            "texture_variant": null,
+            "tower": "destination"
+          },
+          {
+            "asset_reference": null,
+            "asset_scale": null,
+            "diagonal_inertia_kg_m2": null,
+            "dimensions_m": [
+              0.15,
+              0.05,
+              0.03
+            ],
+            "fixed_on_table": false,
+            "layer": 1,
+            "mass_kg": 0.10492564762036011,
+            "name": "source_single_center",
+            "pose": [
+              0.4243059158,
+              -0.2780999839,
+              0.0454,
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "slot": 0,
+            "texture_variant": null,
+            "tower": "source"
+          }
+        ],
+        "layout_metadata": {
+          "blocks_per_movable_layer": 1,
+          "catalog_task": 2,
+          "episode_data_used": true,
+          "foundation_fixed_on_table": true,
+          "foundation_yaw_degrees": {
+            "destination": 0,
+            "source": -90
+          },
+          "fresh_generation": true,
+          "geometry_source": "Station baseline with movable block yaw matched to real left ep9",
+          "initial_frame_comparison": {
+            "no_checkpoint_training_match_claim": true,
+            "source_movable_layers_rotated_world_z_degrees": 90
+          },
+          "motion_source": "online IK and live physics feedback",
+          "movable_layers": 1,
+          "runtime_sampling_manifest": "redacted",
+          "scene_manual_approval": false,
+          "single_arm": "left",
+          "source_movable_rotation_deg": 0,
+          "tower_centers_m": [
+            [
+              0.42700200872072136,
+              -0.2780634426320274,
+              0.0
+            ],
+            [
+              0.1764030608756654,
+              -0.5256707788688911,
+              0.0
+            ]
+          ],
+          "tower_jitter_m": 0.003,
+          "transfer_arms": [
+            0
+          ]
+        },
+        "logical_id": 1,
+        "seed": 9401,
+        "transfers": [
+          {
+            "arm": 0,
+            "block_id": "source_single_center",
+            "block_index": 6,
+            "destination_layer": 1,
+            "goal": [
+              0.1764030609,
+              -0.5256707789,
+              0.045,
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "source_layer": 1
+          }
+        ]
+      }
+    },
+    "left_gains_requalified": false,
+    "left_wrist_refinement": {
+      "gripper_width_offset_mm_from_finger_fit": 8.6129,
+      "independent_episode_test": false,
+      "method": "table_edges+fixed_base_block_edges+weak_finger_silhouettes",
+      "previous_version": "dual_j2_leftwrist_calibrated_20261018 (table edges only)",
+      "report": "redacted",
+      "rotation_from_original_camera_deg": [
+        -2.465791276355316,
+        0.022996611231326257,
+        2.342557323177391
+      ],
+      "source_episode": "redacted",
+      "translation_from_original_camera_mm": [
+        -2.1741902050702624,
+        4.200692796165792,
+        14.349304836029559
+      ],
+      "validation": {
+        "base_block_mean_px": 4.007249264562899,
+        "base_block_median_px": 2.2688923527091447,
+        "finger_chamfer_px": 12.6023653878106,
+        "table_mean_px": 3.198583925674621
+      }
+    },
+    "left_zero_convention": "official re-calibration 2026-10-18",
+    "mass_model": {
+      "base_link": {
+        "com_m": [
+          -0.003194659948348999,
+          -5.46760784345679e-05,
+          0.04321758449077606
+        ],
+        "mass_kg": 1.0645843744277954
+      },
+      "gripper_base": {
+        "com_m": [
+          0.016594786196947098,
+          0.001467820373363793,
+          0.0299227312207222
+        ],
+        "mass_kg": 0.722000002861023
+      },
+      "gripper_flange": {
+        "com_m": [
+          0.0,
+          0.0,
+          -0.00031999999191612005
+        ],
+        "mass_kg": 0.04771095886826515
+      },
+      "gripper_link": {
+        "com_m": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "mass_kg": 9.999999974752427e-07
+      },
+      "gripper_link1": {
+        "com_m": [
+          0.0006512318504974246,
+          -0.04919298738241196,
+          0.009722587652504444
+        ],
+        "mass_kg": 0.02500000037252903
+      },
+      "gripper_link2": {
+        "com_m": [
+          0.0006512318504974246,
+          -0.04919298738241196,
+          0.009722587652504444
+        ],
+        "mass_kg": 0.02500000037252903
+      },
+      "link1": {
+        "com_m": [
+          -0.0007681057904846966,
+          -5.7180310250259936e-05,
+          -0.006863727699965239
+        ],
+        "mass_kg": 0.7671050429344177
+      },
+      "link2": {
+        "com_m": [
+          0.0007968665449880064,
+          -0.07890325784683228,
+          0.0011184941977262497
+        ],
+        "mass_kg": 0.6938191056251526
+      },
+      "link3": {
+        "com_m": [
+          0.0001451336283935234,
+          -0.0012137877056375146,
+          -0.048611368983983994
+        ],
+        "mass_kg": 0.672465443611145
+      },
+      "link4": {
+        "com_m": [
+          -0.0003133462159894407,
+          -0.05675192549824715,
+          0.0007605613209307194
+        ],
+        "mass_kg": 0.48451414704322815
+      },
+      "link5": {
+        "com_m": [
+          0.0026559135876595974,
+          0.0020119575783610344,
+          -0.11620855331420898
+        ],
+        "mass_kg": 0.5836840271949768
+      },
+      "link6": {
+        "com_m": [
+          9.501504973741248e-05,
+          0.0010783117031678557,
+          -0.00019110989524051547
+        ],
+        "mass_kg": 0.3140406012535095
+      },
+      "link7": {
+        "com_m": [
+          -0.00014000000373926014,
+          -9.999999747378752e-05,
+          -0.002749999985098839
+        ],
+        "mass_kg": 9.999999974752427e-07
+      }
+    },
+    "mass_model_from": "official corrected USD mass and COM",
+    "physics_hz": 400,
+    "record_hz": 30,
+    "robot_gravity_enabled": false,
+    "schema": "rss_unified_station_v2",
+    "tcp": {
+      "source": "sim runtime lula TCP (measure-meta.json)",
+      "tcp_offset_m": [
+        -1.0580705023046397e-05,
+        -0.02350069849424875,
+        -0.03700034336399502
+      ],
+      "tcp_rotation_xyzw": [
+        0.5000075513343591,
+        -0.5000042109560278,
+        0.5000017632052003,
+        0.49998647424360326
+      ]
+    },
+    "visuals": [
+      {
+        "asset": "redacted",
+        "asset_prim": "/PNP_DUALD1200_STATION/ReplayTaskBlocks/Foundation01",
+        "diagonal_inertia_kg_m2": null,
+        "fixed_on_table": true,
+        "geometry_overrides": true,
+        "instanceable": true,
+        "mass_kg": 0.10973865875766993,
+        "material_overrides": false,
+        "mode": "source",
+        "scale": [
+          1000.0,
+          1000.0,
+          1013.3333333333334
+        ]
+      },
+      {
+        "asset": "redacted",
+        "asset_prim": "/PNP_DUALD1200_STATION/ReplayTaskBlocks/Foundation01",
+        "diagonal_inertia_kg_m2": null,
+        "fixed_on_table": true,
+        "geometry_overrides": true,
+        "instanceable": true,
+        "mass_kg": 0.09437204004259717,
+        "material_overrides": false,
+        "mode": "source",
+        "scale": [
+          1000.0,
+          1000.0,
+          1013.3333333333334
+        ]
+      },
+      {
+        "asset": "redacted",
+        "asset_prim": "/PNP_DUALD1200_STATION/ReplayTaskBlocks/Foundation01",
+        "diagonal_inertia_kg_m2": null,
+        "fixed_on_table": true,
+        "geometry_overrides": true,
+        "instanceable": true,
+        "mass_kg": 0.09469659988320654,
+        "material_overrides": false,
+        "mode": "source",
+        "scale": [
+          1000.0,
+          1000.0,
+          1013.3333333333334
+        ]
+      },
+      {
+        "asset": "redacted",
+        "asset_prim": "/PNP_DUALD1200_STATION/ReplayTaskBlocks/Foundation01",
+        "diagonal_inertia_kg_m2": null,
+        "fixed_on_table": true,
+        "geometry_overrides": true,
+        "instanceable": true,
+        "mass_kg": 0.1138059136847915,
+        "material_overrides": false,
+        "mode": "source",
+        "scale": [
+          1000.0,
+          1000.0,
+          1000.0
+        ]
+      },
+      {
+        "asset": "redacted",
+        "asset_prim": "/PNP_DUALD1200_STATION/ReplayTaskBlocks/Foundation01",
+        "diagonal_inertia_kg_m2": null,
+        "fixed_on_table": true,
+        "geometry_overrides": true,
+        "instanceable": true,
+        "mass_kg": 0.11582428837615272,
+        "material_overrides": false,
+        "mode": "source",
+        "scale": [
+          1000.0,
+          1000.0,
+          1000.0
+        ]
+      },
+      {
+        "asset": "redacted",
+        "asset_prim": "/PNP_DUALD1200_STATION/ReplayTaskBlocks/Foundation01",
+        "diagonal_inertia_kg_m2": null,
+        "fixed_on_table": true,
+        "geometry_overrides": true,
+        "instanceable": true,
+        "mass_kg": 0.09106302180924546,
+        "material_overrides": false,
+        "mode": "source",
+        "scale": [
+          1000.0,
+          1000.0,
+          1000.0
+        ]
+      },
+      {
+        "asset": "redacted",
+        "asset_prim": "/PNP_DUALD1200_STATION/ReplayTaskBlocks/Foundation01",
+        "diagonal_inertia_kg_m2": null,
+        "fixed_on_table": false,
+        "geometry_overrides": true,
+        "instanceable": true,
+        "mass_kg": 0.10492564762036011,
+        "material_overrides": false,
+        "mode": "source",
+        "scale": [
+          1000.0,
+          1000.0,
+          1000.0
+        ]
+      }
+    ],
+    "wrist_mount_source": "USD",
+    "wrist_camera_mount": {
+      "shared_by_arms": [
+        "left",
+        "back"
+      ],
+      "T_gb_cam_opt": [
+        [
+          -0.04148908769745344,
+          -0.9311706559641403,
+          -0.3622152192734947,
+          0.07617969213056318
+        ],
+        [
+          0.9988746106596016,
+          -0.04699523272075419,
+          0.006400021964857503,
+          -0.001966624353885998
+        ],
+        [
+          -0.02298190117595779,
+          -0.3615420550542288,
+          0.9320725157655403,
+          0.036434260562913295
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "report": "redacted",
+      "validation": {
+        "left": {
+          "table_fit": 5.448839001816663,
+          "table_val": 3.732043000490701,
+          "n_table": 92,
+          "near_val": 6.760068953881706,
+          "finger_val": 7.058907151222229
+        },
+        "back": {
+          "table_fit": 2.7746389972434318,
+          "table_val": 2.9748261684784842,
+          "n_table": 261,
+          "near_val": null,
+          "finger_val": 5.08724586168925
+        }
+      },
+      "cam_to_tip_mid_closed_mm": 168.75205123158239,
+      "measured_cam_to_tip_mm": {
+        "left": 164,
+        "back": 163
+      },
+      "intrinsics": "per camera, factory",
+      "previous": "v2 left-only fit (left wrist), table-edge rotation fit (back wrist)"
+    }
+  }
+}

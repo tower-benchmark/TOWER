@@ -1,0 +1,4 @@
+[submodule "third_party/XPolicyLab"]
+	path = third_party/XPolicyLab
+	url = https://github.com/tower-benchmark/XPolicyLab.git
+	branch = tower/main

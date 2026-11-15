@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "Please cite the TOWER manuscript using the preferred citation below."
+type: software
+title: TOWER
+license: Apache-2.0
+repository-code: "https://github.com/tower-benchmark/TOWER"
+authors:
+  - family-names: "AUTHOR NAME PENDING" # TODO(owner): supply software authors in order.
+    affiliation: "AFFILIATION PENDING" # TODO(owner): supply software author affiliations.
+preferred-citation:
+  type: article
+  title: "TOWER: Benchmarking Bimanual Manipulation Across Simulation and Reality"
+  year: 2026
+  authors:
+    - family-names: "AUTHOR NAME PENDING" # TODO(owner): supply manuscript authors in order.
+      affiliation: "AFFILIATION PENDING" # TODO(owner): supply manuscript author affiliations.
+  # TODO(owner): add the manuscript URL or DOI when available.

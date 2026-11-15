@@ -1,0 +1,44 @@
+# Immutable evidence and copied model/vendor bytes retain their source hashes.
+# This also covers the whitespace exceptions in .gitattributes.
+exclude: >-
+  (?x)^(
+    packages/nero-kinematics/src/nero_kinematics/(models/|profiles/real_hardware/real-machine-20261027/)
+  )
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.16.7
+    hooks:
+      - id: ruff-check
+      - id: ruff-format
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: end-of-file-fixer
+        # Preserve additional historical/reference byte matches (see Ruff excludes).
+        exclude: &hash-pinned >-
+          (?x)^(
+            reproduction/paper_metrics/|
+            src/tower-eval/src/tower_eval/scoring/(metrics\.py$|outcomes\.py$|offline/(__init__|annotations)\.py$)|
+            tools/simulator/benchmark_diagnostic_score\.py$|
+            tests/golden/
+          )
+      - id: trailing-whitespace
+        exclude: *hash-pinned
+        args: [--markdown-linebreak-ext=md]
+      - id: check-added-large-files
+        args: [--maxkb=2048]
+        exclude: ^tests/golden/.*\.tar\.xz$
+  - repo: local
+    hooks:
+      - id: no-internal-leaks
+        name: Check public sources for internal infrastructure leaks
+        entry: uv run --no-sync pytest tests/test_no_internal_leaks.py -q
+        language: system
+        pass_filenames: false
+        always_run: true
+      - id: public-distribution-boundary
+        name: Reject generation and archival modules from the public tree
+        entry: uv run --no-sync python -m scripts.maintainer.check_public_tree
+        language: system
+        pass_filenames: false
+        always_run: true

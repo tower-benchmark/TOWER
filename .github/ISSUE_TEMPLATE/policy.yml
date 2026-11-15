@@ -1,0 +1,25 @@
+name: New policy
+description: Propose a policy integration through XPolicyLab or the in-process interface
+title: "[Policy] "
+body:
+  - type: textarea
+    id: policy
+    attributes:
+      label: Policy and license
+      description: Link the policy code, checkpoint/revision, licenses, and model card when available. State any access restrictions.
+    validations:
+      required: true
+  - type: textarea
+    id: interface
+    attributes:
+      label: Integration contract
+      description: Describe the XPolicyLab adapter or in-process interface, observation/action shapes, embodiment, action space, chunking, and reset/history behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: validation
+    attributes:
+      label: Reproduction and validation plan
+      description: Include dependencies, hardware needs, target benchmark revision/tasks, inference settings, and available smoke or evaluation evidence. Remove credentials and private paths.
+    validations:
+      required: true

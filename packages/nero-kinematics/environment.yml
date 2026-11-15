@@ -1,0 +1,12 @@
+name: nero-eef-ik
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - python=3.11.16
+  - pinocchio=3.8.0
+  - casadi=3.7.2
+  - ipopt=3.14.19
+  - numpy=1.26.4
+  - scipy=1.17.1
+  - pip

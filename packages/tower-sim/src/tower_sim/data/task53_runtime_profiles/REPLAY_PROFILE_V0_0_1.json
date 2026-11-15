@@ -1,0 +1,144 @@
+{
+  "schema": "jenga_replay_profile_v1",
+  "version": "v0.0.1",
+  "asset_name": "DOUBLE_TOWER_REPLAY_CALIBRATED_V0_0_1",
+  "physics_hz": 120.0,
+  "warmup_seconds": 0.5,
+  "command_source": "leader/qpos",
+  "command_interpolation": "zoh",
+  "arm_command_delays_seconds": {
+    "joint1": 0.01,
+    "joint2": 0.01,
+    "joint3": 0.01,
+    "joint4": 0.01,
+    "joint5": 0.01,
+    "joint6": 0.01,
+    "joint7": 0.01
+  },
+  "arm_velocity_target_limits_rad_s": {
+    "joint1": 50.0,
+    "joint2": 50.0,
+    "joint3": 50.0,
+    "joint4": 50.0,
+    "joint5": 50.0,
+    "joint6": 50.0,
+    "joint7": 50.0
+  },
+  "arm_parameters": {
+    "joint1": {
+      "kp_authored_usd_per_degree": 0.9577357828917625,
+      "kv_authored_usd_per_degree": 0.0026737822631333064,
+      "kp_runtime_per_rad": 54.87421824835571,
+      "kv_runtime_per_rad": 0.1531964390144762,
+      "armature_kg_m2": 0.07702748716919192,
+      "coulomb_friction": 0.49649339916182916,
+      "viscous_friction": 2.881925635998894,
+      "command_delay_seconds": 0.01,
+      "move_j_time_constant_seconds": 0.0
+    },
+    "joint2": {
+      "kp_authored_usd_per_degree": 12.516811613091232,
+      "kv_authored_usd_per_degree": 0.19036358902592165,
+      "kp_runtime_per_rad": 717.1604783904635,
+      "kv_runtime_per_rad": 10.907030224148226,
+      "armature_kg_m2": 0.37181484608776877,
+      "coulomb_friction": 0.11800913739567342,
+      "viscous_friction": 5.938951495007446,
+      "command_delay_seconds": 0.01,
+      "move_j_time_constant_seconds": 0.0
+    },
+    "joint3": {
+      "kp_authored_usd_per_degree": 21.293841799716787,
+      "kv_authored_usd_per_degree": 0.24337249862110574,
+      "kp_runtime_per_rad": 1220.0472647430292,
+      "kv_runtime_per_rad": 13.944217020542807,
+      "armature_kg_m2": 0.33085398810763955,
+      "coulomb_friction": 0.24927604695535904,
+      "viscous_friction": 3.382169514273123,
+      "command_delay_seconds": 0.01,
+      "move_j_time_constant_seconds": 0.0
+    },
+    "joint4": {
+      "kp_authored_usd_per_degree": 75.99369519208852,
+      "kv_authored_usd_per_degree": 0.2945557507771445,
+      "kp_runtime_per_rad": 4354.118004110289,
+      "kv_runtime_per_rad": 16.8768013508377,
+      "armature_kg_m2": 0.6085566708190926,
+      "coulomb_friction": 0.29107394326216546,
+      "viscous_friction": 5.243702888887674,
+      "command_delay_seconds": 0.01,
+      "move_j_time_constant_seconds": 0.0
+    },
+    "joint5": {
+      "kp_authored_usd_per_degree": 28.198659652143895,
+      "kv_authored_usd_per_degree": 0.925130819249673,
+      "kp_runtime_per_rad": 1615.6641859936874,
+      "kv_runtime_per_rad": 53.00609144048648,
+      "armature_kg_m2": 0.16227483827401498,
+      "coulomb_friction": 0.07681942096460853,
+      "viscous_friction": 6.7974660896763766,
+      "command_delay_seconds": 0.01,
+      "move_j_time_constant_seconds": 0.0
+    },
+    "joint6": {
+      "kp_authored_usd_per_degree": 5.794124157359453,
+      "kv_authored_usd_per_degree": 0.00026318448879353166,
+      "kp_runtime_per_rad": 331.9788601914911,
+      "kv_runtime_per_rad": 0.015079360441177476,
+      "armature_kg_m2": 0.023687010528671833,
+      "coulomb_friction": 0.4196200321785326,
+      "viscous_friction": 5.777930782513465,
+      "command_delay_seconds": 0.01,
+      "move_j_time_constant_seconds": 0.0
+    },
+    "joint7": {
+      "kp_authored_usd_per_degree": 30.766659994959664,
+      "kv_authored_usd_per_degree": 0.035456366631634456,
+      "kp_runtime_per_rad": 1762.7997674251794,
+      "kv_runtime_per_rad": 2.031500164861137,
+      "armature_kg_m2": 0.1744391640402679,
+      "coulomb_friction": 0.4198452343421804,
+      "viscous_friction": 5.804850965110999,
+      "command_delay_seconds": 0.01,
+      "move_j_time_constant_seconds": 0.0
+    }
+  },
+  "gripper": {
+    "dof_order": [
+      "gripper",
+      "gripper_joint1",
+      "gripper_joint2"
+    ],
+    "kp_runtime_per_meter": [
+      0.0,
+      800.0,
+      800.0
+    ],
+    "kv_runtime_per_meter": [
+      0.0,
+      20.0,
+      20.0
+    ],
+    "finger_effort_limit": 22.0,
+    "finger_velocity_limit_m_s": 1.5,
+    "collision_approximation": "convex-hull",
+    "physics_material": "composed default; no override",
+    "command_interpolation": "30 Hz ZOH"
+  },
+  "placement": {
+    "left_tower_x_offset_m": -0.01,
+    "robot_root_z_offset_m": 0.0125,
+    "application": "runtime at the accepted replay control points",
+    "expected_robot_root_world_z_m": 0.4764999747276306
+  },
+  "rendering": {
+    "lighting": "Isaac Sim default light rig",
+    "diagnostic_contact_reporting": false,
+    "reason": "preserve authored Jenga normals and accepted texture"
+  },
+  "provenance": {
+    "source_stage_sha256": "8481ab7d9449eb377ad09684d698e50456c9ea512b307c1c2e55d1956dd858bb",
+    "arm_parameters_sha256": "9fda6d99f1c65ab6f7741cf52a6de8822aaf41400ad6a67531374f48da749581",
+    "accepted_replay_report_sha256": "f092f0f117b257c45d60e5d9bedfb533ccd564065b4c1d8397897e9e9c08743f"
+  }
+}

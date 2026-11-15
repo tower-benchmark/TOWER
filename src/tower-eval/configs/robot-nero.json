@@ -1,0 +1,125 @@
+{
+  "names": [
+    "left_j1",
+    "left_j2",
+    "left_j3",
+    "left_j4",
+    "left_j5",
+    "left_j6",
+    "left_j7",
+    "left_gripper_m",
+    "back_j1",
+    "back_j2",
+    "back_j3",
+    "back_j4",
+    "back_j5",
+    "back_j6",
+    "back_j7",
+    "back_gripper_m"
+  ],
+  "joint_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14
+  ],
+  "grippers": [
+    {
+      "index": 7,
+      "lower": 0.0,
+      "upper": 0.1
+    },
+    {
+      "index": 15,
+      "lower": 0.0,
+      "upper": 0.1
+    }
+  ],
+  "stage_units_per_meter": 1000.0,
+  "arms": [
+    {
+      "joint_names": [
+        "joint1",
+        "joint2",
+        "joint3",
+        "joint4",
+        "joint5",
+        "joint6",
+        "joint7"
+      ],
+      "joint_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "gripper_index": 7,
+      "gripper_targets": [
+        {
+          "name": "gripper",
+          "multiplier": 1.0
+        },
+        {
+          "name": "gripper_joint1",
+          "multiplier": 0.5
+        },
+        {
+          "name": "gripper_joint2",
+          "multiplier": -0.5
+        }
+      ]
+    },
+    {
+      "joint_names": [
+        "joint1",
+        "joint2",
+        "joint3",
+        "joint4",
+        "joint5",
+        "joint6",
+        "joint7"
+      ],
+      "joint_indices": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "gripper_index": 15,
+      "gripper_targets": [
+        {
+          "name": "gripper",
+          "multiplier": 1.0
+        },
+        {
+          "name": "gripper_joint1",
+          "multiplier": 0.5
+        },
+        {
+          "name": "gripper_joint2",
+          "multiplier": -0.5
+        }
+      ]
+    }
+  ],
+  "units": {
+    "arm_joints": "rad",
+    "gripper_width": "m"
+  }
+}

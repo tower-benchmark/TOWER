@@ -1,0 +1,16 @@
+name: tower-benchmark-202611-ik
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - python=3.11.16
+  - pinocchio=3.8.0
+  - casadi=3.7.2
+  - numpy=1.26.4
+  - scipy=1.17.1
+  - pip
+  - pip:
+      - numpy==1.26.4
+      - pin-pink==3.4.0
+      - qpsolvers==4.8.1
+      - quadprog==0.1.13

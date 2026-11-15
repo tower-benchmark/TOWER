@@ -1,0 +1,15 @@
+{
+  "source_repository": "https://github.com/tower-benchmark/TOWER",
+  "source_file": "src/tower-eval/src/tower_eval/kinematics/pinocchio_ik.py",
+  "source_file_sha256": "99abfbac055e8322726d93e718c8930e1e113988a37427dac4e4e7db2bd19d76",
+  "model_sha256": "7ae9414dbad6169fce19ee675dd439f1035ea1e07079eb5bcc99c55f39b179e7",
+  "source_station_usd_sha256": "f93ca2aa6c63545a1800d379a1dab70ae2d592dd88b4424d646699b946515cce",
+  "model_origin": "Kinematics-only URDF exported from deployed TOWER Nero station USD; visual/collision assets omitted",
+  "tcp_origin": "TOWER task13 simulation TCP calibration; not calibrated against real hardware",
+  "solver_changes": "Library extracted from TOWER; canonical implementation lives in src/nero_kinematics/solvers/ipopt.py. Original source hashes record provenance.",
+  "hardware_validation": false,
+  "source_files": {
+    "src/tower-eval/src/tower_eval/kinematics/pinocchio_ik.py": "99abfbac055e8322726d93e718c8930e1e113988a37427dac4e4e7db2bd19d76",
+    "src/tower-eval/src/tower_eval/kinematics/poses.py": "d9986220d325d5e4433b0048e177d78bc9346c98d07d5546556a6889bcf4756f"
+  }
+}

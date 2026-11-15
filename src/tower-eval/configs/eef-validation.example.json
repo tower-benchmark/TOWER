@@ -1,0 +1,12 @@
+{
+  "schema": "tower-eef-validation-v1",
+  "robot": "robot-nero.json",
+  "simulator": {
+    "generator": "${TOWER_GENERATOR}",
+    "scene": "${TOWER_SCENE}"
+  },
+  "controller": {
+    "interpolation_fraction": 0.8,
+    "gripper_control_profile": "direct_absolute"
+  }
+}

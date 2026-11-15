@@ -1,0 +1,12 @@
+schema = "tower-eval-v1"
+seed = 0
+duration_seconds = 1.0
+output = "../../outputs/task"
+
+[environment]
+backend = "cpu-reference"
+task = "tower_transfer_2"
+asset_manifest = "../../../hf-assets/manifest.json"
+
+[policy]
+adapter = "reference"

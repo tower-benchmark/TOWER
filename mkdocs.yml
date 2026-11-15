@@ -1,0 +1,64 @@
+site_name: TOWER
+site_url: https://tower-benchmark.github.io/TOWER/
+repo_url: https://github.com/tower-benchmark/TOWER
+theme:
+  name: material
+validation:
+  nav:
+    omitted_files: info
+  links:
+    not_found: warn
+    anchors: warn
+exclude_docs: |
+  /_hooks.py
+  /requirements.txt
+hooks:
+  - docs/_hooks.py
+nav:
+  - Home: index.md
+  - Isaac setup: isaac-sim.md
+  - Getting started:
+      - Install: getting-started/install.md
+      - Quickstart benchmark user: getting-started/quickstart-benchmark-user.md
+      - Quickstart policy author: getting-started/quickstart-policy-author.md
+      - Quickstart contributor: getting-started/quickstart-contributor.md
+  - Concepts:
+      - Architecture: concepts/architecture.md
+      - Tasks: concepts/tasks.md
+      - Observations and actions: concepts/observation-and-action.md
+      - Metrics: concepts/metrics.md
+      - Versions and protocols: concepts/versions-and-protocols.md
+  - Guides:
+      - Evaluate a policy: guides/evaluate-a-policy.md
+      - Write a policy server: guides/write-a-policy-server.md
+      - EEF control: guides/eef-control.md
+      - Offline scoring: guides/offline-scoring.md
+      - Multiple GPUs: guides/multi-gpu.md
+  - Reference:
+      - CLI: reference/cli.md
+      - Config: reference/config.md
+      - Simulator configuration: reference/simulator-config.md
+      - Policy transport: reference/tower-infer-v2.md
+      - Rendering: reference/rendering.md
+      - Physics: reference/physics.md
+      - Assets: reference/assets.md
+      - Environment variables: reference/environment-variables.md
+      - Policy interface: reference/policy-interface.md
+      - Kinematics: reference/kinematics.md
+      - Policy route limits: reference/bench-policy.md
+      - Scoring: reference/scoring.md
+      - TCP calibration: reference/tcp-calibration.md
+      - Public benchmark: reference/bench-public.md
+      - Versioning: reference/versioning.md
+  - Reproduce:
+      - Benchmark 2026.11: reproduce/benchmark-2026.11.md
+  - Contributing:
+      - Development setup: contributing/dev-setup.md
+      - Adding a task: contributing/adding-a-task.md
+      - Adding a policy plugin: contributing/adding-a-policy-plugin.md
+      - Release: contributing/release.md
+  - Model cards:
+      - Index: model-cards/index.md
+      - OpenWAM: model-cards/openwam.md
+      - MME: model-cards/mme.md
+      - PI0.5: model-cards/pi05.md
