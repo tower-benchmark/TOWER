@@ -8,7 +8,7 @@ The three wheels are `tower-sim==0.1.0`, `tower-eval==0.1.0`, and
 ## Install the pinned SDK
 
 Run from the checkout root. Install [uv](https://docs.astral.sh/uv/) and a
-conda-forge environment manager first. Isaac uses Python 3.12:
+Micromamba first (to create the separate conda-forge prefixes). Isaac uses Python 3.12:
 
 ```sh
 uv venv --python 3.12 .venv-isaac61
@@ -24,7 +24,7 @@ It supplies `libXt.so.6`, needed by the MaterialX/USD plugins even on headless h
 Without root, install it in a separate conda-forge prefix:
 
 ```sh
-conda create --prefix "$PWD/.isaac-system-libs" --override-channels -c conda-forge xorg-libxt -y
+micromamba create --prefix "$PWD/.isaac-system-libs" --override-channels -c conda-forge xorg-libxt -y
 LD_LIBRARY_PATH="$PWD/.isaac-system-libs/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" uv run python tools/simulator/benchmark.py check-environment --isaac-python .venv-isaac61/bin/python
 ```
 
@@ -52,8 +52,8 @@ GIT_LFS_SKIP_SMUDGE=1 git submodule update --init third_party/XPolicyLab
 uv build --wheel --out-dir dist packages/nero-kinematics
 uv build --wheel --out-dir dist packages/tower-sim
 uv build --wheel --out-dir dist src/tower-eval
-python -m scripts.maintainer.check_public_tree --wheel dist/tower_sim-0.1.0-py3-none-any.whl
-python -m scripts.maintainer.candidate_release --output dist/release-manifest.json
+uv run python -m scripts.maintainer.check_public_tree --wheel dist/tower_sim-0.1.0-py3-none-any.whl
+uv run python -m scripts.maintainer.candidate_release --output dist/release-manifest.json
 ```
 
 Install all three wheels in isolated package directories used by both the Isaac
