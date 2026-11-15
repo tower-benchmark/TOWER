@@ -33,8 +33,8 @@ timeout_s = 120
 
 The [TOWER ↔ XPolicyLab contract](../reference/policy-interface.md) defines required
 modalities, frames, action modes, batching and deployment. TOWER contains no
-policy server. The Isaac runtime uses one WebSocket connection with consecutive
-`update_obs`, `get_action`, and optional `get_prediction` calls per environment.
+policy server. Use one runtime process per server. The Isaac runtime uses atomic
+`INFER` followed by optional `get_prediction(env_idx)` calls per environment.
 Expose `get_identity` for startup authorization and retain identity on every
 endpoint and full prediction. See the reference for error categories and lifecycle.
 

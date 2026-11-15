@@ -7,11 +7,11 @@
 - Isaac policy transport now requires XPolicyLab WebSockets. The compatibility
   adapter and endpoint timeout options are removed. `policy_url` retains its name
   and requires `ws://` or `wss://`; request schema remains `tower-public-benchmark-v2`.
-- Active environments use sequential update/action/audit calls on one connection.
+- Active environments use sequential atomic INFER/audit calls on one connection.
   Metrics cover that exchange; full-horizon response evidence remains exact.
+  The effective prediction timeout remains 300 seconds, matching the previous transport.
 - MME-VLA authorization is unavailable pending an XPolicyLab history adapter.
   Benchmark, data, scene, coordinate, camera and hardware contracts are unchanged.
-
 
 - `EvaluationConfig.controller` is removed; configure the explicit controller interface.
 - `GeneratorKinematics` is renamed to `SimulatorKinematics`.

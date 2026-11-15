@@ -11,6 +11,7 @@ Build from a fresh, clean committed checkout. Keep caches outside bound trees:
 
 ```sh
 export PYTHONDONTWRITEBYTECODE=1
+GIT_LFS_SKIP_SMUDGE=1 git submodule update --init third_party/XPolicyLab
 uv build --wheel --out-dir dist packages/nero-kinematics
 uv build --wheel --out-dir dist packages/tower-sim
 uv build --wheel --out-dir dist src/tower-eval
@@ -24,7 +25,10 @@ shared IK specification and camera configuration are installed package data.
 Physical assets and evaluation scenes use explicit external roots.
 
 The release binds the tracked `tools/simulator/` and `scripts/` files and every
-wheel payload. All tracked files must remain clean. Untracked files, including
+wheel payload. It also binds `third_party/XPolicyLab/client_server/` at the pinned
+gitlink, reading committed bytes from the submodule repository. An initialized
+submodule with its own Git top-level and the exact pinned revision is required;
+an empty submodule directory is rejected explicitly. All tracked files must remain clean. Untracked files, including
 bytecode, are rejected inside `src/`, `packages/`, `tools/simulator/`
 and `scripts/`. Environments and outputs can live outside those bound trees.
 Installed package file sets and bytes must equal their wheels. Startup validates
@@ -80,3 +84,7 @@ public CLI features.
 
 See the canonical [control safety contract](../guides/eef-control.md#control-safety-contract)
 for the scope of runtime posture checks and the distinct control limits.
+
+The WebSocket extra requires `pydantic>=2.11,<3`, whose dependencies include
+`typing-inspection`. This makes the installed dependency manifest consistent
+with the supported extra; older Pydantic installations must be upgraded.

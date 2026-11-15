@@ -115,12 +115,16 @@ owns its connection, trial identifiers and cleanup.
 
 ## Isaac benchmark runtime
 
+**Use one runtime process per policy server.** Full-prediction caches are shared;
+concurrent runtime clients are unsupported even though INFER itself is atomic.
+
 The Isaac runtime uses `RuntimePolicyAdapter`, a thin wrapper around
 `XPolicyLabAdapter`, on one WebSocket connection per process. `policy_url` and
 `--policy-url` accept only `ws://` and `wss://`. The unreleased request schema
 remains `tower-public-benchmark-v2`; benchmark, data and scene identities do not change.
-The runtime uses the XPolicyLab client defaults: 120 seconds per request, 10
-seconds per connection attempt, and a 180-second connection budget. Installed
+The runtime retains the previous 300-second prediction timeout. Connection
+settings use TOWER XPolicyLabAdapter defaults: 10 seconds per attempt and a
+180-second connection budget. Installed
 runtimes receive the pinned checkout client path explicitly. Release verification
 binds its client source files and the installed transport dependency records.
 
@@ -131,16 +135,22 @@ equality rules, including all unknown and nested fields.
 
 A batch start sends `prepare_case` with episode seed and environment seed metadata,
 then `reset`. Each fixed tick visits active environments in index order and sends
-`update_obs` (with `env_idx`), `get_action`, then `get_prediction` if supported.
-These calls remain consecutive on the same connection. One environment's action
+`INFER` (with `env_idx`), then `get_prediction(env_idx)` if supported. INFER
+updates observations and obtains actions under one server lock. An audit-prefix
+mismatch fails closed with a shared-server diagnostic. One environment's action
 rejection does not prevent later environments from receiving their actions.
-`trial_end` closes the batch. OpenWAM_TOWER stores only observations, anchors and
+An infrastructure error stops requests for the remaining environments.
+`trial_end` closes the batch; cleanup failures are recorded separately in
+`policy-cleanup-errors.json` and do not invalidate recorded outcomes. OpenWAM_TOWER stores only observations, anchors and
 last predictions; reset clears those caches. Every inference uses seed 42.
 
 Pixels are decoded from the exact validated archive PNG bytes and sent as raw
 RGB uint8 arrays. The server passes those arrays through its image decoder.
-Every endpoint is validated with `decode_chunk`, including the exact request anchor.
-Controller responses are reconstructed from float64 endpoint rows. With
+The runtime adds the encoder frame tag to the three-field encoder observation.
+Controller responses are reconstructed from float64 endpoint rows. Floating
+arrays of other dtypes are rejected; full predictions are normalized to nested
+Python lists before prefix concatenation. All numeric and semantic validation
+remains in the unchanged controller, preserving rejection and evidence behavior. With
 `get_prediction`, all executed rows must match the full prediction bitwise;
 the remaining horizon and auxiliary fields are retained unchanged. Without that
 method, only available rows are recorded, with explicit `missing_evidence` fields.
@@ -150,7 +160,9 @@ Remote `PolicyOutputError` becomes an action failure. Remote `ValueError` with
 exact message `Negative gripper aperture` preserves the frozen input-rejection
 record without clipping or changing tolerances. Other model errors, unknown
 exception types, connection, timeout and protocol failures are infrastructure
-failures. Invalid endpoint contracts fail before control. The server must expose
+failures. Malformed wire structure fails before control. Identity-call errors
+are always infrastructure failures. Transport diagnostics retain code, message,
+exception type and request ID in `policy-error.json`. The server must expose
 `details.exception_type` in model errors.
 
 `rpc_start`, `rpc_end` and `policy.rpc_elapsed_sum` cover each environment's WS

@@ -718,7 +718,7 @@ MUTATIONS = (
         "policy-full-identity",
         "../../../../../src/tower-eval/src/tower_eval/policies/runtime_ws.py",
         'result["identity"] != self._health_identity\n'
-        '            or result["identity"] != self._latest_health_identity',
+        '                or result["identity"] != self._latest_health_identity',
         "False",
     ),
     (
@@ -747,10 +747,10 @@ MUTATIONS = (
     ),
     ("policy-ik-rejected-evidence", "replay.py", 'if hasattr(exc, "diagnostics"):', "if False:"),
     (
-        "policy-mme-prefix",
+        "policy-mme-authorization",
         "policy.py",
-        'history=self.metrics.call("history.pack_request", self.histories[index].request, tick),',
-        "history={},",
+        "    def authorize(self):\n        raise ValueError(",
+        "    def authorize(self):\n        return {}\n        raise ValueError(",
     ),
     (
         "policy-no-reverse",
@@ -2462,12 +2462,43 @@ MUTATIONS += (
 )
 
 
+MUTATIONS += (
+    (
+        "policy-env-order",
+        "policy.py",
+        "for index in sorted(payloads):",
+        "for index in sorted(payloads, reverse=True):",
+    ),
+    (
+        "policy-repr-identity",
+        "../../../../../src/tower-eval/src/tower_eval/policies/runtime_ws.py",
+        'result["identity"] != self._health_identity',
+        'repr(result["identity"]) != repr(self._health_identity)',
+    ),
+    (
+        "policy-aperture-prefix",
+        "../../../../../src/tower-eval/src/tower_eval/policies/runtime_ws.py",
+        'message == "Negative gripper aperture"',
+        'message.startswith("Negative gripper aperture")',
+    ),
+    (
+        "policy-error-code",
+        "../../../../../src/tower-eval/src/tower_eval/policies/runtime_ws.py",
+        'if code in {"call_failed", "infer_failed"}:',
+        "if True:",
+    ),
+)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--prefix", help="Run one component and its unmutated test baseline")
     parser.add_argument("--partition", help="Disjoint mutation shard INDEX/COUNT, zero based")
     args = parser.parse_args()
-    selected = list(MUTATIONS)
+    selected = [row for row in MUTATIONS if not args.prefix or row[0].startswith(args.prefix)]
+    if not selected:
+        parser.error("No mutations selected")
     if args.partition:
         index, count = map(int, args.partition.split("/"))
         if not 0 <= index < count:
@@ -2559,6 +2590,18 @@ def main():
                 ]
             elif name.startswith("backend-") or name == "reference-tag-refusal":
                 tests = ["packages/tower-sim/tests/test_backend_move.py"]
+            elif name == "policy-baseline":
+                tests = [
+                    f"packages/tower-sim/tests/test_{part}.py"
+                    for part in (
+                        "policy_evaluation",
+                        "policy_lifecycle",
+                        "policy_protocol",
+                        "policy_review_fixes",
+                        "control_equivalence",
+                        "pure_equivalence",
+                    )
+                ]
             elif name != "baseline":
                 filename = next(row[1] for row in MUTATIONS if row[0] == name)
                 if filename in {"bootstrap.py", "environment.py", "app.py", "scene.py"}:
@@ -2596,6 +2639,8 @@ def main():
                         "tests/characterization/test_gpu_host_profile.py",
                         "tests/characterization/test_gpu_assemble.py",
                     ] + (tests if owners else [])
+            if name.startswith("policy-") or name == "baseline":
+                tests.append("src/tower-eval/tests/unit/test_ws_transport_parity.py")
             result = subprocess.run(
                 [
                     sys.executable,
@@ -2630,12 +2675,13 @@ def main():
             (args.output / f"{name}.log").write_text(result.stdout + result.stderr)
             return result.returncode
 
-        if run("contrib-baseline") != 0:
-            raise RuntimeError("Unmutated public contribution regressions must pass first")
-        if run("purge-baseline") != 0:
-            raise RuntimeError("Unmutated purge regressions must pass first")
-        if run("baseline") != 0:
-            raise RuntimeError("Unmutated suite must pass first")
+        if args.prefix == "policy-":
+            if run("policy-baseline") != 0:
+                raise RuntimeError("Unmutated policy suite must pass first")
+        else:
+            for baseline in ("contrib-baseline", "purge-baseline", "baseline"):
+                if run(baseline) != 0:
+                    raise RuntimeError(f"Unmutated {baseline} must pass first")
         if any(row[0] in SCENE_TESTS for row in selected) and run("scene-baseline") != 0:
             raise RuntimeError("Unmutated selected scene regressions must pass first")
         for name, filename, old, new in selected:
@@ -2652,6 +2698,7 @@ def main():
                         name=name,
                         file=str(path.relative_to(ROOT)),
                         line=source[: source.index(old)].count("\n") + 1,
+                        sites=source.count(old),
                         pytest_exit=code,
                         caught=code == 1,  # collection/crash is not detection
                     )
