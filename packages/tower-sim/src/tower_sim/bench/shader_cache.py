@@ -8,7 +8,9 @@ from typing import Any
 
 def add_arguments(parser):
     parser.add_argument(
-        "--shader-cache-seed", type=Path, help="Local GPU/driver cache seed directory"
+        "--shader-cache-seed",
+        type=Path,
+        help="Local Kit and CUDA cache seed directory for this GPU/driver",
     )
     parser.add_argument("--shader-cache-digest", type=Path, help="Seed digest_tree file")
     parser.add_argument(
@@ -63,8 +65,11 @@ def finalize(options, output, *, passed):
     receipt = json.loads(receipt_path.read_text())
     directory = Path(config["private_root"]) / config["name"]
     target = directory / "cache"
+    cuda = directory / "cuda-cache"
     if receipt.get("private_cache") != str(target):
         raise ValueError("Shader cache receipt differs from worker configuration")
+    if receipt.get("private_cuda_cache") != str(cuda):
+        raise ValueError("CUDA cache receipt differs from worker configuration")
     if config.get("warmup"):
         from .app import digest_tree
 
@@ -73,10 +78,13 @@ def finalize(options, output, *, passed):
         destination = Path(config["warmup_destination"])
         destination.mkdir(parents=True, exist_ok=False)
         exported = destination / "cache"
-        shutil.copytree(target, exported)
+        exported.mkdir()
+        shutil.copytree(target, exported / "kit")
+        shutil.copytree(cuda, exported / "cuda")
         (destination / "digest.sha256").write_text(digest_tree(exported))
         (destination / "warmup.json").write_text(
             json.dumps(dict(source_run_passed=bool(passed)), indent=2) + "\n"
         )
     else:
         shutil.rmtree(target, ignore_errors=True)
+        shutil.rmtree(cuda, ignore_errors=True)

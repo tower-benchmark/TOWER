@@ -3,6 +3,7 @@
 import argparse
 import ast
 import json
+import os
 import sys
 from pathlib import Path
 from types import SimpleNamespace
@@ -50,7 +51,9 @@ def test_production_launch_record(entry, tmp_path, monkeypatch):
     assert set(json.loads((output / "launch.json").read_text())["extra_args"]) >= FLAGS
 
 
-def test_seed_roundtrip_and_corruption(tmp_path):
+@pytest.mark.parametrize("corrupt", ["kit/shadercache/shader", "cuda/kernel"])
+def test_seed_roundtrip_and_corruption(tmp_path, monkeypatch, corrupt):
+    monkeypatch.setenv("CUDA_CACHE_PATH", "caller-cache")
     warm = tmp_path / "warm"
     output = tmp_path / "warm-run"
     options = SimpleNamespace(shader_cache_warmup=warm)
@@ -60,6 +63,11 @@ def test_seed_roundtrip_and_corruption(tmp_path):
         target = Path(receipt["private_cache"])
         (target / "shadercache").mkdir()
         (target / "shadercache/shader").write_bytes(b"compiled")
+        cuda = Path(receipt["private_cuda_cache"])
+        assert os.environ["CUDA_CACHE_PATH"] == str(cuda)
+        assert receipt["cuda_kernel_cache_before"]["file_count"] == 0
+        (cuda / "kernel").write_bytes(b"kernel")
+    assert os.environ["CUDA_CACHE_PATH"] == "caller-cache"
     (output / "simulation").mkdir(parents=True)
     (output / "simulation/private-shader-cache.json").write_text(json.dumps(receipt))
     (output / "result.json").write_text(json.dumps(dict(passed=False)))
@@ -90,6 +98,9 @@ def test_seed_roundtrip_and_corruption(tmp_path):
         target = Path(receipt["private_cache"])
         assert (target / "shadercache/shader").read_bytes() == b"compiled"
         (target / "shadercache/remaining").write_bytes(b"completed")
+        assert (Path(receipt["private_cuda_cache"]) / "kernel").read_bytes() == b"kernel"
+        assert receipt["cuda_kernel_cache_before"]["file_count"] == 1
+        assert receipt["cuda_kernel_cache_before"]["size_bytes"] == 6
     (second / "simulation").mkdir(parents=True)
     (second / "simulation/private-shader-cache.json").write_text(json.dumps(receipt))
     shader_cache.finalize(copied, second, passed=True)
@@ -110,7 +121,9 @@ def test_seed_roundtrip_and_corruption(tmp_path):
         target = Path(receipt["private_cache"])
         assert (target / "shadercache/remaining").read_bytes() == b"completed"
     assert not (tmp_path / "run-kit/cache").exists()
-    (complete / "cache/shadercache/shader").write_bytes(b"changed")
+    assert not (tmp_path / "run-kit/cuda-cache").exists()
+    assert os.environ["CUDA_CACHE_PATH"] == "caller-cache"
+    (complete / "cache" / corrupt).write_bytes(b"changed")
     with (
         pytest.raises(RuntimeError, match="differs"),
         app.private_shader_cache(
@@ -118,6 +131,7 @@ def test_seed_roundtrip_and_corruption(tmp_path):
         ),
     ):
         pytest.fail("Corrupt seed accepted")
+    assert os.environ["CUDA_CACHE_PATH"] == "caller-cache"
 
 
 @pytest.mark.parametrize(
@@ -266,6 +280,8 @@ def test_parent_removes_only_receipted_private_cache(tmp_path):
     directory = tmp_path / "output-kit"
     target = directory / "cache"
     target.mkdir(parents=True)
+    cuda = directory / "cuda-cache"
+    cuda.mkdir()
     shader_cache.finalize(options, output, passed=False)
     assert target.exists()
     (output / "simulation").mkdir(parents=True)
@@ -274,9 +290,16 @@ def test_parent_removes_only_receipted_private_cache(tmp_path):
     with pytest.raises(ValueError, match="differs"):
         shader_cache.finalize(options, output, passed=False)
     assert target.exists()
-    receipt.write_text(json.dumps({"private_cache": str(target)}))
+    receipt.write_text(
+        json.dumps({"private_cache": str(target), "private_cuda_cache": str(tmp_path / "unowned")})
+    )
+    with pytest.raises(ValueError, match="CUDA cache receipt differs"):
+        shader_cache.finalize(options, output, passed=False)
+    assert target.exists() and cuda.exists()
+    receipt.write_text(json.dumps({"private_cache": str(target), "private_cuda_cache": str(cuda)}))
     shader_cache.finalize(options, output, passed=False)
     assert not target.exists()
+    assert not cuda.exists()
     assert directory.is_dir()
 
 
@@ -306,9 +329,10 @@ def test_sdk_completion_argv_is_scoped(monkeypatch, fails):
 
 
 @pytest.mark.parametrize("matching", [False, True])
-def test_portable_cache_admission_preserves_existing_files(tmp_path, matching):
+@pytest.mark.parametrize("kind", ["cache", "cuda-cache"])
+def test_portable_cache_admission_preserves_existing_files(tmp_path, matching, kind):
     directory = tmp_path / "run-kit"
-    target = directory / "cache"
+    target = directory / kind
     target.mkdir(parents=True)
     marker = target / "existing"
     marker.write_text("retain")
@@ -327,3 +351,99 @@ def test_portable_cache_admission_preserves_existing_files(tmp_path, matching):
     ):
         pytest.fail("Existing or mismatched worker cache accepted")
     assert marker.read_text() == "retain"
+
+
+@pytest.mark.parametrize("component", ["kit", "cuda"])
+def test_partial_cache_bundle_is_rejected(tmp_path, component):
+    seed = tmp_path / "seed"
+    (seed / component).mkdir(parents=True)
+    digest = tmp_path / "digest"
+    digest.write_text(app.digest_tree(seed))
+    with (
+        pytest.raises(ValueError, match="Kit and CUDA cache directories"),
+        app.private_shader_cache(
+            seed=seed,
+            seed_sha=digest,
+            private_root=tmp_path,
+            name="worker",
+            portable=True,
+            argv=["worker", "--portable-root", str(tmp_path / "worker")],
+        ),
+    ):
+        pytest.fail("Incomplete cache bundle accepted")
+
+
+@pytest.mark.archive
+def test_cold_exposure_initialization_drives_render_products(tmp_path, monkeypatch):
+    from test_cameras import CameraSDK
+    from tower_sim.bench.ordinary_capture import OrdinaryFourCapture
+
+    sdk = CameraSDK(monkeypatch, 1, tmp_path)
+    key = "/rtx/post/tonemap/cm2Factor"
+    sdk.controls.pop(key)
+    original = sdk.rep.orchestrator.step
+
+    def step(**kwargs):
+        assert kwargs == dict(
+            rt_subframes=2, delta_time=0.0, pause_timeline=True, wait_for_render=True
+        )
+        original(**kwargs)
+        if sdk.counter == 4:
+            sdk.controls[key] = 1.0
+
+    monkeypatch.setattr(sdk.rep.orchestrator, "step", step)
+    camera = OrdinaryFourCapture(
+        sdk.sim, tmp_path, resources=sdk.resources, near_guard=lambda *args: 100.0
+    )
+    receipt = json.loads((tmp_path / "renderer-readiness.json").read_text())
+    assert receipt["ready"] is True and receipt["render_steps"] == 2
+    assert camera.controls.get(key) == 1.0
+    assert all(value is not None for _, value in camera.expected_attributes)
+    assert camera.steps == 4
+    assert all(
+        not product.hydra_texture.get_updates_enabled() for product in camera.products.values()
+    )
+
+
+@pytest.mark.parametrize("case", ["warm", "delayed", "timeout", "step_limit", "error"])
+def test_exposure_readiness_is_bounded_and_restores_products(tmp_path, monkeypatch, case):
+    from tower_sim.bench import ordinary_capture
+
+    value = 1.0 if case == "warm" else None
+    calls, toggles = [], []
+    ticks = iter(range(100))
+    monkeypatch.setattr(ordinary_capture.time, "monotonic", lambda: next(ticks))
+
+    def step(subframes):
+        nonlocal value
+        calls.append(subframes)
+        if case == "error":
+            raise RuntimeError("render failure")
+        if case == "delayed" and len(calls) == 2:
+            value = 1.0
+
+    capture = SimpleNamespace(
+        output=tmp_path,
+        controls=SimpleNamespace(get=lambda key: value),
+        products={
+            "camera": SimpleNamespace(
+                hydra_texture=SimpleNamespace(set_updates_enabled=toggles.append)
+            )
+        },
+        _step=step,
+    )
+    wait = ordinary_capture.OrdinaryFourCapture._wait_for_exposure
+    if case in ("timeout", "step_limit"):
+        with pytest.raises(TimeoutError, match="Renderer exposure initialization timed out"):
+            wait(capture, timeout_s=2 if case == "timeout" else 240, max_steps=3)
+        assert len(calls) == (1 if case == "timeout" else 3)
+    elif case == "error":
+        with pytest.raises(RuntimeError, match="render failure"):
+            wait(capture)
+    else:
+        wait(capture)
+        assert calls == ([] if case == "warm" else [2, 2])
+    assert toggles == ([] if case == "warm" else [True, False])
+    receipt = json.loads((tmp_path / "renderer-readiness.json").read_text())
+    assert receipt["ready"] is (case in ("warm", "delayed"))
+    assert receipt["value"] == value

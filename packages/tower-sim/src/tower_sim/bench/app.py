@@ -10,6 +10,7 @@ import sys
 import time
 from contextlib import contextmanager
 from pathlib import Path
+from typing import Any
 
 from .experience import local_stock_experience, omit_viewport_overlays
 from .resources import save, sha
@@ -235,14 +236,16 @@ def private_shader_cache(
         raise ValueError("Private cache name must be one path component")
     directory = Path(private_root) / name
     target = directory / ("cache" if portable else "nv_shadercache")
+    cuda = directory / "cuda-cache"
+    staging = directory / "seed-cache"
     if portable:
         from .verification import portable_root
 
         actual = portable_root(argv)
         if actual is None or Path(actual).resolve() != directory.resolve():
             raise ValueError("Shader cache requires the worker portable root")
-        if target.exists():
-            raise FileExistsError("Worker cache must be new")
+        if target.exists() or cuda.exists() or staging.exists():
+            raise FileExistsError("Worker caches must be new")
         if warmup_destination is not None and Path(warmup_destination).exists():
             raise FileExistsError("Warm-up destination must be new")
         directory.mkdir(parents=True, exist_ok=True)
@@ -254,12 +257,23 @@ def private_shader_cache(
     try:
         if warmup and seed is None:
             target.mkdir()
+            if portable:
+                cuda.mkdir()
             expected = ""
         else:
             expected = Path(seed_sha).read_text()
-            shutil.copytree(seed, target)
-            if digest_tree(target) != expected:
+            copied = staging if portable else target
+            shutil.copytree(seed, copied)
+            if digest_tree(copied) != expected:
                 raise RuntimeError("Private shader cache copy differs from the verified seed")
+            if portable:
+                if set(p.name for p in staging.iterdir()) != {"kit", "cuda"} or not all(
+                    (staging / name).is_dir() for name in ("kit", "cuda")
+                ):
+                    raise ValueError("Seed must contain Kit and CUDA cache directories")
+                (staging / "kit").rename(target)
+                (staging / "cuda").rename(cuda)
+                staging.rmdir()
         flags = (
             []
             if portable
@@ -272,7 +286,7 @@ def private_shader_cache(
         argv.extend(flags)
         import hashlib
 
-        yield dict(
+        receipt: dict[str, Any] = dict(
             seed=str(seed),
             seed_sha256_list=hashlib.sha256(expected.encode()).hexdigest(),
             files=expected.count("\n"),
@@ -282,10 +296,37 @@ def private_shader_cache(
             kit_args=flags,
             pid=os.getpid(),
         )
+        environment = {"CUDA_CACHE_PATH": str(cuda)} if portable else {}
+        with process_environment(environment):
+            if portable:
+                files = [p for p in cuda.rglob("*") if p.is_file()]
+                receipt.update(
+                    private_cuda_cache=str(cuda),
+                    cuda_kernel_cache_before=dict(
+                        path=str(cuda),
+                        file_count=len(files),
+                        size_bytes=sum(p.stat().st_size for p in files),
+                        environment={
+                            key: os.environ.get(key)
+                            for key in (
+                                "CUDA_CACHE_PATH",
+                                "CUDA_CACHE_DISABLE",
+                                "CUDA_CACHE_MAXSIZE",
+                                "CUDA_FORCE_PTX_JIT",
+                                "CUDA_DISABLE_PTX_JIT",
+                            )
+                        },
+                    ),
+                )
+            yield receipt
     finally:
         argv[:] = original
+        if portable:
+            shutil.rmtree(staging, ignore_errors=True)
         if not warmup:
             shutil.rmtree(target if portable else directory, ignore_errors=True)
+            if portable:
+                shutil.rmtree(cuda, ignore_errors=True)
 
 
 @contextmanager

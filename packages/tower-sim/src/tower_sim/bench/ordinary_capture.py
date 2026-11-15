@@ -138,6 +138,7 @@ class OrdinaryFourCapture(Native61Capture):
         try:
             for _ in range(2):
                 self._step(2)
+            self._wait_for_exposure()
         finally:
             self.controls.set(loading_key, previous_loading_timeout)
         # SDK render-product initialization can overwrite global defaults.
@@ -187,6 +188,42 @@ class OrdinaryFourCapture(Native61Capture):
             attr.Set(Gf.Vec3f(*response["whitepoint"]))
             self.expected_attributes.append((attr, response["whitepoint"]))
         self._verify_response()
+
+    def _wait_for_exposure(self, *, timeout_s=240.0, max_steps=32):
+        """Drive cold renderer initialization without advancing simulation time."""
+        key = "/rtx/post/tonemap/cm2Factor"
+        started = time.monotonic()
+        steps = 0
+        pending = self.controls.get(key) is None
+        try:
+            if pending:
+                # Disabled products cannot demand the cold exposure kernels.
+                for product in self.products.values():
+                    product.hydra_texture.set_updates_enabled(True)
+            while self.controls.get(key) is None:
+                if steps >= max_steps or time.monotonic() - started >= timeout_s:
+                    raise TimeoutError(f"Renderer exposure initialization timed out: {key}")
+                self._step(2)
+                steps += 1
+        finally:
+            if pending:
+                for product in self.products.values():
+                    product.hydra_texture.set_updates_enabled(False)
+            (Path(self.output) / "renderer-readiness.json").write_text(
+                json.dumps(
+                    dict(
+                        ready=self.controls.get(key) is not None,
+                        key=key,
+                        value=self.controls.get(key),
+                        render_steps=steps,
+                        elapsed_s=time.monotonic() - started,
+                        timeout_s=timeout_s,
+                        max_steps=max_steps,
+                    ),
+                    indent=2,
+                )
+                + "\n"
+            )
 
     def __call__(self):
         from pxr import UsdGeom  # pyright: ignore[reportMissingImports]

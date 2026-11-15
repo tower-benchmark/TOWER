@@ -98,8 +98,10 @@ status with results. Use [offline scoring](offline-scoring.md) for saved recordi
 
 Benchmark workers enable render-completion synchronization on every start.
 A first-time start also needs two different caches: the Kit renderer shader
-cache and the SDK CUDA kernel cache. Keep the latter at an explicit local path
-throughout warm-up and evaluation. Cache files are specific to the GPU and
+cache and the SDK CUDA kernel cache. Warm-up and seeding cover both. Each
+simulator uses a private CUDA cache selected by its own `CUDA_CACHE_PATH`;
+the parent process and policy service environment are unchanged.
+Cache files are specific to the GPU and
 driver; rebuild both after either changes, and never distribute them with the
 benchmark.
 
@@ -107,8 +109,6 @@ Use the configured simulator interpreter and the same license consent as for
 other simulator runs. Start serially, with new output and export directories:
 
 ```sh
-export CUDA_CACHE_PATH=/path/to/gpu-kernel-cache
-mkdir -p "$CUDA_CACHE_PATH"
 python tools/simulator/benchmark_portable.py smoke \
   --assets /path/to/assets --data-root /path/to/benchmark-2026.11.1 \
   --task cross-transfer-2 --seeds 0 --gpu 0 \
@@ -117,12 +117,12 @@ python tools/simulator/benchmark_portable.py smoke \
 
 The first fully cold pass can fail during camera initialization. Its command
 still fails, and `error.json` preserves the error before native shutdown.
-Warm-up exports compilation output even after such a failure: `cache`, a sorted
-SHA-256 file list in `digest.sha256`, and `warmup.json` recording whether the run
+Warm-up exports compilation output even after such a failure: `cache/kit` and
+`cache/cuda`, a sorted SHA-256 file list in `digest.sha256`, and `warmup.json` recording whether the run
 passed. An exported cache is not a passing scene result.
 
-If the first pass failed, keep the same `CUDA_CACHE_PATH` and make one defined
-second serial pass using its shader cache. Both the run output and the new
+If the first pass failed, make one defined second serial pass using both
+exported caches. Both the run output and the new
 export destination must be new directories:
 
 ```sh
@@ -149,10 +149,9 @@ For example, after the second pass:
 --shader-cache-digest /path/to/cache-pass-2/digest.sha256
 ```
 
-Keep `CUDA_CACHE_PATH` pointing to the warmed kernel cache. Each worker copies
-and hash-checks the Kit seed in its own private directory before renderer
-startup. The parent records warm-up digests after worker exit and removes
-ordinary seeded workers' private copies. Use separate output directories and
+Each worker copies and hash-checks the complete Kit and CUDA seed before
+renderer startup. Its CUDA cache is private to that worker. The parent records warm-up digests after worker exit and removes
+ordinary seeded workers' private copies of both caches. Use separate output directories and
 available GPUs. A digest mismatch rejects startup. The invalid-image guard,
 including the all-zero initial-image rejection, stays strict with no image
 fallback.

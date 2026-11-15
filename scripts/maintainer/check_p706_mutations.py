@@ -17,6 +17,61 @@ BENCH = ROOT / "packages/tower-sim/src/tower_sim/bench"
 # Removed alias/layout mutations are documented in the purge evidence inventory.
 MUTATIONS = (
     (
+        "startup-exposure-call",
+        "ordinary_capture.py",
+        "            self._wait_for_exposure()",
+        "            pass",
+    ),
+    (
+        "startup-exposure-products",
+        "ordinary_capture.py",
+        "                    product.hydra_texture.set_updates_enabled(True)",
+        "                    pass",
+    ),
+    (
+        "startup-exposure-deadline",
+        "ordinary_capture.py",
+        "time.monotonic() - started >= timeout_s",
+        "False",
+    ),
+    ("startup-exposure-step-limit", "ordinary_capture.py", "steps >= max_steps", "False"),
+    (
+        "startup-exposure-restore",
+        "ordinary_capture.py",
+        "                    product.hydra_texture.set_updates_enabled(False)",
+        "                    pass",
+    ),
+    (
+        "startup-cuda-environment",
+        "app.py",
+        'environment = {"CUDA_CACHE_PATH": str(cuda)} if portable else {}',
+        "environment = {}",
+    ),
+    (
+        "startup-bundle-digest",
+        "app.py",
+        "if digest_tree(copied) != expected:",
+        "if False:",
+    ),
+    (
+        "startup-cuda-copy",
+        "app.py",
+        '(staging / "cuda").rename(cuda)',
+        "cuda.mkdir()",
+    ),
+    (
+        "startup-cuda-receipt",
+        "shader_cache.py",
+        'if receipt.get("private_cuda_cache") != str(cuda):',
+        "if False:",
+    ),
+    (
+        "startup-cuda-cleanup",
+        "shader_cache.py",
+        "        shutil.rmtree(cuda, ignore_errors=True)",
+        "        pass",
+    ),
+    (
         "startup-completion-lifetime",
         "app.py",
         "sys.argv.extend(flag for flag in RENDER_COMPLETION_ARGS if flag not in sys.argv)",
