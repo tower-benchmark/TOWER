@@ -1,36 +1,37 @@
 """Ordinary and MME policy input/output at the shared lifecycle's fixed ticks.
 
-The adapter is the only HTTP transport. No reset RPC, client RNG, simulator
-imports or module-global patches: inference seed 42 remains server-owned.
+One WebSocket connection serves active environments sequentially.
+Inference seed 42 remains server-owned.
 """
 
 from __future__ import annotations
 
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import Future
 
-from tower_eval.policies.legacy_predict import (
-    LegacyPredictAdapter,
+from tower_eval.policies.runtime_ws import (
     PolicyOutputError,
     PolicyTransportError,
+    RuntimePolicyAdapter,
 )
 
 from . import control
-from .mme_history import EpisodeHistory
 from .resources import save
 
 
 class OrdinaryPolicy:
     stage = "moving_policy_diagnostic"
-    inference = "concurrent per-environment requests; physics waits for its fixed-tick actions"
+    inference = "sequential per-environment WebSocket calls; physics waits for fixed-tick actions"
 
-    def __init__(self, *, package, url, prompt, task, metrics, solver, adapter=None):
+    def __init__(
+        self, *, package, url, prompt, task, metrics, solver, adapter=None, client_root=None
+    ):
         self.package = dict(package)
         self.prompt, self.task, self.metrics, self.solver = prompt, task, metrics, solver
-        self.adapter = adapter or LegacyPredictAdapter(
-            url, expected_identity={"package_digest": self.package["package_digest"]}
+        self.adapter = adapter or RuntimePolicyAdapter(
+            url,
+            expected_identity={"package_digest": self.package["package_digest"]},
+            root=client_root,
         )
-        self.executor = None
-        self.histories = []
         self.rows = []
 
     def authorize(self):
@@ -38,40 +39,51 @@ class OrdinaryPolicy:
         return self.adapter.health()
 
     def start(self, output):
-        # Frozen entry + worker each read health. Reuse ONE adapter so predictions
-        # must match BOTH snapshots, even if same-package health drifts in between.
+        # Entry and worker share one connection and pin both full identity snapshots.
         health = self.adapter.health()
         save(output / "policy-health.json", health)
         return health
 
     def initialize(self, rows, camera_names, health):
         self.rows = rows
-        self.executor = ThreadPoolExecutor(max_workers=min(16, len(rows)))
+        trial_id = getattr(self.metrics.request_id, "trial", None)
+        self.adapter.reset(
+            seed=rows[0]["candidate"]["seed"],
+            metadata={
+                **({"trial_id": trial_id} if trial_id is not None else {}),
+                "environment_seeds": [row["candidate"]["seed"] for row in rows],
+                "task": self.task,
+            },
+        )
 
     def append_camera(self, index, archive, tick, *, rejected, terminal):
         pass
 
     def payload(self, index, observation, archive, tick):
-        return dict(observation, images=archive.latest, prompt=self.prompt)
+        return dict(observation, images=archive.latest, prompt=self.prompt, env_idx=index)
 
     def prefetch(self, observations, archives, tick):
-        # Materialize validated PNG/history on the simulation thread before any
-        # RPC. Workers only consume owned payloads; physics waits for all actions.
+        # Materialize validated PNGs before sequential exchanges.
+        # Physics waits for all actions, including per-environment rejections.
         payloads = {
             index: self.payload(index, observation, archives[index], tick)
             for index, observation in observations.items()
         }
-        if self.executor is None:
-            raise RuntimeError("Policy executor has not been initialized")
-        return {
-            index: self.executor.submit(
-                self.metrics.predict,
-                self.adapter,
-                payload,
-                headers=self.metrics.headers(self.rows[index]["candidate"]["seed"], tick),
-            )
-            for index, payload in payloads.items()
-        }
+        pending = {}
+        for index in sorted(payloads):
+            future = Future()
+            try:
+                future.set_result(
+                    self.metrics.predict(
+                        self.adapter,
+                        payloads[index],
+                        headers=self.metrics.headers(self.rows[index]["candidate"]["seed"], tick),
+                    )
+                )
+            except (PolicyOutputError, PolicyTransportError, ValueError, OSError) as exc:
+                future.set_exception(exc)
+            pending[index] = future
+        return pending
 
     def prediction(self, pending, index, observation, tick):
         output = self.rows[index]["output"]
@@ -107,49 +119,14 @@ class OrdinaryPolicy:
         pass
 
     def close(self):
-        if self.executor is not None:
-            self.executor.shutdown(wait=True, cancel_futures=True)
-            self.executor = None
         self.adapter.close()
 
 
 class MMEPolicy(OrdinaryPolicy):
-    def initialize(self, rows, camera_names, health):
-        self.histories = [
-            EpisodeHistory(
-                str(row["output"].resolve()), camera_names, health["identity"]["position_frames"]
-            )
-            for row in rows
-        ]
-        super().initialize(rows, camera_names, health)
-
-    def append_camera(self, index, archive, tick, *, rejected, terminal):
-        self.metrics.call(
-            "history.append_validated",
-            self.histories[index].append_validated,
-            archive,
-            tick,
-            rejected=rejected,
-            terminal=terminal,
+    def authorize(self):
+        raise ValueError(
+            "MME-VLA needs an XPolicyLab WebSocket adapter; not available in this release"
         )
-
-    def payload(self, index, observation, archive, tick):
-        return dict(
-            super().payload(index, observation, archive, tick),
-            task=self.task,
-            episode_id=self.histories[index].episode_id,
-            observation_time_s=tick / 400,
-            history=self.metrics.call("history.pack_request", self.histories[index].request, tick),
-        )
-
-    def finalize(self, index):
-        self.histories[index].close()
-        save(self.rows[index]["output"] / "mme-history.json", self.histories[index].receipt())
-
-    def close(self):
-        super().close()
-        for history in self.histories:
-            history.close()
 
 
 def from_package(**kwargs):

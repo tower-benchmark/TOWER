@@ -81,8 +81,11 @@ def verify(*, benchmark_version=DEFAULT_BENCHMARK, assets=None, data_root=None, 
 
 def preflight(path, *, diagnostic=False):
     request = benchmark.read(path)
+    from tower_eval.policies.runtime_ws import validate_url
+
     if request.get("command_replay"):
         raise ValueError("Expected a learned-policy request for a frozen task")
+    validate_url(request["policy_url"])
     request["task"] = benchmark.benchmark_legacy_id(request.get("task"))
     benchmark_version = request.get("public", {}).get("benchmark", DEFAULT_BENCHMARK)
     v1_root = request.get("v1_root")
@@ -168,6 +171,9 @@ def preflight(path, *, diagnostic=False):
 
 def prepare(args, *, diagnostic=False):
     """Write inputs only: never starts Kit, inference or a policy server."""
+    from tower_eval.policies.runtime_ws import validate_url
+
+    validate_url(args.policy_url)
     benchmark_version = getattr(args, "benchmark", DEFAULT_BENCHMARK)
     data_root = getattr(args, "data_root", None)
     v1_root = getattr(args, "v1_root", None)

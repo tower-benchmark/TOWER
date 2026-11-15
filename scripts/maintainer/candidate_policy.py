@@ -111,6 +111,7 @@ def worker(args, *, verification=None, runner=None):
             diagnostic=args.diagnostic,
             benchmark_protocol=resources.read("protocol"),
             verification=verification,
+            client_root=ROOT / "third_party/XPolicyLab",
         )
         setup = SimpleNamespace(
             task=request["task"],

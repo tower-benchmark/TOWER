@@ -9,6 +9,7 @@ import sys
 import uuid
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlsplit
 
 import numpy as np
 
@@ -164,6 +165,8 @@ class XPolicyLabAdapter:
     ) -> None:
         if not isinstance(url, str) or not url.strip():
             raise ValueError("XPolicyLab server URL must not be empty")
+        if urlsplit(url).scheme not in {"ws", "wss"} or not urlsplit(url).hostname:
+            raise ValueError("XPolicyLab URL must use ws:// or wss:// with a hostname")
         if mode not in {"joint_absolute", "eef_delta"}:
             raise ValueError("mode must be joint_absolute or eef_delta")
         checkout = client_root(root)

@@ -70,7 +70,7 @@ completion; failure records include the measured state separately.
 `ActionChunk` supports tagged Joint/EEF sequences; its period must match
 `env.action_dt_s`. Persisted chunks use `tower-action-chunk-v1`.
 See [policy adapters](write-a-policy-server.md). For `tower run`, remote inference uses XPolicyLab's WebSocket transport; the Isaac
-benchmark runtime uses [HTTP](../reference/policy-interface.md#http-compatibility). Encoder-frame policy chunks require an environment converter
+benchmark runtime uses [WebSocket](../reference/policy-interface.md#isaac-benchmark-runtime). Encoder-frame policy chunks require an environment converter
 and are rejected by this generic controller boundary; they are not world-frame
 TCP targets.
 

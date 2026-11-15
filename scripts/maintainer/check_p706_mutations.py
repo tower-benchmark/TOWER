@@ -710,27 +710,27 @@ MUTATIONS = (
     ),
     (
         "policy-package-authorization",
-        "../../../../../src/tower-eval/src/tower_eval/policies/legacy_predict.py",
-        ' or identity["package_digest"] != self.package_digest',
-        "",
+        "../../../../../src/tower-eval/src/tower_eval/policies/runtime_ws.py",
+        'identity["package_digest"] != self.package_digest',
+        "False",
     ),
     (
         "policy-full-identity",
-        "../../../../../src/tower-eval/src/tower_eval/policies/legacy_predict.py",
+        "../../../../../src/tower-eval/src/tower_eval/policies/runtime_ws.py",
         'result["identity"] != self._health_identity\n'
         '            or result["identity"] != self._latest_health_identity',
         "False",
     ),
     (
-        "policy-422-classification",
-        "../../../../../src/tower-eval/src/tower_eval/policies/legacy_predict.py",
-        'body.get("code") == "invalid_policy_output"',
+        "policy-output-classification",
+        "../../../../../src/tower-eval/src/tower_eval/policies/runtime_ws.py",
+        'category == "PolicyOutputError"',
         "False",
     ),
     (
         "policy-aperture-classification",
-        "../../../../../src/tower-eval/src/tower_eval/policies/legacy_predict.py",
-        'body == {"code": "invalid_observation", "error": "Negative gripper aperture"}',
+        "../../../../../src/tower-eval/src/tower_eval/policies/runtime_ws.py",
+        'category == "ValueError" and message == "Negative gripper aperture"',
         "False",
     ),
     (

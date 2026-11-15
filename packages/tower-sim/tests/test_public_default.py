@@ -330,7 +330,7 @@ def test_dependency_drift_rejected(release, monkeypatch, tmp_path):
 
 def test_public_formal_prepare_injects_release_verification(authorization, monkeypatch):
     request, health, rows, task = authorization
-    request.update(policy_url="unused", prompt="prompt", task="task1-2")
+    request.update(policy_url="ws://localhost:19000", prompt="prompt", task="task1-2")
     calls = []
     verifier = object.__new__(verification.ReleaseVerification)
     verifier.request = request

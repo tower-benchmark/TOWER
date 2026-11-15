@@ -1,5 +1,4 @@
 import ast
-import io
 import json
 import os
 import subprocess
@@ -161,37 +160,24 @@ def test_metrics_trace_barrier_and_decorator():
         Metrics(sink, TrialRequestID("trial"), trace=True)
 
 
-@pytest.mark.archive
-def test_metrics_http_error_classification(frozen_loader, monkeypatch, tmp_path):
-    import urllib.error
-    import urllib.request
-
-    monkeypatch.setenv("TOWER_BASELINE_METRICS", str(tmp_path / "rpc.jsonl"))
-    monkeypatch.setenv("TOWER_BASELINE_TRIAL", "trial")
-    old = frozen_loader("_p705_rpc", ArchivedToolPath("baseline_metrics.py")).METRICS
-    new = Metrics(
-        SimpleNamespace(emit=lambda row: None, flush=lambda: None), TrialRequestID("trial")
+def test_metrics_ws_error_boundary():
+    records = []
+    meter = Metrics(
+        SimpleNamespace(emit=records.append, flush=lambda: None), TrialRequestID("trial")
     )
 
-    def opened(request, timeout):
-        assert timeout == 300
-        raise urllib.error.HTTPError(
-            request.full_url,
-            422,
-            "rejected",
-            {},
-            io.BytesIO(b'{"error":"bad","profiling":{"x":1}}'),
-        )
+    def predict(payload, *, headers, rpc_observer):
+        rpc_observer("rpc_start")
+        try:
+            raise RuntimeError("synthetic failure")
+        finally:
+            rpc_observer("rpc_end", transport="websocket")
 
-    monkeypatch.setattr(urllib.request, "urlopen", opened)
-    bodies = []
-    for meter in (old, new):
-        with pytest.raises(urllib.error.HTTPError) as error:
-            kwargs = dict(urlopen=opened) if meter is new else {}
-            meter.http_json(urllib.request.Request("http://localhost/predict"), **kwargs)
-        bodies.append(error.value.read())
-        meter.close()
-    assert bodies[0] == bodies[1] == b'{"error": "bad"}'
+    with pytest.raises(RuntimeError, match="synthetic failure"):
+        meter.predict(SimpleNamespace(predict=predict), {}, headers=meter.headers(0, 0))
+    assert [r["event"] for r in records] == ["rpc_start", "rpc_end"]
+    assert records[-1]["transport"] == "websocket"
+    assert meter.stats["policy.rpc_elapsed_sum"][1] == 1
 
 
 def environment_reads(source):

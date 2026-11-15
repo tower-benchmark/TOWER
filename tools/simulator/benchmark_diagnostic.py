@@ -25,7 +25,7 @@ def main(argv=None):
     parser.add_argument("--task", required=True, type=benchmark.task_argument)
     parser.add_argument("--seed", required=True, type=int)
     parser.add_argument("--gpu", type=int, default=0)
-    parser.add_argument("--policy-url", required=True)
+    parser.add_argument("--policy-url", required=True, help="XPolicyLab ws:// or wss:// endpoint")
     parser.add_argument(
         "--reference",
         action="store_true",

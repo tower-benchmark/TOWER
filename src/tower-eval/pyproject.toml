@@ -16,8 +16,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-xpolicylab = ["websockets>=15,<16", "msgpack>=1.0.8", "msgpack-numpy>=0.4.8", "pydantic>=2.5,<3"]
-legacy-predict = ["pillow>=10,<13"]
+xpolicylab = ["websockets>=15,<16", "msgpack>=1.0.8", "msgpack-numpy>=0.4.8", "pydantic>=2.5,<3", "pillow>=10,<13"]
 # Pinocchio CasADi bindings are provisioned with conda; PyPI pin requires NumPy 2.
 eef = ["nero-kinematics[eef]>=0.2,<0.3"]
 artifacts = ["h5py>=3.11,<4", "av>=14,<17", "opencv-python-headless>=4.10,<4.12"]

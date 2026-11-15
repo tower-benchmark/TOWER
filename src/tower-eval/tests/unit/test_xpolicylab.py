@@ -1,17 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
-import base64
-import io
-import json
-import threading
-from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
-
 import numpy as np
 import pytest
-from tower_eval.policies.legacy_predict import (
-    LegacyPredictAdapter,
-    PolicyOutputError,
-    PolicyTransportError,
-)
 from tower_eval.policies.smoke import run_xpolicylab_smoke, smoke_observation
 from tower_eval.policies.xpolicylab import client_root, decode_chunk, observation_to_xpolicylab
 
@@ -90,111 +79,15 @@ def test_eef_targets_retain_absolute_anchor_and_precision():
         decode_chunk([row], "eef_delta", expected_anchor=anchor)
 
 
-def test_legacy_predict_fake_server():
-    from PIL import Image
-
-    received = []
-    received_headers = []
-    status = 200
-    reply = {
-        "identity": {"package_digest": "test-digest", "seed": 42, "torch": "fixture"},
-        "mode": "eef_delta",
-        "coordinate_frame": "encoder_arm_base",
-        "control_hz": 10,
-    }
-
-    class Handler(BaseHTTPRequestHandler):
-        def log_message(self, *_args):
-            pass
-
-        def do_GET(self):
-            assert self.path == "/health"
-            self.send_response(200)
-            self.end_headers()
-            self.wfile.write(json.dumps(dict(reply, ready=True)).encode())
-
-        def do_POST(self):
-            assert self.path == "/predict"
-            received_headers.append(self.headers)
-            received.append(json.loads(self.rfile.read(int(self.headers["Content-Length"]))))
-            self.send_response(status)
-            self.end_headers()
-            self.wfile.write(json.dumps(reply).encode())
-
-    server = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
-    thread = threading.Thread(target=server.serve_forever)
-    thread.start()
-    try:
-        adapter = LegacyPredictAdapter(
-            f"http://127.0.0.1:{server.server_port}", expected_identity=reply["identity"]
-        )
-        adapter.reset(seed=99)
-        obs = smoke_observation()
-        obs["observation_history"] = [{"step": 0}]
-        headers = {"X-Baseline-Request-ID": "fixture:42:1280", "X-Baseline-Capture": "start"}
-        assert adapter.predict(obs, headers=headers) == reply
-        assert all(received_headers[0][key] == value for key, value in headers.items())
-        assert received[0]["package_digest"] == "test-digest"
-        assert received[0]["observation_history"] == obs["observation_history"]
-        for camera, encoded in received[0]["images"].items():
-            with Image.open(io.BytesIO(base64.b64decode(encoded))) as image:
-                np.testing.assert_array_equal(np.asarray(image), obs["images"][camera])
-        np.testing.assert_array_equal(received[0]["joint_encoder"], obs["joint_encoder"])
-        reply["identity"]["seed"] = 99  # Health authorizes only the package digest.
-        adapter.health()
-        with pytest.raises(ValueError, match="full identity"):
-            adapter.predict(obs)
-        status = 422
-        reply["code"] = "invalid_policy_output"
-        with pytest.raises(PolicyOutputError) as invalid:
-            adapter.predict(obs)
-        assert invalid.value.body == reply
-        assert not isinstance(invalid.value, PolicyTransportError)
-        status = 500
-        with pytest.raises(PolicyTransportError):
-            adapter.predict(obs)
-        status = 422
-        reply["code"] = "invalid_input"
-        with pytest.raises(PolicyTransportError):
-            adapter.predict(obs)
-    finally:
-        server.shutdown()
-        server.server_close()
-        thread.join(timeout=5)
-
-
 def test_demo_policy_loopback(capsys):
+    pytest.importorskip("msgpack_numpy")
+    pytest.importorskip("websockets.asyncio.server")
     try:
         client_root()
     except RuntimeError:
         pytest.skip("XPolicyLab submodule unavailable; run git submodule update --init")
     assert run_xpolicylab_smoke()["status"] == "ok"
     assert capsys.readouterr().out == ""
-
-
-def test_legacy_act_decodes_execution_prefix_without_coordinate_conversion(monkeypatch):
-    joints = np.arange(32 * 14, dtype=float).reshape(32, 2, 7) / 10000
-    widths = np.tile([0.02, 0.08], (32, 1))
-    response = dict(
-        mode="joint_absolute",
-        coordinate_frame="encoder_arm_base",
-        control_hz=10,
-        execute_steps=16,
-        j8_actuator_mask=[False, False],
-        units={"joint": "rad", "translation": "m", "gripper_width": "m", "predicted_j8": "mm"},
-        identity={"package_digest": "fixture"},
-        joint_encoder_targets=joints,
-        gripper_width_m=widths,
-    )
-    adapter = LegacyPredictAdapter(
-        "http://localhost", expected_identity={"package_digest": "fixture"}
-    )
-    monkeypatch.setattr(adapter, "predict", lambda _: response)
-    chunk = adapter.act({})
-    assert chunk.actions.shape == (16, 16)
-    np.testing.assert_array_equal(chunk.actions[:, :7], joints[:16, 0])
-    np.testing.assert_array_equal(chunk.actions[:, 8:15], joints[:16, 1])
-    np.testing.assert_array_equal(chunk.actions[:, [7, 15]], widths[:16])
 
 
 def eef_row(anchor):

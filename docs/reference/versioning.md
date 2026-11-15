@@ -107,3 +107,11 @@ comparison maps only the sealed public manifest digest to the historical asset
 identity, after verifying every actual public file. The private proof covers the
 required asset subset, unchanged texture/physics data and redacted golden members.
 This mapping changes no comparison thresholds or scoring behavior.
+
+## Policy transport revision
+
+The unreleased `tower-public-benchmark-v2` request now requires XPolicyLab
+WebSockets. `policy_url` and `--policy-url` keep their names. This is a runtime
+transport revision, with no benchmark, data or scene identity change. See the
+[Isaac runtime contract](policy-interface.md#isaac-benchmark-runtime) for lifecycle,
+response reconstruction, metrics and MME availability.

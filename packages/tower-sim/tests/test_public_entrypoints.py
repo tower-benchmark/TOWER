@@ -148,7 +148,7 @@ def test_documented_commands_use_registered_kit_workers(route, entry, tmp_path, 
                     "--ik-python",
                     "python",
                     "--policy-url",
-                    "http://localhost",
+                    "ws://localhost",
                 ]
             )
         argv += ["--seeds", "0"]
@@ -161,7 +161,7 @@ def test_documented_commands_use_registered_kit_workers(route, entry, tmp_path, 
                 "--pilot-review",
                 "review",
                 "--policy-url",
-                "http://localhost",
+                "ws://localhost",
                 "--ik-python",
                 "python",
                 "--isaac-python",

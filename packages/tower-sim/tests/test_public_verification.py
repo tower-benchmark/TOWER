@@ -711,3 +711,44 @@ def test_shipped_nero_alias_is_bound_as_wheel_code(release, tmp_path, change):
         from scripts.maintainer.candidate_replay import wheel_source_path
 
         assert wheel_source_path(member) == "packages/nero-kinematics/src/" + member
+
+
+def test_release_binds_pinned_websocket_client(tmp_path):
+    root = tmp_path / "checkout"
+    root.mkdir()
+
+    def git(directory, *args):
+        return subprocess.check_output(["git", "-C", str(directory), *args])
+
+    def commit(directory):
+        git(directory, "add", ".")
+        git(
+            directory,
+            "-c",
+            "user.name=Synthetic",
+            "-c",
+            "user.email=fixture@example.test",
+            "commit",
+            "-m",
+            "synthetic fixture",
+        )
+
+    git(root, "init")
+    (root / "scripts").mkdir()
+    (root / "scripts/bound.py").write_text("value = 1\n")
+    client = root / "third_party/XPolicyLab"
+    client.mkdir(parents=True)
+    git(client, "init")
+    (client / "client_server").mkdir()
+    source = client / "client_server/client.py"
+    source.write_text("value = 1\n")
+    commit(client)
+    commit(root)
+    relative = "third_party/XPolicyLab/client_server/client.py"
+    assert relative in v.checkout_files(root)
+    source.write_text("value = 2\n")
+    with pytest.raises(ValueError, match="source must be clean"):
+        v.checkout_files(root)
+    commit(client)
+    with pytest.raises(ValueError, match="pinned gitlink"):
+        v.checkout_files(root)

@@ -137,6 +137,7 @@ def test_check_request_reaches_release_check_without_archive(public_assets, tmp_
                 task="task1-2",
                 assets=str(root),
                 data_root=str(data),
+                policy_url="ws://localhost:19000",
                 release_manifest=str(release),
                 release_manifest_sha256="0" * 64,
             )

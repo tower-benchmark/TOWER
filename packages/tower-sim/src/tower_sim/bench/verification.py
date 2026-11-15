@@ -29,7 +29,22 @@ PACKAGE_MODULES = {
     "tower-eval": ("tower_eval",),
     "nero-kinematics": ("nero_kinematics", "nero_eef_ik"),
 }
-DEPENDENCIES = ("numpy", "scipy", "h5py", "Pillow", "PyYAML", "isaacsim")
+DEPENDENCIES = (
+    "numpy",
+    "scipy",
+    "h5py",
+    "Pillow",
+    "PyYAML",
+    "isaacsim",
+    "websockets",
+    "msgpack",
+    "msgpack-numpy",
+    "pydantic",
+    "pydantic-core",
+    "annotated-types",
+    "typing-extensions",
+    "typing-inspection",
+)
 IK_PINS = {"pin": "3.8.0", "casadi": "3.7.2", "pin-pink": "3.4.0", "numpy": "1.26.4"}
 CONDA_IK_PACKAGES = {
     "pin": ("pinocchio", "pinocchio-python", "libpinocchio"),
@@ -279,7 +294,22 @@ def git(root, *args):
 
 def checkout_files(root):
     """Exact tracked set, including non-Python runtime assets and subprocess entries."""
-    return git(root, "ls-files", "-z", "--", *CHECKOUT_TREES).decode().strip("\0").split("\0")
+    files = git(root, "ls-files", "-z", "--", *CHECKOUT_TREES).decode().strip("\0").split("\0")
+    relative = "third_party/XPolicyLab"
+    entry = git(root, "ls-tree", "HEAD", "--", relative).decode().split()
+    if entry:
+        client = root / relative
+        if entry[0] != "160000" or git(client, "rev-parse", "HEAD").decode().strip() != entry[2]:
+            raise ValueError("XPolicyLab checkout differs from pinned gitlink")
+        if git(
+            client, "status", "--porcelain", "--untracked-files=all", "--", "client_server"
+        ).strip():
+            raise ValueError("XPolicyLab client source must be clean")
+        names = (
+            git(client, "ls-files", "-z", "--", "client_server").decode().strip("\0").split("\0")
+        )
+        files.extend(f"{relative}/{name}" for name in names if name)
+    return files
 
 
 def verify_checkout(root, body):

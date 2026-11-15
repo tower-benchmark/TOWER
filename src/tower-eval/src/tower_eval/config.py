@@ -98,9 +98,6 @@ class _PolicyOptions(_Section):
     max_connect_attempts: int = 200
     connect_timeout_s: float = 10.0
     max_connect_seconds: float = 180.0
-    # Read by LegacyPredictAdapter.from_config, including standalone users.
-    health_timeout_s: float = 30.0
-    predict_timeout_s: float = 300.0
 
     def __post_init__(self):
         _strings(self, "action_mode", "client_root")
@@ -108,8 +105,6 @@ class _PolicyOptions(_Section):
         for name in (
             "connect_timeout_s",
             "max_connect_seconds",
-            "health_timeout_s",
-            "predict_timeout_s",
         ):
             _positive(getattr(self, name), f"policy.config.{name}")
 

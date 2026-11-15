@@ -45,7 +45,19 @@ checkout clean, then check the interpreter:
 uv run python tools/simulator/benchmark.py check-environment --isaac-python /path/to/isaac/python
 ```
 
-Start a compatible [HTTP policy server](../reference/policy-interface.md#http-compatibility).
+Start the XPolicyLab server in its policy environment, following
+[OpenWAM_TOWER deployment](../../third_party/XPolicyLab/policy/OpenWAM_TOWER/README.md):
+
+```sh
+cd third_party/XPolicyLab
+python setup_policy_server.py --config_path policy/OpenWAM_TOWER/deploy.yml \
+  --overrides port=19000 package_path=/path/to/package.json
+```
+
+Run the benchmark commands below from the TOWER checkout. Install
+`tower-eval[xpolicylab]` in the runtime environment and initialize the pinned
+submodule with `GIT_LFS_SKIP_SMUDGE=1 git submodule update --init`.
+See the [runtime transport contract](../reference/policy-interface.md#isaac-benchmark-runtime).
 Supply its package identity file; TOWER does not download or start model weights.
 Request preparation requires a reviewed posture record
 (`tower-no-reversed-grasp-review-v1`): planned approach/carry and recorded
@@ -68,7 +80,7 @@ uv run python tools/simulator/benchmark_portable.py prepare-request \
   --benchmark 2026.11.1 --data-root /path/to/benchmark-2026.11.1 \
   --assets /path/to/assets --task two-block-transfer-2 \
   --seeds 0 --gpu 0 --package /path/to/policy-package.json \
-  --pilot-review /path/to/posture-review.json --policy-url http://localhost:19000 \
+  --pilot-review /path/to/posture-review.json --policy-url ws://localhost:19000 \
   --ik-python /path/to/ik/python --isaac-python /path/to/isaac/python \
   --output /path/to/new-request --run-output /path/to/new-run
 uv run python tools/simulator/benchmark.py check-request --request /path/to/new-request/request.json
