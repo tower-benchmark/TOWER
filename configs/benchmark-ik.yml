@@ -8,6 +8,7 @@ dependencies:
   - casadi=3.7.2
   - numpy=1.26.4
   - scipy=1.17.1
+  - gymnasium=1.3.0
   - pip
   - quadprog=0.1.13
   - pytest>=8,<9
