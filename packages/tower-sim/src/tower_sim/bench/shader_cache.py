@@ -1,6 +1,7 @@
 """Public shader-cache options, validated before starting a worker."""
 
 import json
+import logging
 import shutil
 from pathlib import Path
 from typing import Any
@@ -42,6 +43,10 @@ def configuration(options, output) -> dict[str, Any] | None:
     seed = getattr(options, "shader_cache_seed", None)
     if not warmup and not seed:
         return None
+    if seed and not warmup:
+        status = Path(seed).resolve().parent / "warmup.json"
+        if status.is_file() and json.loads(status.read_text()).get("source_run_passed") is False:
+            raise ValueError("Failed warm-up seed requires another --shader-cache-warmup pass")
     config = dict(
         seed=Path(seed).resolve() if seed else None,
         seed_sha=Path(options.shader_cache_digest).resolve() if seed else None,
@@ -61,6 +66,9 @@ def finalize(options, output, *, passed):
         return
     receipt_path = Path(output) / "simulation/private-shader-cache.json"
     if not receipt_path.is_file():
+        logging.getLogger(__name__).warning(
+            "Skipping cache finalization: no worker ownership receipt at %s", receipt_path
+        )
         return  # No proof that this worker created the directory.
     receipt = json.loads(receipt_path.read_text())
     directory = Path(config["private_root"]) / config["name"]
@@ -85,6 +93,5 @@ def finalize(options, output, *, passed):
         (destination / "warmup.json").write_text(
             json.dumps(dict(source_run_passed=bool(passed)), indent=2) + "\n"
         )
-    else:
-        shutil.rmtree(target, ignore_errors=True)
-        shutil.rmtree(cuda, ignore_errors=True)
+    shutil.rmtree(target, ignore_errors=True)
+    shutil.rmtree(cuda, ignore_errors=True)

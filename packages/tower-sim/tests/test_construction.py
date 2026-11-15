@@ -779,6 +779,12 @@ def test_frozen_bootstrap_and_new_factory_sequence(
             },
         )
         assert "CUDA_VISIBLE_DEVICES" not in os.environ
+        completion = {
+            flag.split("=", 1)[0][2:]: json.loads(flag.split("=", 1)[1])
+            for flag in options["extra_args"]
+            if flag in bootstrap.startup.RENDER_COMPLETION_ARGS
+        }
+        install(monkeypatch, "carb", settings=NS(get_settings=lambda: NS(get=completion.get)))
         return NS(close=lambda *a, **kw: record("close"))
 
     sdk = tmp_path / "sdk"

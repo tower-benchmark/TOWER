@@ -31,17 +31,7 @@ def simulation_app(config):
     require_python312()
     import isaacsim  # pyright: ignore[reportMissingImports]
 
-    # Deliver requested completion settings through the SDK argv boundary too.
-    original = list(sys.argv)
-    try:
-        sys.argv.extend(
-            flag
-            for flag in RENDER_COMPLETION_ARGS
-            if flag in config.get("extra_args", []) and flag not in sys.argv
-        )
-        return isaacsim.SimulationApp(config)
-    finally:
-        sys.argv[:] = original
+    return isaacsim.SimulationApp(config)
 
 
 def native_renderer(resources, base):
@@ -156,6 +146,12 @@ def grouped_runtime(
         start = clock()
         session = factory(configured)
         try:
+            if zero_delay:
+                actual = completion_readback(output)
+                save(
+                    Path(output) / "launch.json",
+                    dict(configured, render_completion_readback=actual),
+                )
             model_setup(session)
             save(
                 Path(output) / "startup.json",
@@ -170,16 +166,32 @@ def grouped_runtime(
             raise
         return session
 
-    if not zero_delay:
-        yield launch
-        return
-    original = list(sys.argv)
-    try:
-        # Keep completion arguments available through deferred SDK initialization.
-        sys.argv.extend(flag for flag in RENDER_COMPLETION_ARGS if flag not in sys.argv)
-        yield launch
-    finally:
-        sys.argv[:] = original
+    yield launch
+
+
+def completion_readback(output):
+    """Verify native settings after SimulationApp has consumed extra_args."""
+    import carb  # pyright: ignore[reportMissingImports]
+
+    expected = {
+        "/app/updateOrder/checkForHydraRenderComplete": 1000,
+        "/app/renderer/waitIdle": True,
+        "/app/hydraEngine/waitIdle": True,
+    }
+    controls = carb.settings.get_settings()
+    actual = {key: controls.get(key) for key in expected}
+    passed = all(
+        type(actual[key]) is type(value) and actual[key] == value for key, value in expected.items()
+    )
+    save(
+        Path(output) / "render-completion-readback.json",
+        dict(expected=expected, actual=actual, passed=passed),
+    )
+    if not passed:
+        raise RuntimeError(
+            "Renderer completion settings differ from requested values: " + str(actual)
+        )
+    return actual
 
 
 def gpu_readback(group):

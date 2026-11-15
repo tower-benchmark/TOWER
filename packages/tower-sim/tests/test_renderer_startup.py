@@ -19,8 +19,7 @@ FLAGS = {
 }
 
 
-@pytest.mark.parametrize("entry", ["evaluation", "diagnostic", "smoke", "replay"])
-def test_production_launch_record(entry, tmp_path, monkeypatch):
+def test_shared_production_bootstrap_launch_record(tmp_path, monkeypatch):
     # Execute the production call expression with only native boundaries replaced.
     tree = ast.parse(Path(bootstrap.__file__).read_text())
     call = next(
@@ -31,7 +30,7 @@ def test_production_launch_record(entry, tmp_path, monkeypatch):
         and n.func.attr == "grouped_runtime"
     )
     monkeypatch.setattr(app, "require_python312", lambda: None)
-    output = tmp_path / entry
+    output = tmp_path / "simulation"
     output.mkdir()
     scope = dict(
         startup=app,
@@ -42,13 +41,28 @@ def test_production_launch_record(entry, tmp_path, monkeypatch):
         factories=SimpleNamespace(experience=None),
         setup=lambda session: None,
     )
+    settings = {
+        "/app/updateOrder/checkForHydraRenderComplete": 1000,
+        "/app/renderer/waitIdle": True,
+        "/app/hydraEngine/waitIdle": True,
+    }
+    monkeypatch.setitem(
+        sys.modules,
+        "carb",
+        SimpleNamespace(
+            settings=SimpleNamespace(get_settings=lambda: SimpleNamespace(get=settings.get))
+        ),
+    )
     original = list(sys.argv)
     with eval(compile(ast.Expression(call), "bootstrap", "eval"), scope) as launch:
-        assert set(sys.argv) >= FLAGS
+        assert sys.argv == original
         launch(dict(headless=True, experience="provided.kit"))
-        assert set(sys.argv) >= FLAGS
+        assert sys.argv == original
     assert sys.argv == original
-    assert set(json.loads((output / "launch.json").read_text())["extra_args"]) >= FLAGS
+    record = json.loads((output / "launch.json").read_text())
+    assert set(record["extra_args"]) >= FLAGS
+    assert all(record["extra_args"].count(flag) == 1 for flag in FLAGS)
+    assert record["render_completion_readback"] == settings
 
 
 @pytest.mark.parametrize("corrupt", ["kit/shadercache/shader", "cuda/kernel"])
@@ -106,6 +120,8 @@ def test_seed_roundtrip_and_corruption(tmp_path, monkeypatch, corrupt):
     shader_cache.finalize(copied, second, passed=True)
     complete = tmp_path / "complete"
     assert json.loads((complete / "warmup.json").read_text())["source_run_passed"] is True
+    assert not (second.with_name("second-kit") / "cache").exists()
+    assert not (second.with_name("second-kit") / "cuda-cache").exists()
     args = parser.parse_args(
         [
             "--shader-cache-seed",
@@ -272,7 +288,7 @@ def test_public_worker_cache_plumbing():
     )
 
 
-def test_parent_removes_only_receipted_private_cache(tmp_path):
+def test_parent_removes_only_receipted_private_cache(tmp_path, caplog):
     output = tmp_path / "output"
     options = SimpleNamespace(
         shader_cache_seed=tmp_path / "seed", shader_cache_digest=tmp_path / "digest"
@@ -284,6 +300,7 @@ def test_parent_removes_only_receipted_private_cache(tmp_path):
     cuda.mkdir()
     shader_cache.finalize(options, output, passed=False)
     assert target.exists()
+    assert "Skipping cache finalization: no worker ownership receipt" in caplog.text
     (output / "simulation").mkdir(parents=True)
     receipt = output / "simulation/private-shader-cache.json"
     receipt.write_text(json.dumps({"private_cache": str(tmp_path / "unowned")}))
@@ -304,12 +321,12 @@ def test_parent_removes_only_receipted_private_cache(tmp_path):
 
 
 @pytest.mark.parametrize("fails", [False, True])
-def test_sdk_completion_argv_is_scoped(monkeypatch, fails):
+def test_sdk_receives_completion_only_in_extra_args(monkeypatch, fails):
     monkeypatch.setattr(app, "require_python312", lambda: None)
     seen = []
 
     def launch(config):
-        seen.append(set(sys.argv))
+        seen.append((list(sys.argv), dict(config)))
         if fails:
             raise RuntimeError("constructor failed")
         return object()
@@ -321,11 +338,11 @@ def test_sdk_completion_argv_is_scoped(monkeypatch, fails):
             app.simulation_app({"extra_args": sorted(FLAGS)})
     else:
         app.simulation_app({"extra_args": sorted(FLAGS)})
-    assert seen[0] >= FLAGS
+    assert seen[0] == (original, {"extra_args": sorted(FLAGS)})
     assert sys.argv == original
     if not fails:
         app.simulation_app({})
-        assert not FLAGS & seen[1]
+        assert seen[1] == (original, {})
 
 
 @pytest.mark.parametrize("matching", [False, True])
@@ -447,3 +464,64 @@ def test_exposure_readiness_is_bounded_and_restores_products(tmp_path, monkeypat
     receipt = json.loads((tmp_path / "renderer-readiness.json").read_text())
     assert receipt["ready"] is (case in ("warm", "delayed"))
     assert receipt["value"] == value
+
+
+@pytest.mark.parametrize(
+    "key,bad",
+    [
+        ("/app/updateOrder/checkForHydraRenderComplete", 0),
+        ("/app/renderer/waitIdle", False),
+        ("/app/hydraEngine/waitIdle", False),
+        ("/app/renderer/waitIdle", 1),
+        ("/app/hydraEngine/waitIdle", None),
+    ],
+)
+def test_completion_readback_mismatch_closes_app_and_records_values(
+    tmp_path, monkeypatch, key, bad
+):
+    values = {
+        "/app/updateOrder/checkForHydraRenderComplete": 1000,
+        "/app/renderer/waitIdle": True,
+        "/app/hydraEngine/waitIdle": True,
+    }
+    values[key] = bad
+    monkeypatch.setattr(app, "require_python312", lambda: None)
+    monkeypatch.setitem(
+        sys.modules,
+        "carb",
+        SimpleNamespace(
+            settings=SimpleNamespace(get_settings=lambda: SimpleNamespace(get=values.get))
+        ),
+    )
+    closed, setup = [], []
+    with (
+        app.grouped_runtime(
+            lambda config: SimpleNamespace(close=lambda: closed.append(True)),
+            (0,),
+            tmp_path,
+            sdk=tmp_path,
+            zero_delay=True,
+            model_setup=setup.append,
+        ) as launch,
+        pytest.raises(RuntimeError, match="Renderer completion settings differ"),
+    ):
+        launch(dict(experience="provided.kit"))
+    assert closed == [True] and setup == []
+    record = json.loads((tmp_path / "render-completion-readback.json").read_text())
+    assert record["passed"] is False and record["actual"] == values
+
+
+@pytest.mark.parametrize("passed", [False, True])
+def test_failed_seed_requires_explicit_second_warmup(tmp_path, passed):
+    export = tmp_path / "export"
+    seed = export / "cache"
+    seed.mkdir(parents=True)
+    (export / "warmup.json").write_text(json.dumps(dict(source_run_passed=passed)))
+    options = SimpleNamespace(shader_cache_seed=seed, shader_cache_digest=export / "digest.sha256")
+    if passed:
+        assert shader_cache.configuration(options, tmp_path / "run")["seed"] == seed
+    else:
+        with pytest.raises(ValueError, match="Failed warm-up seed"):
+            shader_cache.configuration(options, tmp_path / "run")
+    options.shader_cache_warmup = tmp_path / "next-export"
+    assert shader_cache.configuration(options, tmp_path / "run")["seed"] == seed

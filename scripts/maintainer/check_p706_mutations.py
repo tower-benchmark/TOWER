@@ -17,6 +17,55 @@ BENCH = ROOT / "packages/tower-sim/src/tower_sim/bench"
 # Removed alias/layout mutations are documented in the purge evidence inventory.
 MUTATIONS = (
     (
+        "startup-completion-readback-native",
+        "app.py",
+        "actual = {key: controls.get(key) for key in expected}",
+        "actual = dict(expected)",
+    ),
+    (
+        "startup-exposure-warm-pending",
+        "ordinary_capture.py",
+        "pending = self.controls.get(key) is None",
+        "pending = True",
+    ),
+    (
+        "startup-exposure-warm-step",
+        "ordinary_capture.py",
+        "        pending = self.controls.get(key) is None",
+        "        self._step(2)\n        pending = self.controls.get(key) is None",
+    ),
+    (
+        "startup-completion-readback-call",
+        "app.py",
+        "actual = completion_readback(output)",
+        "actual = {}",
+    ),
+    (
+        "startup-completion-readback-rejection",
+        "app.py",
+        "    if not passed:\n        raise RuntimeError(",
+        "    if False:\n        raise RuntimeError(",
+    ),
+    (
+        "startup-completion-readback-evidence",
+        "app.py",
+        "render_completion_readback=actual",
+        "render_completion_readback={}",
+    ),
+    (
+        "startup-failed-seed-rejection",
+        "shader_cache.py",
+        'if status.is_file() and json.loads(status.read_text()).get("source_run_passed") is False:',
+        "if False:",
+    ),
+    ("startup-failed-seed-second-pass", "shader_cache.py", "if seed and not warmup:", "if seed:"),
+    (
+        "startup-finalize-missing-receipt-log",
+        "shader_cache.py",
+        "logging.getLogger(__name__).warning(",
+        "logging.getLogger(__name__).debug(",
+    ),
+    (
         "startup-exposure-call",
         "ordinary_capture.py",
         "            self._wait_for_exposure()",
@@ -68,14 +117,8 @@ MUTATIONS = (
     (
         "startup-cuda-cleanup",
         "shader_cache.py",
-        "        shutil.rmtree(cuda, ignore_errors=True)",
-        "        pass",
-    ),
-    (
-        "startup-completion-lifetime",
-        "app.py",
-        "sys.argv.extend(flag for flag in RENDER_COMPLETION_ARGS if flag not in sys.argv)",
-        "pass",
+        "    shutil.rmtree(cuda, ignore_errors=True)",
+        "    pass",
     ),
     (
         "startup-complete-cache",
@@ -88,12 +131,6 @@ MUTATIONS = (
         "app.py",
         "if actual is None or Path(actual).resolve() != directory.resolve():",
         "if False:",
-    ),
-    (
-        "startup-sdk-completion-argv",
-        "app.py",
-        "            for flag in RENDER_COMPLETION_ARGS\n            if flag in config.get",
-        "            for flag in ()\n            if flag in config.get",
     ),
     (
         "startup-parent-evaluation-finalize",
@@ -122,8 +159,8 @@ MUTATIONS = (
     (
         "startup-parent-cleanup",
         "shader_cache.py",
-        "        shutil.rmtree(target, ignore_errors=True)",
-        "        pass",
+        "    shutil.rmtree(target, ignore_errors=True)",
+        "    pass",
     ),
     ("startup-completion", "bootstrap.py", "zero_delay=True", "zero_delay=False"),
     (

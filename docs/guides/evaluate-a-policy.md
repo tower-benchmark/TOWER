@@ -98,17 +98,17 @@ status with results. Use [offline scoring](offline-scoring.md) for saved recordi
 
 Benchmark workers enable render-completion synchronization on every start.
 A first-time start also needs two different caches: the Kit renderer shader
-cache and the SDK CUDA kernel cache. Warm-up and seeding cover both. Each
+cache and the SDK CUDA kernel cache. Warm-up and seeding cover both. When seed or warm-up options are given, each
 simulator uses a private CUDA cache selected by its own `CUDA_CACHE_PATH`;
 the parent process and policy service environment are unchanged. Cache files
-are specific to the GPU and driver; rebuild both after either changes, and never distribute them with the
-benchmark.
+are specific to the GPU and driver; rebuild both after either changes.
+TOWER ships no cache.
 
 Use the configured simulator interpreter and the same license consent as for
 other simulator runs. Start serially, with new output and export directories:
 
 ```sh
-python tools/simulator/benchmark_portable.py smoke \
+/path/to/isaac/python tools/simulator/benchmark_portable.py smoke \
   --assets /path/to/assets --data-root /path/to/benchmark-2026.11.1 \
   --task cross-transfer-2 --seeds 0 --gpu 0 --accept-eula \
   --output /path/to/warmup-1 --shader-cache-warmup /path/to/cache-pass-1
@@ -124,7 +124,7 @@ If the first pass failed, make one defined second serial pass using both
 exported caches. Both the run output and the new export destination must be new directories:
 
 ```sh
-python tools/simulator/benchmark_portable.py smoke \
+/path/to/isaac/python tools/simulator/benchmark_portable.py smoke \
   --assets /path/to/assets --data-root /path/to/benchmark-2026.11.1 \
   --task cross-transfer-2 --seeds 0 --gpu 0 --accept-eula \
   --output /path/to/warmup-2 \
@@ -134,7 +134,8 @@ python tools/simulator/benchmark_portable.py smoke \
 ```
 
 Proceed only after a serial pass exits successfully with a passing smoke result
-and `source_run_passed: true` in its exported `warmup.json`. If the second pass
+and `source_run_passed: true` in its exported `warmup.json`. A seed marked as
+failed is rejected unless another warm-up export is explicitly requested. If the second pass
 fails, stop and retain both failures for investigation. Every pass uses the
 original camera and image checks; no failed result becomes an accepted trial.
 
@@ -149,8 +150,8 @@ For example, after the second pass:
 
 Each worker copies and hash-checks the complete Kit and CUDA seed before
 renderer startup. Its CUDA cache is private to that worker. The parent records
-warm-up digests after worker exit and removes ordinary seeded workers' private
-copies of both caches. Use separate output directories and available GPUs. A digest mismatch rejects startup. The invalid-image guard,
+warm-up digests after worker exit and removes the worker's private copies of
+both caches after a completed export, as well as after ordinary seeded runs. Use separate output directories and available GPUs. A digest mismatch rejects startup. The invalid-image guard,
 including the all-zero initial-image rejection, stays strict with no image
 fallback.
 
