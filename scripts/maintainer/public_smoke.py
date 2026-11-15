@@ -4,6 +4,7 @@ import importlib
 import json
 import subprocess
 import sys
+import traceback
 from types import SimpleNamespace
 
 
@@ -137,6 +138,10 @@ def worker(args):
             work / "result.json",
             json.loads(json.dumps(result, default=lambda value: value.tolist())),
         )
+    except BaseException:
+        # Native fast shutdown can exit before the interpreter prints this error.
+        save_exclusive(work / "error.json", dict(error=traceback.format_exc()))
+        raise
     finally:
         if camera is not None:
             camera.close()
