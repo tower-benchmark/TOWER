@@ -462,7 +462,8 @@ def test_public_diagnostic_retains_inputs_under_output(tmp_path, monkeypatch, ca
         inputs.output.mkdir(parents=True)
         return inputs.output / "request.json"
 
-    def launch(path, python, *, diagnostic):
+    def launch(path, python, *, diagnostic, cache_options):
+        assert cache_options is args
         assert path == output / "inputs/request.json" and diagnostic
         (output / "diagnostic-result.json").write_text(
             json.dumps(
