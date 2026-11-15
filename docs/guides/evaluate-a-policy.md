@@ -15,15 +15,13 @@ uv run python tools/simulator/benchmark_assets.py download --assets /path/to/ass
 
 This downloads physical assets and calls `tower_sim.bench.data_release.download`
 for evaluation data, stored by default in `/path/to/assets/benchmark-2026.11.1`.
-The data locator still awaits owner pinning. Until it is pinned, the command
-fails with `data release not yet pinned; pass --data-root <dir>`.
-Obtain the exact release directory from the owner; do not substitute scene files.
-With that directory already available, use:
+The default is an anonymous, pinned and verified download from TOWER-Assets
+at revision `d78e4ac0b2bfc1e10a15d31ac7e7d723be2764f1` (tag `benchmark-2026.11.1`), as recorded in the release lock.
+No token or login is needed. Verify an existing download without network access:
 
 ```sh
-uv run python tools/simulator/benchmark_assets.py download --assets /path/to/assets --data-root /path/to/benchmark-2026.11.1
-uv run python tools/simulator/benchmark_assets.py verify --assets /path/to/assets --data-root /path/to/benchmark-2026.11.1
-uv run python tools/simulator/benchmark.py verify --benchmark 2026.11.1 --assets /path/to/assets --data-root /path/to/benchmark-2026.11.1
+uv run python tools/simulator/benchmark_assets.py verify --assets /path/to/assets
+uv run python tools/simulator/benchmark.py verify --benchmark 2026.11.1 --assets /path/to/assets
 ```
 
 With `--data-root`, download fetches physical assets and verifies the existing

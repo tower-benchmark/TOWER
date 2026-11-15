@@ -9,8 +9,12 @@ dependencies:
   - numpy=1.26.4
   - scipy=1.17.1
   - pip
-  - pip:
-      - numpy==1.26.4
-      - pin-pink==3.4.0
-      - qpsolvers==4.8.1
-      - quadprog==0.1.13
+  - qpsolvers=4.8.1
+  - quadprog=0.1.13
+  - loop-rate-limiters=1.2.0
+  - pytest>=8,<9
+  - pyyaml>=6,<7
+  - h5py>=3.11,<4
+  - pillow>=10,<13
+  # Pink's PyPI dependency on pin must not replace conda Pinocchio.
+  # Complete installation with requirements-pink.txt and --no-deps.

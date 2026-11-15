@@ -98,19 +98,15 @@ def posture_evidence(review, task, package_digest):
 
 
 def check_environment(python):
-    """Read installed distribution metadata without starting Kit or using a GPU."""
+    """Check SDK metadata and native material plugins without starting Kit."""
     result = subprocess.run(
-        [
-            str(python),
-            "-c",
-            "import importlib.metadata as m, json, sys; "
-            "print(json.dumps({'python': sys.version.split()[0], "
-            "'isaacsim': m.version('isaacsim')}))",
-        ],
+        [str(python), str(Path(__file__).with_name("isaac_environment_probe.py"))],
         capture_output=True,
         text=True,
-        check=True,
+        check=False,
     )
+    if result.returncode:
+        raise RuntimeError(f"Isaac environment check failed:\n{result.stderr.strip()}")
     identity = json.loads(result.stdout)
     if identity["isaacsim"] != "6.1.0.0" or not identity["python"].startswith("3.12."):
         raise ValueError(f"Requires Isaac 6.1.0.0 / Python 3.12; found {identity}")

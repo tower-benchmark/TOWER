@@ -8,17 +8,39 @@ references; hardware calibration and testing are incomplete.
 
 ## Install and check
 
-From the TOWER root, `uv build --package nero-kinematics` builds a source
-distribution and wheel under `dist/`. From the package directory:
+From the TOWER checkout root, create the native environment separately from Isaac:
 
 ```bash
-conda env create -f environment.yml
-conda activate nero-eef-ik
-python -m pip install --no-deps .
+conda env create --prefix "$PWD/.venv-benchmark-ik" -f packages/nero-kinematics/environment.yml
+conda activate "$PWD/.venv-benchmark-ik"
+python -m pip install --index-url https://pypi.org/simple --no-deps -r packages/nero-kinematics/requirements-pink.txt
+python -m pip install --index-url https://pypi.org/simple --no-deps ./packages/nero-kinematics ./packages/tower-sim ./src/tower-eval
+export PYTHONDONTWRITEBYTECODE=1
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
-python examples/offline_check.py
-python -m pytest tests -v
+export TOWER_REQUIRE_NATIVE_IK=1
+python packages/nero-kinematics/examples/offline_check.py
+python -m pytest packages/nero-kinematics/tests tests/characterization/test_ik.py -v
 ```
+
+The environment file provisions Pink's dependencies through conda-forge. The
+second installation step pins `pin-pink==3.4.0` with `--no-deps`: ordinary pip
+resolution can install a conflicting `pin==2.7.0`. Keep conda Pinocchio 3.8.0
+and its CasADi bindings; do not install the pip `pin` distribution.
+The alternative `configs/benchmark-ik.yml` uses the same two-step Pink recipe.
+
+After the [release build](bench-public.md#build-and-verify), install the three
+wheels into a fresh shared package directory and run the release identity probe
+with the native interpreter:
+
+```bash
+python -m pip install --index-url https://pypi.org/simple --no-deps --target "$PWD/runtime-packages" dist/*.whl
+export PYTHONPATH="$PWD/runtime-packages"
+release_sha256=$(sha256sum dist/release-manifest.json | cut -d ' ' -f 1)
+python -m tower_sim.bench.verification --ik --release dist/release-manifest.json --release-sha256 "$release_sha256" --checkout "$PWD"
+```
+
+Retain the probe's dependency and source identities alongside the acceptance and
+parity test results. Use this same package directory for both runtime interpreters.
 
 The tested environment is Linux x86_64, Python 3.11, Pinocchio 3.8.0 with CasADi
 bindings, CasADi 3.7.2 and IPOPT 3.14.19; exact versions are in `environment.yml`.

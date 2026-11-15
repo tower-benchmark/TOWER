@@ -1,0 +1,2 @@
+# Install with pip --no-deps after creating environment.yml.
+pin-pink==3.4.0
