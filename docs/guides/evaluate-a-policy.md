@@ -100,9 +100,8 @@ Benchmark workers enable render-completion synchronization on every start.
 A first-time start also needs two different caches: the Kit renderer shader
 cache and the SDK CUDA kernel cache. Warm-up and seeding cover both. Each
 simulator uses a private CUDA cache selected by its own `CUDA_CACHE_PATH`;
-the parent process and policy service environment are unchanged.
-Cache files are specific to the GPU and
-driver; rebuild both after either changes, and never distribute them with the
+the parent process and policy service environment are unchanged. Cache files
+are specific to the GPU and driver; rebuild both after either changes, and never distribute them with the
 benchmark.
 
 Use the configured simulator interpreter and the same license consent as for
@@ -111,24 +110,23 @@ other simulator runs. Start serially, with new output and export directories:
 ```sh
 python tools/simulator/benchmark_portable.py smoke \
   --assets /path/to/assets --data-root /path/to/benchmark-2026.11.1 \
-  --task cross-transfer-2 --seeds 0 --gpu 0 \
+  --task cross-transfer-2 --seeds 0 --gpu 0 --accept-eula \
   --output /path/to/warmup-1 --shader-cache-warmup /path/to/cache-pass-1
 ```
 
 The first fully cold pass can fail during camera initialization. Its command
 still fails, and `error.json` preserves the error before native shutdown.
 Warm-up exports compilation output even after such a failure: `cache/kit` and
-`cache/cuda`, a sorted SHA-256 file list in `digest.sha256`, and `warmup.json` recording whether the run
-passed. An exported cache is not a passing scene result.
+`cache/cuda`, a sorted SHA-256 file list in `digest.sha256`, and `warmup.json`
+recording whether the run passed. An exported cache is not a passing scene result.
 
 If the first pass failed, make one defined second serial pass using both
-exported caches. Both the run output and the new
-export destination must be new directories:
+exported caches. Both the run output and the new export destination must be new directories:
 
 ```sh
 python tools/simulator/benchmark_portable.py smoke \
   --assets /path/to/assets --data-root /path/to/benchmark-2026.11.1 \
-  --task cross-transfer-2 --seeds 0 --gpu 0 \
+  --task cross-transfer-2 --seeds 0 --gpu 0 --accept-eula \
   --output /path/to/warmup-2 \
   --shader-cache-seed /path/to/cache-pass-1/cache \
   --shader-cache-digest /path/to/cache-pass-1/digest.sha256 \
@@ -150,8 +148,16 @@ For example, after the second pass:
 ```
 
 Each worker copies and hash-checks the complete Kit and CUDA seed before
-renderer startup. Its CUDA cache is private to that worker. The parent records warm-up digests after worker exit and removes
-ordinary seeded workers' private copies of both caches. Use separate output directories and
-available GPUs. A digest mismatch rejects startup. The invalid-image guard,
+renderer startup. Its CUDA cache is private to that worker. The parent records
+warm-up digests after worker exit and removes ordinary seeded workers' private
+copies of both caches. Use separate output directories and available GPUs. A digest mismatch rejects startup. The invalid-image guard,
 including the all-zero initial-image rejection, stays strict with no image
 fallback.
+
+For troubleshooting, `simulation/private-shader-cache.json` records the private
+Kit and CUDA paths, seed digest, and CUDA cache size and file count before
+startup, together with the CUDA cache environment settings. The Kit cache is
+under the worker's portable root at `<output>-kit/cache`; the simulator's
+`CUDA_CACHE_PATH` points to `<output>-kit/cuda-cache`. File counts are evidence,
+not readiness criteria. Exposure initialization has a bounded render-only wait
+and writes `capture/renderer-readiness.json`; a timeout remains a startup failure.

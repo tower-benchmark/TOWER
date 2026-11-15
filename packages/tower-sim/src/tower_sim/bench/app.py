@@ -297,7 +297,16 @@ def private_shader_cache(
             pid=os.getpid(),
         )
         environment = {"CUDA_CACHE_PATH": str(cuda)} if portable else {}
-        with process_environment(environment):
+        with process_environment(
+            environment,
+            observe=(
+                "CUDA_CACHE_PATH",
+                "CUDA_CACHE_DISABLE",
+                "CUDA_CACHE_MAXSIZE",
+                "CUDA_FORCE_PTX_JIT",
+                "CUDA_DISABLE_PTX_JIT",
+            ),
+        ) as effective_environment:
             if portable:
                 files = [p for p in cuda.rglob("*") if p.is_file()]
                 receipt.update(
@@ -306,16 +315,7 @@ def private_shader_cache(
                         path=str(cuda),
                         file_count=len(files),
                         size_bytes=sum(p.stat().st_size for p in files),
-                        environment={
-                            key: os.environ.get(key)
-                            for key in (
-                                "CUDA_CACHE_PATH",
-                                "CUDA_CACHE_DISABLE",
-                                "CUDA_CACHE_MAXSIZE",
-                                "CUDA_FORCE_PTX_JIT",
-                                "CUDA_DISABLE_PTX_JIT",
-                            )
-                        },
+                        environment=effective_environment,
                     ),
                 )
             yield receipt
@@ -330,14 +330,14 @@ def private_shader_cache(
 
 
 @contextmanager
-def process_environment(values, *, unset=()):
+def process_environment(values, *, unset=(), observe=()):
     """Explicit process-boundary values, restored even on constructor failure."""
     previous = {key: os.environ.get(key) for key in {*values, *unset}}
     try:
         os.environ.update(values)
         for key in unset:
             os.environ.pop(key, None)
-        yield
+        yield {key: os.environ.get(key) for key in observe}
     finally:
         for key, value in previous.items():
             if value is None:
