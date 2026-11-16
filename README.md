@@ -143,16 +143,16 @@ Use matching runtime and data identities. Package versions below are **developme
 
 ```text
 benchmarks/                 Task registries, protocols and data locks
-configs/                    Evaluation configuration
+configs/                    Alternative native-IK environment recipe
 packages/tower-sim/         Simulation runtime and benchmark scenes
 packages/nero-kinematics/   Kinematics and robot models
 src/tower-eval/             Policy interfaces, evaluation and scoring
-third_party/XPolicyLab/    Pinned policy-serving integration
+third_party/XPolicyLab/     Pinned policy-serving integration
 reproduction/paper_metrics/ Paper metric reference implementation
-scripts/                   Development and validation utilities
-tools/                     Simulator and benchmark command-line tools
-tests/                     Integration, contract and documentation tests
-docs/                      Guides and reference documentation
+scripts/                    Development and validation utilities
+tools/                      Simulator and benchmark command-line tools
+tests/                      Integration, contract and documentation tests
+docs/                       Guides and reference documentation
 ```
 
 ## Paper
