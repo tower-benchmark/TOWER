@@ -14,7 +14,7 @@ from tower_sim.bench.camera_quality import CameraQuality, camera_quality
 from tower_sim.bench.evidence import CameraArchive
 from tower_sim.bench.observation_validity import DeliveryGuard, renderer_failure
 
-from scripts.maintainer import candidate_policy
+from scripts.maintainer import candidate_policy, public_smoke
 
 
 def views():
@@ -199,6 +199,117 @@ def test_process_exit_without_signal_is_recorded(code):
     assert policy_entry.worker_exit(code, completed=True) == dict(
         returncode=code, signal=None, phase="teardown"
     )
+
+
+@pytest.mark.parametrize("mode", ["complete", "before", "writing", "wrong-phase", "uncommitted"])
+def test_smoke_native_crash_requires_passing_completion(tmp_path, mode):
+    output = tmp_path / "smoke"
+    script = """
+import os, resource, signal, sys
+from pathlib import Path
+from tower_sim.bench.resources import save_exclusive
+resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
+out, mode = Path(sys.argv[1]), sys.argv[2]
+out.mkdir()
+if mode == 'writing':
+    (out / 'smoke-complete.json.tmp').write_text('{')
+elif mode != 'before':
+    save_exclusive(out / 'smoke-complete.json', dict(passed=mode != 'uncommitted',
+        phase='evidence' if mode == 'wrong-phase' else 'teardown'))
+os.kill(os.getpid(), signal.SIGSEGV)
+"""
+    child = subprocess.run([sys.executable, "-c", script, str(output), mode], check=False)
+    assert child.returncode == -signal.SIGSEGV
+    if mode == "complete":
+        assert public_smoke.finish(output, child.returncode) == 0
+    else:
+        with pytest.raises(RuntimeError, match="passing receipt"):
+            public_smoke.finish(output, child.returncode)
+    result = json.loads((output / "result.json").read_text())
+    assert result["passed"] == (mode == "complete")
+    assert result["worker_returncode"] == -signal.SIGSEGV
+    assert result["worker_exit"] == dict(
+        returncode=-signal.SIGSEGV,
+        signal=signal.SIGSEGV,
+        phase="teardown" if mode == "complete" else "execution",
+    )
+
+
+@pytest.mark.parametrize("failure", [None, "source", "camera-close", "teardown"])
+def test_smoke_completion_follows_capture_close(tmp_path, monkeypatch, failure):
+    import benchmark
+    import benchmark_assets
+    import benchmark_candidate
+    from tower_sim.bench import cameras, evidence, observation, verification
+
+    from scripts.maintainer import kit_safety
+
+    output = tmp_path / "smoke"
+    marker = output / "smoke-complete.json"
+
+    def record(name):
+        assert marker.exists() == (name == "teardown" and failure != "source")
+        if name == failure:
+            raise RuntimeError(name)
+
+    monkeypatch.setattr(benchmark_candidate, "verify", lambda **kw: {})
+    monkeypatch.setattr(benchmark_candidate, "verify_release", lambda *a: {})
+    monkeypatch.setattr(benchmark_candidate, "verify_startup", lambda *a: None)
+    monkeypatch.setattr(verification, "dependency_identity", lambda: {})
+    monkeypatch.setattr(benchmark, "check_environment", lambda *a: {})
+    monkeypatch.setattr(benchmark, "sha256", lambda *a: "hash")
+    monkeypatch.setattr(kit_safety, "configure", lambda *a: None)
+    monkeypatch.setattr(kit_safety, "verify", lambda *a: None)
+    monkeypatch.setattr(benchmark_assets, "prepare_scenes", lambda *a, **kw: "scenes")
+    rows = [dict(candidate=dict(seed=1), output=output)]
+    monkeypatch.setattr(benchmark_assets, "load_rows", lambda *a: rows)
+    env = NS(
+        elapsed=np.zeros(1),
+        read=lambda: [NS(qpos=np.zeros(16))],
+        physics=NS(simulate=lambda *a: None, fetch_results=lambda: None),
+        lula=NS(tcp_rotation=None, tcp_offset=None),
+    )
+    context = NS(
+        env=env,
+        app=None,
+        compensation=None,
+        resources=NS(read=lambda *a: {}),
+        verify_drives=lambda: None,
+    )
+    prepared = NS(
+        context=context, collect_sources=lambda: record("source"), close=lambda: record("teardown")
+    )
+    monkeypatch.setattr(
+        benchmark_candidate, "create_runner", lambda **kw: NS(setup=lambda *a, **kw: prepared)
+    )
+    monkeypatch.setattr(
+        evidence,
+        "BatchEvidence",
+        lambda *a: NS(
+            append=lambda *a: None,
+            records=[[dict(blocks=np.zeros((1, 7)))] * 21],
+            write=lambda *a: None,
+        ),
+    )
+    monkeypatch.setattr(evidence, "settling_metrics", lambda *a: dict(passed=True))
+    monkeypatch.setattr(observation, "encoder_observation", lambda *a: {})
+    monkeypatch.setattr(cameras, "assert_unchanged", lambda *a: None)
+    monkeypatch.setattr(
+        cameras,
+        "make_camera",
+        lambda *a, **kw: NS(
+            observe=lambda: dict(rgb=views()[None]), close=lambda: record("camera-close")
+        ),
+    )
+    args = NS(output=output, assets=tmp_path, task="task1-2", seeds=[1], gpu=0)
+    if failure:
+        with pytest.raises(RuntimeError, match=failure):
+            public_smoke.worker(args)
+    else:
+        public_smoke.worker(args)
+    assert marker.exists() == (failure in (None, "teardown"))
+    if marker.exists():
+        assert json.loads(marker.read_text())["phase"] == "teardown"
 
 
 @pytest.mark.parametrize("failure", [None, "evidence", "writer-close", "teardown"])

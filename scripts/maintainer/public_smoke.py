@@ -63,7 +63,7 @@ def worker(args):
     )
     runner.shader_cache = configuration(args, work)
     prepared = runner.setup(request, rows=rows)
-    camera = None
+    camera = result = None
     try:
         verify(kit)
         context, env = prepared.context, prepared.context.env
@@ -78,11 +78,11 @@ def worker(args):
         settling = []
         for index, row in enumerate(rows):
             samples = evidence.records[index]
-            result = settling_metrics(
+            settling_result = settling_metrics(
                 samples[0]["blocks"], samples[15]["blocks"], samples[-1]["blocks"]
             )
-            settling.append(result)
-            if not result["passed"]:
+            settling.append(settling_result)
+            if not settling_result["passed"]:
                 raise ValueError(f"Frozen scene failed settling: {row['candidate']['seed']}")
             evidence.write(index, row["output"])
         env.elapsed[:] = 0.0
@@ -134,10 +134,6 @@ def worker(args):
             asset_manifest_sha256=benchmark.sha256(args.assets / "manifest.json"),
             public=public.envelope(),
         )
-        save_exclusive(
-            work / "result.json",
-            json.loads(json.dumps(result, default=lambda value: value.tolist())),
-        )
     except BaseException:
         # Native fast shutdown can exit before the interpreter prints this error.
         save_exclusive(work / "error.json", dict(error=traceback.format_exc()))
@@ -145,6 +141,13 @@ def worker(args):
     finally:
         if camera is not None:
             camera.close()
+        if result is not None:
+            save_exclusive(
+                work / "smoke-complete.json",
+                json.loads(
+                    json.dumps(dict(result, phase="teardown"), default=lambda value: value.tolist())
+                ),
+            )
         prepared.close()
 
 
@@ -179,19 +182,33 @@ def run(args):
     if args.accept_eula:
         command.append("--accept-eula")
     result = subprocess.run(command, env=public.child_environment(), check=False)
-    receipt = args.output / "result.json"
     passed = False
     try:
-        passed = (
-            result.returncode == 0
-            and receipt.is_file()
-            and benchmark.read(receipt).get("passed") is True
-        )
+        code = finish(args.output, result.returncode)
+        passed = code == 0
+        return code
     finally:
         finalize(cache_config, args.output, passed=passed)
-    if not passed:
-        raise RuntimeError(
-            f"Smoke worker did not produce a passing receipt (exit {result.returncode})"
-        )
+
+
+def finish(output, returncode):
+    from tower_sim.bench.policy_entry import worker_exit
+    from tower_sim.bench.resources import save_exclusive
+
+    benchmark = importlib.import_module("benchmark")
+    output.mkdir(parents=True, exist_ok=True)
+    completion = output / "smoke-complete.json"
+    result = benchmark.read(completion) if completion.is_file() else {}
+    completed = result.get("passed") is True and result.get("phase") == "teardown"
+    result.pop("phase", None)
+    result.update(
+        passed=completed,
+        worker_returncode=returncode,
+        worker_exit=worker_exit(returncode, completed=completed),
+    )
+    receipt = output / "result.json"
+    save_exclusive(receipt, result)
+    if not completed:
+        raise RuntimeError(f"Smoke worker did not produce a passing receipt (exit {returncode})")
     print(receipt.read_text())
     return 0

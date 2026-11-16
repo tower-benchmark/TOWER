@@ -2888,6 +2888,36 @@ MUTATIONS += (
         'phase="teardown" if completed else "execution"',
         'phase="teardown"',
     ),
+    (
+        "runtime-smoke-boundary",
+        "../../../../../scripts/maintainer/public_smoke.py",
+        "if result is not None:",
+        "if True:",
+    ),
+    (
+        "runtime-smoke-passing",
+        "../../../../../scripts/maintainer/public_smoke.py",
+        'result.get("passed") is True and result.get("phase") == "teardown"',
+        'result.get("phase") == "teardown"',
+    ),
+    (
+        "runtime-smoke-receipt-presence",
+        "../../../../../scripts/maintainer/public_smoke.py",
+        "if completion.is_file() else {}",
+        "if True else {}",
+    ),
+    (
+        "runtime-smoke-phase",
+        "../../../../../scripts/maintainer/public_smoke.py",
+        'result.get("passed") is True and result.get("phase") == "teardown"',
+        'result.get("passed") is True',
+    ),
+    (
+        "runtime-smoke-exit",
+        "../../../../../scripts/maintainer/public_smoke.py",
+        "if not completed:",
+        "if returncode or not completed:",
+    ),
 )
 
 
