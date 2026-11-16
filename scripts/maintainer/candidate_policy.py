@@ -101,6 +101,7 @@ def worker(args, *, verification=None, runner=None):
     metrics = Metrics(sink, TrialRequestID(request["trial_id"]))
     solver = PolicyIK(IKServiceOptions(args.ik_python))
     prepared = session = None
+    completed = False
     try:
         session, evaluation = policy_entry.prepare(
             rows,
@@ -148,15 +149,13 @@ def worker(args, *, verification=None, runner=None):
         if code:
             raise RuntimeError(f"Candidate policy worker failed: {code}")
         save(
-            output / "worker-complete.json", dict(completed=True, gain_checks=context._drive_checks)
-        )
-        save(
             output / "fast-observed-joints.json",
             dict(
                 certificate=getattr(validator, "certificate", None),
                 stats=getattr(validator, "stats", None),
             ),
         )
+        completed = True
     except BaseException:
         save(output / "error.json", dict(error=traceback.format_exc()))
         raise
@@ -166,8 +165,17 @@ def worker(args, *, verification=None, runner=None):
         solver.close()
         metrics.close()
         sink.close()
-        if prepared is not None:
-            prepared.close()
+        try:
+            if completed:
+                # Publish the durable boundary only after all evidence writers close.
+                # A native crash before this point must remain an execution failure.
+                save_exclusive(
+                    output / "worker-complete.json",
+                    dict(completed=True, phase="teardown", gain_checks=context._drive_checks),
+                )
+        finally:
+            if prepared is not None:
+                prepared.close()
 
 
 def finish(request, returncode, *, diagnostic):
@@ -200,15 +208,25 @@ def finish(request, returncode, *, diagnostic):
     def read(path):
         return json.loads(path.read_text()) if path.is_file() else {}
 
+    completion = read(output / "worker-complete.json")
+    boundary = completion.get("completed") is True and completion.get("phase") == "teardown"
     completed = (
-        read(output / "worker-complete.json").get("completed")
+        boundary
         and read(output / "simulation/batch-policy-results.json").get("completed")
         and bool(request["seeds"])
     )
     for seed in request["seeds"]:
         status = read(output / "simulation" / f"seed-{seed}" / "status.json")
         completed = completed and status.get("valid_trial") and status.get("evidence_complete")
-    return returncode or (0 if completed else 1)
+    save_exclusive(
+        output / "result.json",
+        dict(
+            evidence_complete=bool(completed),
+            worker_returncode=returncode,
+            worker_exit=policy_entry.worker_exit(returncode, boundary=boundary),
+        ),
+    )
+    return 0 if completed else (returncode or 1)
 
 
 def main(argv=None):

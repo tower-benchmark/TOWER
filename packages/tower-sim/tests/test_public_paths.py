@@ -341,7 +341,7 @@ def test_public_smoke_child_environment_is_clean(tmp_path, monkeypatch, capsys):
         assert not set(public.METRICS_ENV) & set(kw["env"])
         calls.append(command)
         args.output.mkdir()
-        (args.output / "result.json").write_text('{"passed":true}')
+        (args.output / "smoke-complete.json").write_text('{"passed":true,"phase":"teardown"}')
         return NS(returncode=0)
 
     monkeypatch.setattr(public_smoke.subprocess, "run", child)

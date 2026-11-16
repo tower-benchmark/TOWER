@@ -62,7 +62,21 @@ Run the benchmark commands below from the TOWER checkout. Install
 submodule with `GIT_LFS_SKIP_SMUDGE=1 git submodule update --init`.
 See the [runtime transport contract](../reference/policy-interface.md#isaac-benchmark-runtime).
 Supply its package identity file; TOWER does not download or start model weights.
-Request preparation requires a reviewed posture record
+
+Diagnostic runs are the supported way to test a policy now. Run
+`tools/simulator/benchmark_diagnostic.py` with `--task`, one scene `--seed`,
+`--assets`, `--data-root`, `--package`, `--policy-url`, `--ik-python`, a new
+`--output` and `--accept-eula`, using the Isaac interpreter. This entrypoint
+selects diagnostic mode itself; no `--diagnostic` or `--pilot-review` is needed.
+It records per-episode status and `diagnostic-result.json`; the public entrypoint
+also writes `result.json` when implementation identity is available, with
+`score.json` when physical evidence is complete and scoring succeeds. These
+results remain diagnostic and do not approve a pilot or qualify a formal trial.
+Formal runs
+additionally require the posture review (`--pilot-review`); its per-task
+contact-frame reference and review tooling are not yet published and will follow.
+
+Formal request preparation requires a reviewed posture record
 (`tower-no-reversed-grasp-review-v1`): planned approach/carry and recorded
 approach-phase review, no reverse 180-degree grasp, and preserved task contact
 geometry, each bound to its evidence file by SHA-256.
@@ -182,3 +196,35 @@ passed 0/8; a fresh Kit cache with a retained CUDA cache also passed 0/8. A seri
 start with a seeded Kit cache but an empty CUDA cache passed 0/1. The last two
 controls reached and failed the unchanged all-zero initial-image check. These
 checks supplied no policy actions; warm-up is not an accepted evaluation trial.
+
+## Rerun infrastructure rejections
+
+A startup error such as `Initial scene has four all-zero camera views`,
+`Renderer dispatcher did not advance` or `Renderer returned before scheduled
+frame delivery`, or an episode status of `infrastructure_failure`, indicates an
+infrastructure rejection, not a policy result. The delivery guard also rejects
+`Renderer failure in delivered camera views` and `Renderer failure in independent
+camera views`. Inspect the log, `error.json`, and each
+`simulation/seed-<id>/status.json` that was written; startup can fail before
+episode status exists. Per-frame rejection diagnostics and raw pixels are saved
+relative to the run output in
+`simulation/seed-<id>/camera-frames.hdf5.diagnostics/<frame>.json` and the matching
+`.npz`. For diagnostics, inspect the run-level `diagnostic-result.json` too.
+Incomplete evidence (per-seed `status.json` `evidence_complete: false`) must not
+be counted as a policy failure.
+After resolving the infrastructure problem, rerun exactly the rejected scene
+ids, retaining the rejected attempt and its inputs, logs and evidence. For
+formal batches, repeat `prepare-request` above with the same task, benchmark,
+data, package, policy settings and review, set `--seeds` to only those ids, and
+choose fresh `--output` and `--run-output` directories; check and run that new
+request. For diagnostics, repeat the diagnostic command for each rejected
+`--seed` with a fresh `--output`. Do not rerun completed episodes or overwrite
+the old request. There is no automatic retry. If an identical rerun reproduces
+the same rejection, report it with the retained evidence instead of retrying.
+
+A recorded worker exit with `phase: "teardown"` means the worker crossed the
+durable completion boundary. The command exits zero only if all evidence checks
+also pass. The native return code and signal remain in the result's `worker_exit`
+record; a zero return code has `phase: null`. Only negative subprocess return
+codes are decoded into `signal`. A shell-wrapped interpreter can report `128+N`
+for signal N; that positive code is retained with `signal: null`.

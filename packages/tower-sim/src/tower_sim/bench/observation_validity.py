@@ -8,6 +8,17 @@ from typing import Any
 
 import numpy as np
 
+from .camera_quality import camera_quality
+
+
+def renderer_failure(quality):
+    """Local low texture is allowed; missing/zero buffers or four failed views are not."""
+    return (
+        len(quality) != 4
+        or any(q.get("maximum", 0) <= 0 for q in quality.values())
+        or not any(q.get("valid") is True for q in quality.values())
+    )
+
 
 class DeliveryGuard:
     def __init__(self):
@@ -58,6 +69,8 @@ class DeliveryGuard:
         ):
             return dict(result, reason="Observation time is not finite and strictly increasing")
         self.previous_step, self.previous_time = render_step, stamp
+        if renderer_failure(quality):
+            return dict(result, reason="Renderer failure in delivered camera views")
         if not result["photometric_visibility"]:
             if independent_reference is None:
                 return dict(
@@ -69,6 +82,12 @@ class DeliveryGuard:
                 result["independent_reference"] = evidence
                 result["comparison"] = comparison
                 result["reference_pixels_sha256"] = hashlib.sha256(reference.tobytes()).hexdigest()
+                reference_quality = {
+                    name: camera_quality(reference[index]) for index, name in enumerate(quality)
+                }
+                result["reference_quality"] = reference_quality
+                if renderer_failure(reference_quality):
+                    return dict(result, reason="Renderer failure in independent camera views")
                 if evidence.get("physical_state_preserved") is not True or not comparison["passed"]:
                     return dict(
                         result,
