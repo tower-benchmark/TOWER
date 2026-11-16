@@ -2997,6 +2997,16 @@ MUTATIONS += (
 )
 
 
+MUTATIONS += (
+    (
+        "runtime-smoke-parent-cache-verdict",
+        "../../../../../scripts/maintainer/public_smoke.py",
+        "passed = code == 0",
+        "passed = result.returncode == 0",
+    ),
+)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)

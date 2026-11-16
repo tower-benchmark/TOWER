@@ -420,3 +420,45 @@ def test_worker_publishes_boundary_after_evidence_and_before_teardown(
         assert events[-1] == "teardown"
     if failure == "nonzero":
         assert not (output / "fast-observed-joints.json").exists()
+
+
+@pytest.mark.parametrize("complete", [False, True])
+def test_smoke_parent_finalizes_cache_using_evidence_verdict(tmp_path, monkeypatch, complete):
+    from tower_sim.bench import shader_cache
+
+    output = tmp_path / "smoke"
+    config = object()
+    finalizations = []
+    monkeypatch.setattr(shader_cache, "configuration", lambda *a: config)
+    monkeypatch.setattr(shader_cache, "child_arguments", lambda *a: [])
+    monkeypatch.setattr(
+        shader_cache,
+        "finalize",
+        lambda c, p, *, passed: finalizations.append((c, p, passed)),
+    )
+
+    def child(*args, **kwargs):
+        output.mkdir()
+        if complete:
+            (output / "smoke-complete.json").write_text(
+                json.dumps(dict(passed=True, phase="teardown"))
+            )
+        return NS(returncode=-signal.SIGSEGV)
+
+    monkeypatch.setattr(public_smoke.subprocess, "run", child)
+    args = NS(
+        _worker=False,
+        output=output,
+        assets=tmp_path,
+        task="task1-2",
+        gpu=0,
+        seeds=[1],
+        accept_eula=True,
+    )
+    if complete:
+        assert public_smoke.run(args) == 0
+    else:
+        with pytest.raises(RuntimeError, match="passing receipt"):
+            public_smoke.run(args)
+    assert finalizations == [(config, output, complete)]
+    assert json.loads((output / "result.json").read_text())["worker_returncode"] == -signal.SIGSEGV

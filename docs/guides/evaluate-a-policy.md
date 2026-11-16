@@ -70,8 +70,9 @@ Diagnostic runs are the supported way to test a policy now. Run
 selects diagnostic mode itself; no `--diagnostic` or `--pilot-review` is needed.
 It records per-episode status and `diagnostic-result.json`; the public entrypoint
 also writes `result.json` when implementation identity is available, with
-`score.json` when physical evidence is complete and scoring succeeds. These results remain
-diagnostic and do not approve a pilot or qualify a formal trial. Formal runs
+`score.json` when physical evidence is complete and scoring succeeds. These
+results remain diagnostic and do not approve a pilot or qualify a formal trial.
+Formal runs
 additionally require the posture review (`--pilot-review`); its per-task
 contact-frame reference and review tooling are not yet published and will follow.
 
