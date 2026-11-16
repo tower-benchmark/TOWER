@@ -51,7 +51,8 @@ runtime robot configuration; the submodule maintains its training registry.
 
 Camera names are `right_front_camera`, `left_back_camera`, `left_wrist_camera`,
 and `back_wrist_camera`. Arrays are transported losslessly with msgpack; RGB
-channels are never swapped. The XPolicyLab server owns encoded-image decoding.
+channels are never swapped. TOWER always sends raw RGB arrays, which is what
+XPolicyLab policy servers accept by default; they reject encoded images.
 OpenWAM_TOWER applies the checkpoint's verified training image composition.
 No camera, EEF pose, or prompt is fabricated for real observations.
 

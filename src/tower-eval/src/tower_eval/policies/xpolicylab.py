@@ -210,7 +210,7 @@ class XPolicyLabAdapter:
 
     def infer(self, observation: Any) -> Any:
         """Atomically update an observation and obtain its action rows."""
-        # WsModelClient has no sync INFER wrapper at XPolicyLab tower-1.0.1.
+        # WsModelClient has no sync INFER wrapper at XPolicyLab tower-1.0.3.
         # Keep protocol access and diagnostics redirection at this boundary.
         with contextlib.redirect_stdout(sys.stderr):
             client = self._client
