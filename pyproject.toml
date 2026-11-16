@@ -21,7 +21,7 @@ tower-sim = { workspace = true }
 
 [dependency-groups]
 dev = [
-  "pytest>=8,<9",
+  "pytest>=8,<10",
   "pytest-xdist>=3.6,<4",
   "msgpack>=1.0.8",
   "msgpack-numpy>=0.4.8",
@@ -35,7 +35,7 @@ dev = [
   "av>=14,<17",
   "opencv-python-headless>=4.10,<4.12",
   "pillow>=10,<13",
-  "usd-core==26.8",
+  "usd-core==26.11",
 ]
 
 [tool.ruff]
