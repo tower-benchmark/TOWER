@@ -560,3 +560,147 @@ def test_frozen_stem_allowance_requires_namespace_and_expected_root(tmp_path):
     ):
         with pytest.raises(ValueError, match="Forbidden candidate import"):
             validate_imports({"modules": {name: {"path": str(path)}}}, **kwargs)
+
+
+def assert_infrastructure_batch(s):
+    for row in s.rows:
+        status = json.loads((row["output"] / "status.json").read_text())
+        assert status["status"] == "infrastructure_failure"
+        assert status["evidence_complete"] is False
+        assert not (row["output"] / "score.json").exists()
+
+
+@pytest.mark.parametrize("simulation", [2], indirect=True)
+def test_first_delivered_zero_view_never_reaches_policy(simulation):
+    s = simulation
+    original = s.camera.observe
+    requests = []
+
+    def observe():
+        out = original()
+        if s.camera.verified_capture_steps == 3:
+            # Startup and assignment proof use earlier, healthy renders.
+            pixels = out["rgb"].copy()
+            pixels[0, 3] = 0
+            return dict(rgb=pixels)
+        return out
+
+    s.camera.observe = observe
+    policy = NS(
+        package=dict(package_digest="a" * 64, checkpoint_sha256="b" * 64),
+        solver=NS(identity={}),
+        start=lambda *a: {},
+        initialize=lambda *a: None,
+        close=lambda: None,
+        inference="test",
+        prefetch=lambda *a: requests.append(a),
+        append_camera=lambda *a, **kw: None,
+    )
+    with pytest.raises(RuntimeError, match="Renderer failure in delivered camera views"):
+        s.run(policy=policy)
+    assert_infrastructure_batch(s)
+    assert requests == []
+    assert not any("request_id" in record for record in s.records)
+
+
+@pytest.mark.parametrize("simulation", [2], indirect=True)
+@pytest.mark.parametrize("failed_views", [1, 4])
+def test_mid_episode_blackout_aborts_every_environment(simulation, failed_views):
+    s = simulation
+    original = s.camera.observe
+    serial = s.factories.serial
+
+    def blacken(pixels):
+        pixels = pixels.copy()
+        pixels[-failed_views:] = 0
+        return pixels
+
+    def observe():
+        out = original()
+        if s.env.elapsed[1] > 0:
+            pixels = out["rgb"].copy()
+            pixels[1] = blacken(pixels[1])
+            return dict(rgb=pixels)
+        return out
+
+    def reference(camera, index=0, **kwargs):
+        source = serial(camera, index, **kwargs)
+
+        def observe_reference():
+            pixels, receipt = source.observe()
+            if index == 1 and s.env.elapsed[1] > 0:
+                pixels = blacken(pixels)
+            return pixels, receipt
+
+        return NS(observe=observe_reference)
+
+    s.camera.observe = observe
+    s.factories.serial = reference
+    with pytest.raises(RuntimeError, match="Renderer failure in delivered camera views"):
+        s.run()
+    assert_infrastructure_batch(s)
+    assert s.env.elapsed[1] > 0
+    assert any("request_id" in record for record in s.records)
+    detail = next((s.rows[1]["output"] / "camera-frames.hdf5.diagnostics").glob("*.json"))
+    delivery = json.loads(detail.read_text())
+    assert delivery["time_s"] > 0
+    assert sum(q["maximum"] == 0 for q in delivery["cameras"].values()) == failed_views
+
+
+def test_bright_low_quality_near_plane_terminal_is_policy_failure(simulation, monkeypatch):
+    s = simulation
+    original = s.camera.observe
+    serial = s.factories.serial
+    ordinary = cameras.ordinary_references
+
+    def occlude(pixels):
+        pixels = pixels.copy()
+        if s.env.elapsed[0] > 0:
+            pixels[3] = 128  # Bright, flat wrist occlusion; three healthy fixed/other views.
+        return pixels
+
+    def observe():
+        if s.env.elapsed[0] > 0 and not s.guard.rejections:
+
+            def reject(*args):
+                raise RuntimeError(
+                    "Wrist near plane may clip a task block: live_env_0:left_wrist (9 < 10 mm)"
+                )
+
+            s.guard.original = reject
+            s.guard.check([], [], [], [], [], 10.0, "live_env_0:left_wrist")
+        return dict(rgb=occlude(original()["rgb"][0])[None])
+
+    def reference(camera, index=0, **kwargs):
+        source = serial(camera, index, **kwargs)
+
+        def observe_reference():
+            pixels, receipt = source.observe()
+            return occlude(pixels), receipt
+
+        return NS(observe=observe_reference)
+
+    def ordinary_reference(camera):
+        pixels, receipt = ordinary(camera)
+        return occlude(pixels[0])[None], receipt
+
+    s.camera.observe = observe
+    s.factories.serial = reference
+    monkeypatch.setattr(cameras, "ordinary_references", ordinary_reference)
+    assert s.run() == 0
+    status = json.loads((s.row["output"] / "status.json").read_text())
+    assert status["status"] == "diagnostic_prefix_complete"
+    assert status["evidence_complete"] is True
+    terminal = json.loads((s.row["output"] / "policy-action-failure.json").read_text())
+    assert terminal["category"] == "camera_near_plane_guard"
+    assert terminal["terminal_evidence_complete"] is True
+    assert terminal["rejected_observation_sent_to_policy"] is False
+    import h5py
+
+    with h5py.File(s.row["output"] / "camera-frames.hdf5") as archive:
+        visibility = json.loads(archive.attrs["verified_low_visibility_json"])
+        assert visibility
+        for frame in visibility.values():
+            assert frame["cameras"]["3"]["maximum"] == 128
+            assert frame["cameras"]["3"]["valid"] is False
+            assert frame["delivery"]["valid"] is True

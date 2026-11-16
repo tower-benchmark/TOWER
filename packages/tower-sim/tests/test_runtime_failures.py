@@ -183,21 +183,24 @@ def test_native_crash_requires_durable_completion_and_valid_evidence(
         (output / ("diagnostic-result.json" if diagnostic else "result.json")).read_text()
     )
     complete = mode == "complete"
-    assert (code == 0) == complete
+    assert code == (0 if complete else (1 if diagnostic else child.returncode))
     assert receipt["evidence_complete"] is complete
     assert receipt["worker_returncode"] == -signal.SIGSEGV
     assert receipt["worker_exit"] == dict(
         returncode=-signal.SIGSEGV,
         signal=signal.SIGSEGV,
-        phase="teardown" if complete else "execution",
+        phase="teardown" if mode in ("complete", "bad-evidence") else "execution",
     )
     assert bool(scored) == (diagnostic and mode in ("complete", "bad-evidence"))
 
 
-@pytest.mark.parametrize("code", [0, 7])
-def test_process_exit_without_signal_is_recorded(code):
-    assert policy_entry.worker_exit(code, completed=True) == dict(
-        returncode=code, signal=None, phase="teardown"
+@pytest.mark.parametrize("code", [0, 7, 128 + signal.SIGSEGV])
+@pytest.mark.parametrize("boundary", [False, True])
+def test_process_exit_without_signal_is_recorded(code, boundary):
+    assert policy_entry.worker_exit(code, boundary=boundary) == dict(
+        returncode=code,
+        signal=None,
+        phase=("teardown" if boundary else "execution") if code else None,
     )
 
 
@@ -235,20 +238,30 @@ os.kill(os.getpid(), signal.SIGSEGV)
     )
 
 
-@pytest.mark.parametrize("failure", [None, "source", "camera-close", "teardown"])
+@pytest.mark.parametrize("failure", [None, "source", "camera-close", "marker", "teardown"])
 def test_smoke_completion_follows_capture_close(tmp_path, monkeypatch, failure):
     import benchmark
     import benchmark_assets
     import benchmark_candidate
-    from tower_sim.bench import cameras, evidence, observation, verification
+    from tower_sim.bench import cameras, evidence, observation, resources, verification
 
     from scripts.maintainer import kit_safety
 
     output = tmp_path / "smoke"
     marker = output / "smoke-complete.json"
+    events = []
+    publish = resources.save_exclusive
+
+    def save(path, value):
+        if path == marker and failure == "marker":
+            raise RuntimeError("marker")
+        publish(path, value)
+
+    monkeypatch.setattr(resources, "save_exclusive", save)
 
     def record(name):
-        assert marker.exists() == (name == "teardown" and failure != "source")
+        events.append(name)
+        assert marker.exists() == (name == "teardown" and failure not in ("source", "marker"))
         if name == failure:
             raise RuntimeError(name)
 
@@ -308,11 +321,15 @@ def test_smoke_completion_follows_capture_close(tmp_path, monkeypatch, failure):
     else:
         public_smoke.worker(args)
     assert marker.exists() == (failure in (None, "teardown"))
+    if failure == "marker":
+        assert events[-1] == "teardown"
     if marker.exists():
         assert json.loads(marker.read_text())["phase"] == "teardown"
 
 
-@pytest.mark.parametrize("failure", [None, "evidence", "writer-close", "teardown"])
+@pytest.mark.parametrize(
+    "failure", [None, "evidence", "nonzero", "writer-close", "marker", "teardown"]
+)
 def test_worker_publishes_boundary_after_evidence_and_before_teardown(
     tmp_path, monkeypatch, failure
 ):
@@ -336,9 +353,20 @@ def test_worker_publishes_boundary_after_evidence_and_before_teardown(
     marker = output / "worker-complete.json"
     events = []
 
+    publish = candidate_policy.save_exclusive
+
+    def save(path, value):
+        if path == marker and failure == "marker":
+            raise RuntimeError("marker")
+        publish(path, value)
+
+    monkeypatch.setattr(candidate_policy, "save_exclusive", save)
+
     def record(name):
         events.append(name)
-        assert marker.exists() == (name == "teardown" and failure != "evidence")
+        assert marker.exists() == (
+            name == "teardown" and failure not in ("evidence", "nonzero", "marker")
+        )
         if name == failure:
             raise RuntimeError(name)
 
@@ -354,7 +382,11 @@ def test_worker_publishes_boundary_after_evidence_and_before_teardown(
     monkeypatch.setattr(candidate_policy, "observed_joint_validator", lambda *a, **kw: NS())
     monkeypatch.setattr(policy_entry, "validate_entry", lambda *a: None)
     monkeypatch.setattr(policy_entry, "prepare", lambda *a, **kw: (NS(close=lambda: None), None))
-    monkeypatch.setattr(policy_entry, "execute", lambda *a, **kw: record("evidence") or 0)
+    monkeypatch.setattr(
+        policy_entry,
+        "execute",
+        lambda *a, **kw: record("evidence") or (7 if failure == "nonzero" else 0),
+    )
     # The actual paths are irrelevant to this lifecycle test, not its ordering.
     resource_path = candidate_policy.Resources.path
     monkeypatch.setattr(
@@ -372,7 +404,9 @@ def test_worker_publishes_boundary_after_evidence_and_before_teardown(
     args = NS(request=request_path, private_kit_root=None, ik_python=tmp_path, diagnostic=True)
     runner = NS(setup=lambda *a, **kw: prepared)
     if failure:
-        with pytest.raises(RuntimeError, match=failure):
+        with pytest.raises(
+            RuntimeError, match="worker failed: 7" if failure == "nonzero" else failure
+        ):
             candidate_policy.worker(args, runner=runner)
     else:
         candidate_policy.worker(args, runner=runner)
@@ -382,3 +416,7 @@ def test_worker_publishes_boundary_after_evidence_and_before_teardown(
             completed=True, phase="teardown", gain_checks=1
         )
         assert (output / "fast-observed-joints.json").is_file()
+    if failure in ("marker", "nonzero"):
+        assert events[-1] == "teardown"
+    if failure == "nonzero":
+        assert not (output / "fast-observed-joints.json").exists()

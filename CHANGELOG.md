@@ -21,6 +21,14 @@
 
 ### Changes
 
+- Completed runs exit zero after a teardown crash only when all evidence checks
+  pass; incomplete runs still fail.
+- Camera delivery rejects any invalid or all-zero view and any frame with four
+  quality-failed views, including in the independent reference render.
+- Formal runs write a run-level `result.json` with evidence completeness and
+  `worker_exit` details, separating crash phase from evidence validity.
+- Public smoke `result.json` is now written by the parent after checking the
+  worker's durable completion receipt, preserving teardown crash details.
 - Public benchmark revision 2026.11.1 with neutral scene identifiers and a complete
   physical equivalence map for 600 fixed evaluation scenes.
 - Evaluation-only `tower-sim`, `tower-eval`, and `nero-kinematics` packages.

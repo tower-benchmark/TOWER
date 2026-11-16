@@ -165,15 +165,17 @@ def worker(args, *, verification=None, runner=None):
         solver.close()
         metrics.close()
         sink.close()
-        if completed:
-            # Publish the durable boundary only after all evidence writers close.
-            # A native crash before this point must remain an execution failure.
-            save_exclusive(
-                output / "worker-complete.json",
-                dict(completed=True, phase="teardown", gain_checks=context._drive_checks),
-            )
-        if prepared is not None:
-            prepared.close()
+        try:
+            if completed:
+                # Publish the durable boundary only after all evidence writers close.
+                # A native crash before this point must remain an execution failure.
+                save_exclusive(
+                    output / "worker-complete.json",
+                    dict(completed=True, phase="teardown", gain_checks=context._drive_checks),
+                )
+        finally:
+            if prepared is not None:
+                prepared.close()
 
 
 def finish(request, returncode, *, diagnostic):
@@ -207,9 +209,9 @@ def finish(request, returncode, *, diagnostic):
         return json.loads(path.read_text()) if path.is_file() else {}
 
     completion = read(output / "worker-complete.json")
+    boundary = completion.get("completed") is True and completion.get("phase") == "teardown"
     completed = (
-        completion.get("completed") is True
-        and completion.get("phase") == "teardown"
+        boundary
         and read(output / "simulation/batch-policy-results.json").get("completed")
         and bool(request["seeds"])
     )
@@ -221,7 +223,7 @@ def finish(request, returncode, *, diagnostic):
         dict(
             evidence_complete=bool(completed),
             worker_returncode=returncode,
-            worker_exit=policy_entry.worker_exit(returncode, completed=bool(completed)),
+            worker_exit=policy_entry.worker_exit(returncode, boundary=boundary),
         ),
     )
     return 0 if completed else (returncode or 1)

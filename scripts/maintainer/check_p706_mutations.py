@@ -2836,8 +2836,8 @@ MUTATIONS += (
     (
         "runtime-worker-boundary",
         "../../../../../scripts/maintainer/candidate_policy.py",
-        "        if completed:\n",
-        "        if True:\n",
+        "            if completed:\n",
+        "            if True:\n",
     ),
     (
         "runtime-worker-durable-marker",
@@ -2885,8 +2885,8 @@ MUTATIONS += (
     (
         "runtime-exit-phase",
         "policy_entry.py",
-        'phase="teardown" if completed else "execution"',
-        'phase="teardown"',
+        'phase=("teardown" if boundary else "execution") if returncode else None',
+        'phase="teardown" if returncode else None',
     ),
     (
         "runtime-smoke-boundary",
@@ -2917,6 +2917,82 @@ MUTATIONS += (
         "../../../../../scripts/maintainer/public_smoke.py",
         "if not completed:",
         "if returncode or not completed:",
+    ),
+)
+
+
+MUTATIONS += (
+    (
+        "runtime-exit-zero-phase",
+        "policy_entry.py",
+        "if returncode else None",
+        "if True else None",
+    ),
+    (
+        "runtime-exit-positive-code",
+        "policy_entry.py",
+        "signal=-returncode if returncode < 0 else None",
+        "signal=returncode - 128 if returncode > 128 else (-returncode if returncode < 0 else None)",
+    ),
+    (
+        "runtime-diagnostic-boundary-phase",
+        "policy_entry.py",
+        "worker_exit(returncode, boundary=boundary)",
+        'worker_exit(returncode, boundary=result["evidence_complete"])',
+    ),
+    (
+        "runtime-formal-boundary-phase",
+        "../../../../../scripts/maintainer/candidate_policy.py",
+        "worker_exit(returncode, boundary=boundary)",
+        "worker_exit(returncode, boundary=bool(completed))",
+    ),
+    (
+        "runtime-formal-failure-returncode",
+        "../../../../../scripts/maintainer/candidate_policy.py",
+        "return 0 if completed else (returncode or 1)",
+        "return 0 if completed else 1",
+    ),
+    (
+        "runtime-worker-nonzero-completion",
+        "../../../../../scripts/maintainer/candidate_policy.py",
+        "        if code:\n",
+        "        completed = True\n        if code:\n",
+    ),
+    (
+        "runtime-worker-marker-cleanup",
+        "../../../../../scripts/maintainer/candidate_policy.py",
+        "            if prepared is not None:\n                prepared.close()",
+        '            if prepared is not None and (output / "worker-complete.json").exists():\n                prepared.close()',
+    ),
+    (
+        "runtime-smoke-marker-cleanup",
+        "../../../../../scripts/maintainer/public_smoke.py",
+        "        finally:\n            prepared.close()",
+        '        finally:\n            if (work / "smoke-complete.json").exists():\n                prepared.close()',
+    ),
+    (
+        "runtime-replay-first-frame",
+        "replay.py",
+        "        store_camera(range(env.n), 0)",
+        "        pass",
+    ),
+    (
+        "runtime-replay-blackout",
+        "observation_validity.py",
+        "if renderer_failure(quality):",
+        "if False:",
+    ),
+    (
+        "runtime-replay-batch-infrastructure",
+        "replay.py",
+        'else "infrastructure_failure",',
+        'else "diagnostic_prefix_complete",',
+    ),
+    (
+        "runtime-replay-near-plane-visibility",
+        "observation_validity.py",
+        'not any(q.get("valid") is True for q in quality.values())',
+        'not all(q.get("valid") is True for q in quality.values())',
     ),
 )
 
@@ -2954,7 +3030,9 @@ def main():
             ]
             # The broad baseline covers non-scene tests; scene-baseline covers
             # the selected scene regressions. Mutants run their owning tests.
-            if name.startswith("runtime-"):
+            if name.startswith("runtime-replay-"):
+                tests = ["packages/tower-sim/tests/test_replay_lifecycle.py"]
+            elif name.startswith("runtime-"):
                 tests = ["packages/tower-sim/tests/test_runtime_failures.py"]
             elif name.startswith("contrib-"):
                 tests = [

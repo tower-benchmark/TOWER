@@ -29,6 +29,15 @@ context. Ambiguous or incorrect assignments fail closed. Products remain attache
 until process shutdown to preserve SDK handles. The caller must explicitly check
 physical state before and after capture with `assert_unchanged`.
 
+**Delivery validity.** Delivered RGB must have four correctly formatted views,
+each with `maximum > 0`, and at least one with quality `valid: true`. If a subset
+fails quality, an independent same-state render must meet the same predicate
+and match every view within MAE ≤8 and absolute channel bias ≤6. Missing, invalid
+or all-zero views and four quality-failed views are infrastructure rejections.
+A partial blackout with low nonzero noise in both capture paths can still pass
+the pixel comparison; this remains indistinguishable from confirmed local
+occlusion under these checks. Four quality-failed views are always rejected.
+
 ## Mount evidence
 
 `adopt_usd_wrist_mounts` preserves source-authored local wrist mounts in every

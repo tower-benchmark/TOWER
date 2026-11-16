@@ -68,8 +68,9 @@ Diagnostic runs are the supported way to test a policy now. Run
 `--assets`, `--data-root`, `--package`, `--policy-url`, `--ik-python`, a new
 `--output` and `--accept-eula`, using the Isaac interpreter. This entrypoint
 selects diagnostic mode itself; no `--diagnostic` or `--pilot-review` is needed.
-It records per-episode status and `result.json`, with `score.json` when the
-physical evidence is complete and scoring succeeds. These results remain
+It records per-episode status and `diagnostic-result.json`; the public entrypoint
+also writes `result.json` when implementation identity is available, with
+`score.json` when physical evidence is complete and scoring succeeds. These results remain
 diagnostic and do not approve a pilot or qualify a formal trial. Formal runs
 additionally require the posture review (`--pilot-review`); its per-task
 contact-frame reference and review tooling are not yet published and will follow.
@@ -197,12 +198,19 @@ checks supplied no policy actions; warm-up is not an accepted evaluation trial.
 
 ## Rerun infrastructure rejections
 
-A startup error such as `Initial scene has four all-zero camera views` or
-`Renderer failed to advance`, or an episode status of `infrastructure_failure`,
-indicates an infrastructure rejection, not a policy result. Inspect the log,
-`error.json`, camera diagnostics and each `simulation/seed-<id>/status.json`
-that was written; startup can fail before episode status exists. Incomplete
-evidence (`evidence_complete: false`) must not be counted as a policy failure.
+A startup error such as `Initial scene has four all-zero camera views`,
+`Renderer dispatcher did not advance` or `Renderer returned before scheduled
+frame delivery`, or an episode status of `infrastructure_failure`, indicates an
+infrastructure rejection, not a policy result. The delivery guard also rejects
+`Renderer failure in delivered camera views` and `Renderer failure in independent
+camera views`. Inspect the log, `error.json`, and each
+`simulation/seed-<id>/status.json` that was written; startup can fail before
+episode status exists. Per-frame rejection diagnostics and raw pixels are saved
+relative to the run output in
+`simulation/seed-<id>/camera-frames.hdf5.diagnostics/<frame>.json` and the matching
+`.npz`. For diagnostics, inspect the run-level `diagnostic-result.json` too.
+Incomplete evidence (per-seed `status.json` `evidence_complete: false`) must not
+be counted as a policy failure.
 After resolving the infrastructure problem, rerun exactly the rejected scene
 ids, retaining the rejected attempt and its inputs, logs and evidence. For
 formal batches, repeat `prepare-request` above with the same task, benchmark,
@@ -210,7 +218,12 @@ data, package, policy settings and review, set `--seeds` to only those ids, and
 choose fresh `--output` and `--run-output` directories; check and run that new
 request. For diagnostics, repeat the diagnostic command for each rejected
 `--seed` with a fresh `--output`. Do not rerun completed episodes or overwrite
-the old request. There is no automatic retry. A recorded worker exit with
-`phase: "teardown"` and complete evidence is different: verification succeeded,
-the command exits zero, and the native return code and signal remain in the
-result's `worker_exit` record.
+the old request. There is no automatic retry. If an identical rerun reproduces
+the same rejection, report it with the retained evidence instead of retrying.
+
+A recorded worker exit with `phase: "teardown"` means the worker crossed the
+durable completion boundary. The command exits zero only if all evidence checks
+also pass. The native return code and signal remain in the result's `worker_exit`
+record; a zero return code has `phase: null`. Only negative subprocess return
+codes are decoded into `signal`. A shell-wrapped interpreter can report `128+N`
+for signal N; that positive code is retained with `signal: null`.

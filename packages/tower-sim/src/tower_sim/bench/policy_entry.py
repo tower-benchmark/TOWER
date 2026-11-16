@@ -131,12 +131,12 @@ def execute(
         worker.close()
 
 
-def worker_exit(returncode, *, completed):
+def worker_exit(returncode, *, boundary):
     """Preserve process failure separately from verified episode evidence."""
     return dict(
         returncode=returncode,
         signal=-returncode if returncode < 0 else None,
-        phase="teardown" if completed else "execution",
+        phase=("teardown" if boundary else "execution") if returncode else None,
     )
 
 
@@ -150,6 +150,7 @@ def collect_diagnostic(output, task, seed, returncode, *, bench_task=None, durat
         output / "simulation/batch-policy-results.json",
     ]
     complete, status, batch = [json.loads(p.read_text()) if p.is_file() else {} for p in paths]
+    boundary = complete.get("completed") is True and complete.get("phase") == "teardown"
     result = dict(
         diagnostic_only=True,
         formal_eligible=False,
@@ -163,8 +164,7 @@ def collect_diagnostic(output, task, seed, returncode, *, bench_task=None, durat
         worker_returncode=returncode,
         status=status,
         evidence_complete=bool(
-            complete.get("completed") is True
-            and complete.get("phase") == "teardown"
+            boundary
             and status.get("evidence_complete")
             and status.get("diagnostic_only")
             and not status.get("valid_trial")
@@ -184,7 +184,7 @@ def collect_diagnostic(output, task, seed, returncode, *, bench_task=None, durat
 
             result["scoring_error"] = traceback.format_exc()
             result["evidence_complete"] = False
-    result["worker_exit"] = worker_exit(returncode, completed=result["evidence_complete"])
+    result["worker_exit"] = worker_exit(returncode, boundary=boundary)
     save_exclusive(
         run / "diagnostic-result.json"
         if run.is_dir()

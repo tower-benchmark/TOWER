@@ -141,14 +141,18 @@ def worker(args):
     finally:
         if camera is not None:
             camera.close()
-        if result is not None:
-            save_exclusive(
-                work / "smoke-complete.json",
-                json.loads(
-                    json.dumps(dict(result, phase="teardown"), default=lambda value: value.tolist())
-                ),
-            )
-        prepared.close()
+        try:
+            if result is not None:
+                save_exclusive(
+                    work / "smoke-complete.json",
+                    json.loads(
+                        json.dumps(
+                            dict(result, phase="teardown"), default=lambda value: value.tolist()
+                        )
+                    ),
+                )
+        finally:
+            prepared.close()
 
 
 def run(args):
@@ -199,12 +203,13 @@ def finish(output, returncode):
     output.mkdir(parents=True, exist_ok=True)
     completion = output / "smoke-complete.json"
     result = benchmark.read(completion) if completion.is_file() else {}
-    completed = result.get("passed") is True and result.get("phase") == "teardown"
+    boundary = result.get("passed") is True and result.get("phase") == "teardown"
+    completed = boundary
     result.pop("phase", None)
     result.update(
         passed=completed,
         worker_returncode=returncode,
-        worker_exit=worker_exit(returncode, completed=completed),
+        worker_exit=worker_exit(returncode, boundary=boundary),
     )
     receipt = output / "result.json"
     save_exclusive(receipt, result)
