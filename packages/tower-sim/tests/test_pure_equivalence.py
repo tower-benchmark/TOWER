@@ -7,6 +7,7 @@ from types import SimpleNamespace
 
 import numpy as np
 import pytest
+from tower_sim.bench.camera_quality import camera_quality
 from tower_sim.bench.metrics import Metrics, TrialRequestID
 from tower_sim.bench.observation_validity import DeliveryGuard, compare_pixels
 from tower_sim.bench.termination import abort_evidence
@@ -51,10 +52,11 @@ def test_observation_delivery_equivalence(frozen_loader, monkeypatch, kind):
         "_p705_delivery", ArchivedToolPath("observation_validity.py")
     ).DeliveryGuard()
     new = DeliveryGuard()
-    pixels = np.zeros((4, 240, 320, 3), np.uint8)
-    quality = {
-        i: dict(valid=kind not in ("dark", "reference", "mismatch", "error")) for i in range(4)
-    }
+    pixels = np.full((4, 240, 320, 3), 40, np.uint8)
+    pixels[:, ::2] = 80
+    if kind in ("dark", "reference", "mismatch", "error"):
+        pixels[0] = 7
+    quality = {i: camera_quality(pixels[i]) for i in range(4)}
 
     def reference():
         if kind == "error":
@@ -77,6 +79,9 @@ def test_observation_delivery_equivalence(frozen_loader, monkeypatch, kind):
         original.validate(pixels, stamp, quality, **options),
         new.validate(pixels, stamp, quality, **options),
     )
+    # The new reference-quality audit is additional evidence. Renderer-wide
+    # failures intentionally diverge and have dedicated regression tests.
+    b.pop("reference_quality", None)
     # NaN is intentionally rejected but retained in the diagnostic stamp.
     assert json.dumps(a, sort_keys=True) == json.dumps(b, sort_keys=True)
     if kind == "stale":

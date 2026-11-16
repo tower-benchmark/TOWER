@@ -127,7 +127,7 @@ def diagnostic_recording(tmp_path):
         camera.create_dataset("time", data=times)
         camera.attrs.update(complete=True, streams_consistent=True)
     for path in (output / "worker-complete.json", output / "simulation/batch-policy-results.json"):
-        path.write_text(json.dumps(dict(completed=True)))
+        path.write_text(json.dumps(dict(completed=True, phase="teardown")))
     task = BenchTask.from_resources("task6-2", Resources.from_roots(checkout=ROOT, assets=ROOT))
     return output, run, task
 

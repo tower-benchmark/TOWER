@@ -131,6 +131,15 @@ def execute(
         worker.close()
 
 
+def worker_exit(returncode, *, completed):
+    """Preserve process failure separately from verified episode evidence."""
+    return dict(
+        returncode=returncode,
+        signal=-returncode if returncode < 0 else None,
+        phase="teardown" if completed else "execution",
+    )
+
+
 def collect_diagnostic(output, task, seed, returncode, *, bench_task=None, duration=None):
     """Kit exit zero alone never proves completion (benchmark_diagnostic:174)."""
     output = Path(output)
@@ -154,8 +163,8 @@ def collect_diagnostic(output, task, seed, returncode, *, bench_task=None, durat
         worker_returncode=returncode,
         status=status,
         evidence_complete=bool(
-            returncode == 0
-            and complete.get("completed")
+            complete.get("completed") is True
+            and complete.get("phase") == "teardown"
             and status.get("evidence_complete")
             and status.get("diagnostic_only")
             and not status.get("valid_trial")
@@ -175,6 +184,7 @@ def collect_diagnostic(output, task, seed, returncode, *, bench_task=None, durat
 
             result["scoring_error"] = traceback.format_exc()
             result["evidence_complete"] = False
+    result["worker_exit"] = worker_exit(returncode, completed=result["evidence_complete"])
     save_exclusive(
         run / "diagnostic-result.json"
         if run.is_dir()

@@ -2801,6 +2801,96 @@ MUTATIONS += (
 )
 
 
+MUTATIONS += (
+    ("runtime-four-views", "observation_validity.py", "len(quality) != 4", "False"),
+    (
+        "runtime-zero-or-invalid-view",
+        "observation_validity.py",
+        'any(q.get("maximum", 0) <= 0 for q in quality.values())',
+        "False",
+    ),
+    (
+        "runtime-all-views-failed",
+        "observation_validity.py",
+        'not any(q.get("valid") is True for q in quality.values())',
+        "False",
+    ),
+    (
+        "runtime-partial-occlusion",
+        "observation_validity.py",
+        'not any(q.get("valid") is True for q in quality.values())',
+        'not all(q.get("valid") is True for q in quality.values())',
+    ),
+    (
+        "runtime-delivered-blackout",
+        "observation_validity.py",
+        "if renderer_failure(quality):",
+        "if False:",
+    ),
+    (
+        "runtime-reference-blackout",
+        "observation_validity.py",
+        "if renderer_failure(reference_quality):",
+        "if False:",
+    ),
+    (
+        "runtime-worker-boundary",
+        "../../../../../scripts/maintainer/candidate_policy.py",
+        "        if completed:\n",
+        "        if True:\n",
+    ),
+    (
+        "runtime-worker-durable-marker",
+        "../../../../../scripts/maintainer/candidate_policy.py",
+        'dict(completed=True, phase="teardown", gain_checks=context._drive_checks)',
+        'dict(completed=True, phase="evidence", gain_checks=context._drive_checks)',
+    ),
+    (
+        "runtime-formal-marker",
+        "../../../../../scripts/maintainer/candidate_policy.py",
+        'completion.get("completed") is True',
+        "True",
+    ),
+    (
+        "runtime-formal-phase",
+        "../../../../../scripts/maintainer/candidate_policy.py",
+        'and completion.get("phase") == "teardown"',
+        "and True",
+    ),
+    (
+        "runtime-formal-teardown-exit",
+        "../../../../../scripts/maintainer/candidate_policy.py",
+        "return 0 if completed else (returncode or 1)",
+        "return returncode or (0 if completed else 1)",
+    ),
+    ("runtime-diagnostic-marker", "policy_entry.py", 'complete.get("completed") is True', "True"),
+    (
+        "runtime-diagnostic-phase",
+        "policy_entry.py",
+        'and complete.get("phase") == "teardown"',
+        "and True",
+    ),
+    (
+        "runtime-diagnostic-teardown-exit",
+        "policy_entry.py",
+        'complete.get("completed") is True',
+        'returncode == 0 and complete.get("completed") is True',
+    ),
+    (
+        "runtime-exit-signal",
+        "policy_entry.py",
+        "signal=-returncode if returncode < 0 else None",
+        "signal=None",
+    ),
+    (
+        "runtime-exit-phase",
+        "policy_entry.py",
+        'phase="teardown" if completed else "execution"',
+        'phase="teardown"',
+    ),
+)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
@@ -2834,7 +2924,9 @@ def main():
             ]
             # The broad baseline covers non-scene tests; scene-baseline covers
             # the selected scene regressions. Mutants run their owning tests.
-            if name.startswith("contrib-"):
+            if name.startswith("runtime-"):
+                tests = ["packages/tower-sim/tests/test_runtime_failures.py"]
+            elif name.startswith("contrib-"):
                 tests = [
                     "tests/test_public_assets.py",
                     "tests/test_public_data.py",

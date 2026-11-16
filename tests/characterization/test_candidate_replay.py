@@ -76,23 +76,25 @@ def test_policy_parent_rejects_kit_exit_zero_without_evidence(tmp_path, monkeypa
     assert not receipt["formal_eligible"] and not receipt["pilot_approved"]
 
 
-def test_policy_parent_requires_formal_completion(tmp_path):
+@pytest.mark.parametrize("complete, returncode", [(False, 0), (True, 0), (True, 7)])
+def test_policy_parent_requires_formal_completion(tmp_path, complete, returncode):
     import json
 
     from scripts.maintainer.candidate_policy import finish
 
     request = dict(output=str(tmp_path), seeds=[1])
-    assert finish(request, 0, diagnostic=False) == 1
-    run = tmp_path / "simulation/seed-1"
-    run.mkdir(parents=True)
-    for path in (
-        tmp_path / "worker-complete.json",
-        tmp_path / "simulation/batch-policy-results.json",
-    ):
-        path.write_text(json.dumps(dict(completed=True)))
-    (run / "status.json").write_text(json.dumps(dict(valid_trial=True, evidence_complete=True)))
-    assert finish(request, 0, diagnostic=False) == 0
-    assert finish(request, 7, diagnostic=False) == 7
+    if complete:
+        run = tmp_path / "simulation/seed-1"
+        run.mkdir(parents=True)
+        for path in (
+            tmp_path / "worker-complete.json",
+            tmp_path / "simulation/batch-policy-results.json",
+        ):
+            path.write_text(json.dumps(dict(completed=True, phase="teardown")))
+        (run / "status.json").write_text(json.dumps(dict(valid_trial=True, evidence_complete=True)))
+    assert finish(request, returncode, diagnostic=False) == (0 if complete else 1)
+    result = json.loads((tmp_path / "result.json").read_text())
+    assert result["worker_returncode"] == returncode
 
 
 def test_candidate_rejects_wrong_data_before_runtime(tmp_path, monkeypatch):
