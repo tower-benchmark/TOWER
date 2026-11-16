@@ -34,6 +34,9 @@ def main(argv=None):
     parser.add_argument(
         "--accept-eula", action="store_true", help="Accept the NVIDIA Omniverse License Agreement"
     )
+    from tower_sim.bench.shader_cache import add_arguments
+
+    add_arguments(parser)
     arguments = sys.argv[1:] if argv is None else argv
     options = parser.parse_args(arguments)
     if options.reference:

@@ -52,6 +52,10 @@ def main(argv=None):
             action="store_true",
             help="Unavailable: the frozen reference runtime is maintained in the private archive",
         )
+    from tower_sim.bench.shader_cache import add_arguments
+
+    add_arguments(smoke_parser)
+    add_arguments(run)
     arguments = sys.argv[1:] if argv is None else argv
     args = parser.parse_args(arguments)
     if args.reference:

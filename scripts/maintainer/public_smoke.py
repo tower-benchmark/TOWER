@@ -4,6 +4,7 @@ import importlib
 import json
 import subprocess
 import sys
+import traceback
 from types import SimpleNamespace
 
 
@@ -53,11 +54,15 @@ def worker(args):
     request = SimpleNamespace(
         task=args.task, assets=args.assets, output=work, gpu=args.gpu, frozen_components=()
     )
-    prepared = public.create_runner(
+    from tower_sim.bench.shader_cache import configuration
+
+    runner = public.create_runner(
         benchmark_version=getattr(args, "benchmark", "2026.11.1"),
         data_root=getattr(args, "data_root", None),
         v1_root=getattr(args, "v1_root", None),
-    ).setup(request, rows=rows)
+    )
+    runner.shader_cache = configuration(args, work)
+    prepared = runner.setup(request, rows=rows)
     camera = None
     try:
         verify(kit)
@@ -133,6 +138,10 @@ def worker(args):
             work / "result.json",
             json.loads(json.dumps(result, default=lambda value: value.tolist())),
         )
+    except BaseException:
+        # Native fast shutdown can exit before the interpreter prints this error.
+        save_exclusive(work / "error.json", dict(error=traceback.format_exc()))
+        raise
     finally:
         if camera is not None:
             camera.close()
@@ -148,6 +157,9 @@ def run(args):
         return 0
     if args.output.exists():
         raise ValueError("Smoke output must be a new directory")
+    from tower_sim.bench.shader_cache import child_arguments, configuration, finalize
+
+    cache_config = configuration(args, args.output)
     command = [
         sys.executable,
         "-u",
@@ -157,6 +169,7 @@ def run(args):
     ]
     for key in ("assets", "task", "output", "gpu"):
         command.extend(["--" + key, str(getattr(args, key))])
+    command.extend(child_arguments(args))
     command.extend(["--seeds", *map(str, args.seeds)])
     command.extend(["--benchmark", getattr(args, "benchmark", "2026.11.1")])
     if getattr(args, "data_root", None) is not None:
@@ -167,11 +180,16 @@ def run(args):
         command.append("--accept-eula")
     result = subprocess.run(command, env=public.child_environment(), check=False)
     receipt = args.output / "result.json"
-    if (
-        result.returncode
-        or not receipt.is_file()
-        or benchmark.read(receipt).get("passed") is not True
-    ):
+    passed = False
+    try:
+        passed = (
+            result.returncode == 0
+            and receipt.is_file()
+            and benchmark.read(receipt).get("passed") is True
+        )
+    finally:
+        finalize(cache_config, args.output, passed=passed)
+    if not passed:
         raise RuntimeError(
             f"Smoke worker did not produce a passing receipt (exit {result.returncode})"
         )

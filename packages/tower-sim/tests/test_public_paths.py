@@ -462,7 +462,8 @@ def test_public_diagnostic_retains_inputs_under_output(tmp_path, monkeypatch, ca
         inputs.output.mkdir(parents=True)
         return inputs.output / "request.json"
 
-    def launch(path, python, *, diagnostic):
+    def launch(path, python, *, diagnostic, cache_options):
+        assert cache_options is args
         assert path == output / "inputs/request.json" and diagnostic
         (output / "diagnostic-result.json").write_text(
             json.dumps(
@@ -524,3 +525,14 @@ def test_preflight_rejects_scene_manifest_without_benchmark(inputs):
     path.write_text(json.dumps(body))
     with pytest.raises(ValueError, match="must declare its benchmark revision"):
         public.preflight(request_path)
+
+
+def test_diagnostic_default_enters_public_data_preflight(monkeypatch, tmp_path):
+    from tools.simulator.benchmark_diagnostic_score import score_physical_diagnostic
+
+    def preflight(*args, **kwargs):
+        raise ValueError("public data preflight reached")
+
+    monkeypatch.setattr(v, "verify_data", preflight)
+    with pytest.raises(ValueError, match="public data preflight reached"):
+        score_physical_diagnostic(tmp_path, "task1-2")

@@ -403,6 +403,7 @@ class CandidateRunner:
         self.data_root = data_root
         self.v1_root = v1_root
         self.release = None
+        self.shader_cache = None
 
     def identity(self, assets, gpu, frozen_components, reference_root):
         # Substitutions have a separate explicit diagnostic factory, never fallback.
@@ -549,6 +550,7 @@ class CandidateRunner:
                     sdk=sdk,
                     fit_receipt_sha256=sha(resources.path("tcp_fit_receipt")),
                     factories=factories,
+                    shader_cache=self.shader_cache,
                 )
             provenance.bind_runtime(context.output / "kinematics")
             if self.release is not None:

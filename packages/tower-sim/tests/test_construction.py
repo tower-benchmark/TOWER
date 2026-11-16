@@ -470,7 +470,7 @@ def test_frozen_bootstrap_and_new_factory_sequence(
     # Frozen bootstrap intentionally changes sys.path and environment; isolate them.
     monkeypatch.setattr(sys, "path", list(sys.path))
     # Only the SDK double is used; test interpreter rejection separately.
-    monkeypatch.setattr(bootstrap.startup, "sys", NS(version_info=(3, 12)))
+    monkeypatch.setattr(bootstrap.startup, "sys", NS(version_info=(3, 12), argv=list(sys.argv)))
     import os
 
     monkeypatch.setattr(os, "environ", os.environ.copy())
@@ -779,6 +779,12 @@ def test_frozen_bootstrap_and_new_factory_sequence(
             },
         )
         assert "CUDA_VISIBLE_DEVICES" not in os.environ
+        completion = {
+            flag.split("=", 1)[0][2:]: json.loads(flag.split("=", 1)[1])
+            for flag in options["extra_args"]
+            if flag in bootstrap.startup.RENDER_COMPLETION_ARGS
+        }
+        install(monkeypatch, "carb", settings=NS(get_settings=lambda: NS(get=completion.get)))
         return NS(close=lambda *a, **kw: record("close"))
 
     sdk = tmp_path / "sdk"
@@ -833,11 +839,18 @@ def test_frozen_bootstrap_and_new_factory_sequence(
     frozen_initial = output / f"seed-{stored['seed']}" / "initial-state-readback.json"
     expected_initial = frozen_initial.read_bytes() if frozen_initial.exists() else None
     expected = copy.deepcopy(events)
-    # Explicit operational difference: the candidate never loads the SDK's
-    # crash-upload plugin. All simulation/renderer settings still match frozen.
+    # Explicit startup differences: disable crash uploads and synchronize render
+    # completion. Preserve the historical source and all scene/physics settings.
     for event in expected:
         if event[0] == "SimulationApp":
             event[1]["enable_crashreporter"] = False
+            flags = event[1]["extra_args"]
+            position = flags.index("--/crashreporter/skipOldDumpUpload=1")
+            flags[position:position] = [
+                "--/app/updateOrder/checkForHydraRenderComplete=1000",
+                "--/app/renderer/waitIdle=true",
+                "--/app/hydraEngine/waitIdle=true",
+            ]
     import shutil
 
     shutil.rmtree(output)
@@ -887,6 +900,12 @@ def test_frozen_bootstrap_and_new_factory_sequence(
         assert not tcp_calls
         assert not events
         return
+    launch_record = json.loads((output / "launch.json").read_text())
+    assert {
+        "--/app/updateOrder/checkForHydraRenderComplete=1000",
+        "--/app/renderer/waitIdle=true",
+        "--/app/hydraEngine/waitIdle=true",
+    } <= set(launch_record["extra_args"])
     assert (frozen_initial.read_bytes() if frozen_initial.exists() else None) == expected_initial
     assert len(dependency_calls) == 1
     assert tcp_calls == [

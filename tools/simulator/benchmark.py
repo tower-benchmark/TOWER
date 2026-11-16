@@ -143,6 +143,9 @@ def main(argv=None):
         command.add_argument("--request", type=Path, required=True)
         if name == "run":
             command.add_argument("--isaac-python", type=Path, required=True)
+            from tower_sim.bench.shader_cache import add_arguments
+
+            add_arguments(command)
             command.add_argument(
                 "--accept-eula",
                 action="store_true",

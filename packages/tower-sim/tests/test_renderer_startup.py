@@ -1,0 +1,665 @@
+"""Renderer startup contracts without importing the native SDK."""
+
+import argparse
+import ast
+import json
+import os
+import sys
+from pathlib import Path
+from types import SimpleNamespace
+
+import pytest
+from tower_sim.bench import app, bootstrap, shader_cache
+
+ROOT = Path(__file__).resolve().parents[3]
+FLAGS = {
+    "--/app/updateOrder/checkForHydraRenderComplete=1000",
+    "--/app/renderer/waitIdle=true",
+    "--/app/hydraEngine/waitIdle=true",
+}
+
+
+def test_shared_production_bootstrap_launch_record(tmp_path, monkeypatch):
+    # Execute the production call expression with only native boundaries replaced.
+    tree = ast.parse(Path(bootstrap.__file__).read_text())
+    call = next(
+        n
+        for n in ast.walk(tree)
+        if isinstance(n, ast.Call)
+        and isinstance(n.func, ast.Attribute)
+        and n.func.attr == "grouped_runtime"
+    )
+    monkeypatch.setattr(app, "require_python312", lambda: None)
+    output = tmp_path / "simulation"
+    output.mkdir()
+    scope = dict(
+        startup=app,
+        native=lambda config: SimpleNamespace(close=lambda: None),
+        gpu=0,
+        output=output,
+        sdk=tmp_path,
+        factories=SimpleNamespace(experience=None),
+        setup=lambda session: None,
+    )
+    settings = {
+        "/app/updateOrder/checkForHydraRenderComplete": 1000,
+        "/app/renderer/waitIdle": True,
+        "/app/hydraEngine/waitIdle": True,
+    }
+    monkeypatch.setitem(
+        sys.modules,
+        "carb",
+        SimpleNamespace(
+            settings=SimpleNamespace(get_settings=lambda: SimpleNamespace(get=settings.get))
+        ),
+    )
+    writes = []
+    save = app.save
+
+    def record_save(path, value):
+        writes.append(Path(path).name)
+        save(path, value)
+
+    monkeypatch.setattr(app, "save", record_save)
+    original = list(sys.argv)
+    with eval(compile(ast.Expression(call), "bootstrap", "eval"), scope) as launch:
+        assert sys.argv == original
+        launch(dict(headless=True, experience="provided.kit"))
+        assert sys.argv == original
+    assert sys.argv == original
+    record = json.loads((output / "launch.json").read_text())
+    assert set(record["extra_args"]) >= FLAGS
+    assert all(record["extra_args"].count(flag) == 1 for flag in FLAGS)
+    assert writes.count("launch.json") == 1
+    assert "render_completion_readback" not in record
+    readback = json.loads((output / "render-completion-readback.json").read_text())
+    assert readback == dict(expected=settings, actual=settings, passed=True)
+
+
+@pytest.mark.parametrize("corrupt", ["kit/shadercache/shader", "cuda/kernel"])
+def test_seed_roundtrip_and_corruption(tmp_path, monkeypatch, corrupt):
+    monkeypatch.setenv("CUDA_CACHE_PATH", "caller-cache")
+    warm = tmp_path / "warm"
+    output = tmp_path / "warm-run"
+    options = SimpleNamespace(shader_cache_warmup=warm)
+    config = shader_cache.configuration(options, output)
+    argv = ["worker", "--portable-root", str(tmp_path / "warm-run-kit")]
+    with app.private_shader_cache(**config, argv=argv) as receipt:
+        target = Path(receipt["private_cache"])
+        (target / "shadercache").mkdir()
+        (target / "shadercache/shader").write_bytes(b"compiled")
+        cuda = Path(receipt["private_cuda_cache"])
+        assert os.environ["CUDA_CACHE_PATH"] == str(cuda)
+        assert receipt["cuda_kernel_cache_before"]["file_count"] == 0
+        (cuda / "kernel").write_bytes(b"kernel")
+    assert os.environ["CUDA_CACHE_PATH"] == "caller-cache"
+    (output / "simulation").mkdir(parents=True)
+    (output / "simulation/private-shader-cache.json").write_text(json.dumps(receipt))
+    (output / "result.json").write_text(json.dumps(dict(passed=False)))
+    shader_cache.finalize(config, output, passed=False)
+    assert json.loads((warm / "warmup.json").read_text())["source_run_passed"] is False
+    assert json.loads((output / "result.json").read_text())["passed"] is False
+
+    # A fresh second process consumes the first pass's verified compilation
+    # output; its own result must pass before its cache is used concurrently.
+    parser = argparse.ArgumentParser()
+    shader_cache.add_arguments(parser)
+    options = parser.parse_args(
+        [
+            "--shader-cache-seed",
+            str(warm / "cache"),
+            "--shader-cache-digest",
+            str(warm / "digest.sha256"),
+            "--shader-cache-warmup",
+            str(tmp_path / "complete"),
+        ]
+    )
+    copied = parser.parse_args(shader_cache.child_arguments(options))
+    second = tmp_path / "second"
+    config = shader_cache.configuration(copied, second)
+    with app.private_shader_cache(
+        **config, argv=["worker", "--portable-root", str(tmp_path / "second-kit")]
+    ) as receipt:
+        target = Path(receipt["private_cache"])
+        assert (target / "shadercache/shader").read_bytes() == b"compiled"
+        (target / "shadercache/remaining").write_bytes(b"completed")
+        assert (Path(receipt["private_cuda_cache"]) / "kernel").read_bytes() == b"kernel"
+        assert receipt["cuda_kernel_cache_before"]["file_count"] == 1
+        assert receipt["cuda_kernel_cache_before"]["size_bytes"] == 6
+    (second / "simulation").mkdir(parents=True)
+    (second / "simulation/private-shader-cache.json").write_text(json.dumps(receipt))
+    shader_cache.finalize(config, second, passed=True)
+    complete = tmp_path / "complete"
+    assert json.loads((complete / "warmup.json").read_text())["source_run_passed"] is True
+    assert not (second.with_name("second-kit") / "cache").exists()
+    assert not (second.with_name("second-kit") / "cuda-cache").exists()
+    args = parser.parse_args(
+        [
+            "--shader-cache-seed",
+            str(complete / "cache"),
+            "--shader-cache-digest",
+            str(complete / "digest.sha256"),
+        ]
+    )
+    config = shader_cache.configuration(args, tmp_path / "run")
+    with app.private_shader_cache(
+        **config, argv=["worker", "--portable-root", str(tmp_path / "run-kit")]
+    ) as receipt:
+        target = Path(receipt["private_cache"])
+        assert (target / "shadercache/remaining").read_bytes() == b"completed"
+    assert not (tmp_path / "run-kit/cache").exists()
+    assert not (tmp_path / "run-kit/cuda-cache").exists()
+    assert os.environ["CUDA_CACHE_PATH"] == "caller-cache"
+    (complete / "cache" / corrupt).write_bytes(b"changed")
+    with (
+        pytest.raises(RuntimeError, match="differs"),
+        app.private_shader_cache(
+            **config, argv=["worker", "--portable-root", str(tmp_path / "run-kit")]
+        ),
+    ):
+        pytest.fail("Corrupt seed accepted")
+    assert os.environ["CUDA_CACHE_PATH"] == "caller-cache"
+
+
+@pytest.mark.parametrize(
+    "arguments",
+    [
+        ["--shader-cache-seed", "seed"],
+        ["--shader-cache-digest", "digest"],
+    ],
+)
+def test_invalid_cache_options(arguments):
+    parser = argparse.ArgumentParser()
+    shader_cache.add_arguments(parser)
+    with pytest.raises(ValueError):
+        shader_cache.child_arguments(parser.parse_args(arguments))
+
+
+def test_replay_passes_cache_to_bootstrap():
+    tree = ast.parse((ROOT / "scripts/maintainer/candidate_replay.py").read_text())
+    call = next(
+        n
+        for n in ast.walk(tree)
+        if isinstance(n, ast.Call)
+        and isinstance(n.func, ast.Attribute)
+        and n.func.attr == "bootstrap"
+    )
+    keyword = next(k for k in call.keywords if k.arg == "shader_cache")
+    sentinel = object()
+    assert (
+        eval(
+            compile(ast.Expression(keyword.value), "replay", "eval"),
+            {"self": SimpleNamespace(shader_cache=sentinel)},
+        )
+        is sentinel
+    )
+
+
+@pytest.mark.parametrize(
+    "entry,arguments,handler",
+    [
+        ("benchmark", ["run", "--request", "request.json", "--isaac-python", "python"], "command"),
+        ("benchmark_portable", ["run", "--request", "request.json"], "portable"),
+        (
+            "benchmark_portable",
+            ["smoke", "--assets", "assets", "--task", "task1-2", "--seeds", "0", "--output", "out"],
+            "portable",
+        ),
+        (
+            "benchmark_diagnostic",
+            [
+                "--assets",
+                "assets",
+                "--output",
+                "out",
+                "--package",
+                "package",
+                "--ik-python",
+                "python",
+                "--task",
+                "task1-2",
+                "--seed",
+                "0",
+                "--policy-url",
+                "http://localhost:19000",
+            ],
+            "diagnostic",
+        ),
+    ],
+)
+def test_public_cli_cache_options(entry, arguments, handler, monkeypatch, tmp_path):
+    import importlib
+
+    monkeypatch.syspath_prepend(str(ROOT / "tools/simulator"))
+    public = importlib.import_module("benchmark_candidate")
+    seen = []
+    monkeypatch.setattr(public, handler, lambda options: seen.append(options) or 0)
+    module = importlib.import_module(entry)
+    assert (
+        module.main(
+            [
+                *arguments,
+                "--shader-cache-seed",
+                str(tmp_path / "seed"),
+                "--shader-cache-digest",
+                str(tmp_path / "digest"),
+            ]
+        )
+        == 0
+    )
+    (tmp_path / "warmup.json").write_text(json.dumps(dict(source_run_passed=True)))
+    config = shader_cache.configuration(seen[0], tmp_path / "output")
+    assert config["seed"] == tmp_path / "seed"
+    assert config["seed_sha"] == tmp_path / "digest"
+
+
+def test_public_worker_cache_plumbing():
+    for relative in (
+        "tools/simulator/benchmark_candidate.py",
+        "scripts/maintainer/public_smoke.py",
+    ):
+        source = (ROOT / relative).read_text()
+        tree = ast.parse(source)
+        assignments = [
+            n
+            for n in ast.walk(tree)
+            if isinstance(n, ast.Assign)
+            and any(isinstance(t, ast.Attribute) and t.attr == "shader_cache" for t in n.targets)
+        ]
+        assert len(assignments) == 1
+        value = assignments[0].value
+        assert isinstance(value, ast.Call) and isinstance(value.func, ast.Name)
+        assert value.func.id == "configuration"
+        calls = [
+            n
+            for n in ast.walk(tree)
+            if isinstance(n, ast.Call)
+            and isinstance(n.func, ast.Name)
+            and n.func.id == "child_arguments"
+        ]
+        assert len(calls) == 1
+        finalizers = [
+            n
+            for n in ast.walk(tree)
+            if isinstance(n, ast.Call) and isinstance(n.func, ast.Name) and n.func.id == "finalize"
+        ]
+        assert len(finalizers) == 1
+    tree = ast.parse((ROOT / "tools/simulator/benchmark_candidate.py").read_text())
+    calls = [
+        n
+        for n in ast.walk(tree)
+        if isinstance(n, ast.Call) and isinstance(n.func, ast.Name) and n.func.id == "launch"
+    ]
+    assert len(calls) == 3
+    assert all(
+        any(
+            k.arg == "cache_options" and isinstance(k.value, ast.Name) and k.value.id == "args"
+            for k in call.keywords
+        )
+        for call in calls
+    )
+
+
+def test_parent_removes_only_receipted_private_cache(tmp_path, caplog):
+    output = tmp_path / "output"
+    options = SimpleNamespace(
+        shader_cache_seed=tmp_path / "seed", shader_cache_digest=tmp_path / "digest"
+    )
+    (tmp_path / "warmup.json").write_text(json.dumps(dict(source_run_passed=True)))
+    config = shader_cache.configuration(options, output)
+    directory = tmp_path / "output-kit"
+    target = directory / "cache"
+    target.mkdir(parents=True)
+    cuda = directory / "cuda-cache"
+    cuda.mkdir()
+    shader_cache.finalize(config, output, passed=False)
+    assert target.exists()
+    assert "Skipping cache finalization: no worker ownership receipt" in caplog.text
+    (output / "simulation").mkdir(parents=True)
+    receipt = output / "simulation/private-shader-cache.json"
+    receipt.write_text(json.dumps({"private_cache": str(tmp_path / "unowned")}))
+    with pytest.raises(ValueError, match="differs"):
+        shader_cache.finalize(config, output, passed=False)
+    assert target.exists()
+    receipt.write_text(
+        json.dumps({"private_cache": str(target), "private_cuda_cache": str(tmp_path / "unowned")})
+    )
+    with pytest.raises(ValueError, match="CUDA cache receipt differs"):
+        shader_cache.finalize(config, output, passed=False)
+    assert target.exists() and cuda.exists()
+    receipt.write_text(json.dumps({"private_cache": str(target), "private_cuda_cache": str(cuda)}))
+    shader_cache.finalize(config, output, passed=False)
+    assert not target.exists()
+    assert not cuda.exists()
+    assert directory.is_dir()
+
+
+@pytest.mark.parametrize("fails", [False, True])
+def test_sdk_receives_completion_only_in_extra_args(monkeypatch, fails):
+    monkeypatch.setattr(app, "require_python312", lambda: None)
+    seen = []
+
+    def launch(config):
+        seen.append((list(sys.argv), dict(config)))
+        if fails:
+            raise RuntimeError("constructor failed")
+        return object()
+
+    monkeypatch.setitem(sys.modules, "isaacsim", SimpleNamespace(SimulationApp=launch))
+    original = list(sys.argv)
+    if fails:
+        with pytest.raises(RuntimeError, match="constructor failed"):
+            app.simulation_app({"extra_args": sorted(FLAGS)})
+    else:
+        app.simulation_app({"extra_args": sorted(FLAGS)})
+    assert seen[0] == (original, {"extra_args": sorted(FLAGS)})
+    assert sys.argv == original
+    if not fails:
+        app.simulation_app({})
+        assert seen[1] == (original, {})
+
+
+@pytest.mark.parametrize("matching", [False, True])
+@pytest.mark.parametrize("kind", ["cache", "cuda-cache"])
+def test_portable_cache_admission_preserves_existing_files(tmp_path, matching, kind):
+    directory = tmp_path / "run-kit"
+    target = directory / kind
+    target.mkdir(parents=True)
+    marker = target / "existing"
+    marker.write_text("retain")
+    actual = directory if matching else tmp_path / "other-kit"
+    error = FileExistsError if matching else ValueError
+    with (
+        pytest.raises(error),
+        app.private_shader_cache(
+            seed=tmp_path / "seed",
+            seed_sha=tmp_path / "digest",
+            private_root=tmp_path,
+            name="run-kit",
+            portable=True,
+            argv=["worker", "--portable-root", str(actual)],
+        ),
+    ):
+        pytest.fail("Existing or mismatched worker cache accepted")
+    assert marker.read_text() == "retain"
+
+
+@pytest.mark.parametrize("component", ["kit", "cuda"])
+def test_partial_cache_bundle_is_rejected(tmp_path, component):
+    seed = tmp_path / "seed"
+    (seed / component).mkdir(parents=True)
+    digest = tmp_path / "digest"
+    digest.write_text(app.digest_tree(seed))
+    with (
+        pytest.raises(ValueError, match="Kit and CUDA cache directories"),
+        app.private_shader_cache(
+            seed=seed,
+            seed_sha=digest,
+            private_root=tmp_path,
+            name="worker",
+            portable=True,
+            argv=["worker", "--portable-root", str(tmp_path / "worker")],
+        ),
+    ):
+        pytest.fail("Incomplete cache bundle accepted")
+
+
+@pytest.mark.archive
+def test_cold_exposure_initialization_drives_render_products(tmp_path, monkeypatch):
+    from test_cameras import CameraSDK
+    from tower_sim.bench.ordinary_capture import OrdinaryFourCapture
+
+    sdk = CameraSDK(monkeypatch, 1, tmp_path)
+    key = "/rtx/post/tonemap/cm2Factor"
+    sdk.controls.pop(key)
+    original = sdk.rep.orchestrator.step
+
+    def step(**kwargs):
+        assert kwargs == dict(
+            rt_subframes=2, delta_time=0.0, pause_timeline=True, wait_for_render=True
+        )
+        original(**kwargs)
+        if sdk.counter == 4:
+            sdk.controls[key] = 1.0
+
+    monkeypatch.setattr(sdk.rep.orchestrator, "step", step)
+    camera = OrdinaryFourCapture(
+        sdk.sim, tmp_path, resources=sdk.resources, near_guard=lambda *args: 100.0
+    )
+    receipt = json.loads((tmp_path / "renderer-readiness.json").read_text())
+    assert receipt["ready"] is True and receipt["render_steps"] == 2
+    assert camera.controls.get(key) == 1.0
+    assert all(value is not None for _, value in camera.expected_attributes)
+    assert camera.steps == 4
+    assert all(
+        not product.hydra_texture.get_updates_enabled() for product in camera.products.values()
+    )
+
+
+@pytest.mark.parametrize("case", ["warm", "delayed", "timeout", "step_limit", "error"])
+def test_exposure_readiness_is_bounded_and_restores_products(tmp_path, monkeypatch, case):
+    from tower_sim.bench import ordinary_capture
+
+    value = 1.0 if case == "warm" else None
+    calls, toggles = [], []
+    ticks = iter(range(100))
+    monkeypatch.setattr(ordinary_capture.time, "monotonic", lambda: next(ticks))
+
+    def step(subframes):
+        nonlocal value
+        calls.append(subframes)
+        if case == "error":
+            raise RuntimeError("render failure")
+        if case == "delayed" and len(calls) == 2:
+            value = 1.0
+
+    capture = SimpleNamespace(
+        output=tmp_path,
+        controls=SimpleNamespace(get=lambda key: value),
+        products={
+            "camera": SimpleNamespace(
+                hydra_texture=SimpleNamespace(set_updates_enabled=toggles.append)
+            )
+        },
+        _step=step,
+    )
+    wait = ordinary_capture.OrdinaryFourCapture._wait_for_exposure
+    if case in ("timeout", "step_limit"):
+        with pytest.raises(TimeoutError, match="Renderer exposure initialization timed out"):
+            wait(capture, timeout_s=2 if case == "timeout" else 240, max_steps=3)
+        assert len(calls) == (1 if case == "timeout" else 3)
+    elif case == "error":
+        with pytest.raises(RuntimeError, match="render failure"):
+            wait(capture)
+    else:
+        wait(capture)
+        assert calls == ([] if case == "warm" else [2, 2])
+    assert toggles == ([] if case == "warm" else [True, False])
+    receipt = json.loads((tmp_path / "renderer-readiness.json").read_text())
+    assert receipt["ready"] is (case in ("warm", "delayed"))
+    assert receipt["value"] == value
+
+
+@pytest.mark.parametrize(
+    "key,bad",
+    [
+        ("/app/updateOrder/checkForHydraRenderComplete", 0),
+        ("/app/renderer/waitIdle", False),
+        ("/app/hydraEngine/waitIdle", False),
+        ("/app/renderer/waitIdle", 1),
+        ("/app/hydraEngine/waitIdle", None),
+    ],
+)
+def test_completion_readback_mismatch_closes_app_and_records_values(
+    tmp_path, monkeypatch, key, bad
+):
+    values = {
+        "/app/updateOrder/checkForHydraRenderComplete": 1000,
+        "/app/renderer/waitIdle": True,
+        "/app/hydraEngine/waitIdle": True,
+    }
+    values[key] = bad
+    monkeypatch.setattr(app, "require_python312", lambda: None)
+    monkeypatch.setitem(
+        sys.modules,
+        "carb",
+        SimpleNamespace(
+            settings=SimpleNamespace(get_settings=lambda: SimpleNamespace(get=values.get))
+        ),
+    )
+    closed, setup = [], []
+    with (
+        app.grouped_runtime(
+            lambda config: SimpleNamespace(close=lambda: closed.append(True)),
+            (0,),
+            tmp_path,
+            sdk=tmp_path,
+            zero_delay=True,
+            model_setup=setup.append,
+        ) as launch,
+        pytest.raises(RuntimeError, match="Renderer completion settings differ"),
+    ):
+        launch(dict(experience="provided.kit"))
+    assert closed == [True] and setup == []
+    record = json.loads((tmp_path / "render-completion-readback.json").read_text())
+    assert record["passed"] is False and record["actual"] == values
+
+
+@pytest.mark.parametrize(
+    "status", ["missing", "false", "true", "one", "empty", "malformed", "list"]
+)
+def test_seed_requires_positive_status_unless_warming(tmp_path, status):
+    export = tmp_path / "export"
+    seed = export / "cache"
+    seed.mkdir(parents=True)
+    contents = {
+        "false": '{"source_run_passed": false}',
+        "true": '{"source_run_passed": true}',
+        "one": '{"source_run_passed": 1}',
+        "empty": "{}",
+        "malformed": "invalid JSON",
+        "list": "[]",
+    }
+    if status != "missing":
+        (export / "warmup.json").write_text(contents[status])
+    options = SimpleNamespace(shader_cache_seed=seed, shader_cache_digest=export / "digest.sha256")
+    if status == "true":
+        assert shader_cache.configuration(options, tmp_path / "run")["seed"] == seed
+    else:
+        with pytest.raises(ValueError, match="source_run_passed: true.*--shader-cache-warmup"):
+            shader_cache.configuration(options, tmp_path / "run")
+    options.shader_cache_warmup = tmp_path / "next-export"
+    assert shader_cache.configuration(options, tmp_path / "run")["seed"] == seed
+
+
+@pytest.mark.parametrize("entry", ["evaluation", "smoke", "diagnostic"])
+@pytest.mark.parametrize("status", ["missing", "false"])
+def test_parent_rejects_seed_before_starting_any_child(tmp_path, monkeypatch, entry, status):
+    import importlib
+
+    from scripts.maintainer import public_smoke
+
+    monkeypatch.syspath_prepend(str(ROOT / "tools/simulator"))
+    public = importlib.import_module("benchmark_candidate")
+    benchmark = importlib.import_module("benchmark")
+    options = SimpleNamespace(
+        shader_cache_seed=tmp_path / "cache",
+        shader_cache_digest=tmp_path / "digest.sha256",
+        output=tmp_path / "output",
+        assets=tmp_path / "assets",
+        task="cross-transfer-2",
+        gpu=0,
+        seeds=[0],
+        accept_eula=True,
+        _worker=False,
+    )
+    if status == "false":
+        (tmp_path / "warmup.json").write_text(json.dumps(dict(source_run_passed=False)))
+    started = []
+
+    def child(*args, **kwargs):
+        started.append(True)
+        raise AssertionError("Child started before seed validation")
+
+    monkeypatch.setattr(public, "preflight", lambda *a, **kw: dict(output=str(options.output)))
+    monkeypatch.setattr(public.subprocess, "run", child)
+    monkeypatch.setattr(benchmark, "check_environment", child)
+    monkeypatch.setattr(benchmark, "require_eula", lambda *a: None)
+    monkeypatch.setattr(public, "prepare", child)
+    with pytest.raises(ValueError, match="source_run_passed: true"):
+        if entry == "evaluation":
+            public.launch(tmp_path / "request.json", "python", cache_options=options)
+        elif entry == "smoke":
+            public_smoke.run(options)
+        else:
+            public.diagnostic(options)
+    assert started == []
+
+
+@pytest.mark.parametrize("finish_fails", [False, True])
+def test_parent_finalizes_validated_config_and_preserves_finish_error(
+    tmp_path, monkeypatch, finish_fails
+):
+    import importlib
+    from contextlib import nullcontext
+
+    from scripts.maintainer import candidate_policy
+
+    monkeypatch.syspath_prepend(str(ROOT / "tools/simulator"))
+    public = importlib.import_module("benchmark_candidate")
+    benchmark = importlib.import_module("benchmark")
+    output = tmp_path / "output"
+    path = tmp_path / "request.json"
+    status = tmp_path / "warmup.json"
+    status.write_text(json.dumps(dict(source_run_passed=True)))
+    options = SimpleNamespace(
+        shader_cache_seed=tmp_path / "cache", shader_cache_digest=tmp_path / "digest.sha256"
+    )
+    request = dict(output=str(output))
+    monkeypatch.setattr(public, "preflight", lambda *a, **kw: request)
+    monkeypatch.setattr(benchmark, "check_environment", lambda *a: None)
+    monkeypatch.setattr(benchmark, "runtime_request", lambda *a: nullcontext(path))
+    validations = []
+    configuration = shader_cache.configuration
+
+    def validate(*args):
+        validations.append(True)
+        return configuration(*args)
+
+    monkeypatch.setattr(shader_cache, "configuration", validate)
+    private = tmp_path / "output-kit"
+
+    def child(*args, **kwargs):
+        (private / "cache").mkdir(parents=True)
+        (private / "cuda-cache").mkdir()
+        (output / "simulation").mkdir(parents=True)
+        (output / "simulation/private-shader-cache.json").write_text(
+            json.dumps(
+                dict(
+                    private_cache=str(private / "cache"),
+                    private_cuda_cache=str(private / "cuda-cache"),
+                )
+            )
+        )
+        # Finalization must use its validated config even if seed status changes.
+        status.write_text(json.dumps(dict(source_run_passed=False)))
+        return SimpleNamespace(returncode=1 if finish_fails else 0)
+
+    original = ValueError("Original finish failure")
+
+    def finish(*args, **kwargs):
+        if finish_fails:
+            raise original
+        return 0
+
+    monkeypatch.setattr(public.subprocess, "run", child)
+    monkeypatch.setattr(candidate_policy, "finish", finish)
+    if finish_fails:
+        with pytest.raises(ValueError) as caught:
+            public.launch(path, "python", diagnostic=True, cache_options=options)
+        assert caught.value is original
+    else:
+        assert public.launch(path, "python", diagnostic=True, cache_options=options) == 0
+    assert validations == [True]
+    assert not (private / "cache").exists()
+    assert not (private / "cuda-cache").exists()

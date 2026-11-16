@@ -17,6 +17,237 @@ BENCH = ROOT / "packages/tower-sim/src/tower_sim/bench"
 # Removed alias/layout mutations are documented in the purge evidence inventory.
 MUTATIONS = (
     (
+        "startup-seed-status-missing",
+        "shader_cache.py",
+        "            metadata = {}",
+        '            metadata = {"source_run_passed": True}',
+    ),
+    (
+        "startup-seed-status-positive-boolean",
+        "shader_cache.py",
+        'metadata.get("source_run_passed") is not True',
+        'not metadata.get("source_run_passed")',
+    ),
+    (
+        "startup-parent-evaluation-seed-admission",
+        "../../../../../tools/simulator/benchmark_candidate.py",
+        'cache_config = configuration(cache_options, Path(request["output"]))',
+        "cache_config = None",
+    ),
+    (
+        "startup-parent-smoke-seed-admission",
+        "../../../../../scripts/maintainer/public_smoke.py",
+        "cache_config = configuration(args, args.output)",
+        "cache_config = None",
+    ),
+    (
+        "startup-parent-diagnostic-seed-admission",
+        "../../../../../tools/simulator/benchmark_candidate.py",
+        "    configuration(args, args.output)",
+        "    pass",
+    ),
+    (
+        "startup-parent-seed-before-environment-child",
+        "../../../../../tools/simulator/benchmark_candidate.py",
+        '    cache_config = configuration(cache_options, Path(request["output"]))\n    benchmark.check_environment(python)',
+        '    benchmark.check_environment(python)\n    cache_config = configuration(cache_options, Path(request["output"]))',
+    ),
+    (
+        "startup-parent-finalize-preserves-finish-error",
+        "../../../../../tools/simulator/benchmark_candidate.py",
+        'finalize(cache_config, Path(request["output"]), passed=code == 0)',
+        'finalize(configuration(cache_options, Path(request["output"])), Path(request["output"]), passed=code == 0)',
+    ),
+    (
+        "startup-launch-single-write",
+        "app.py",
+        "                completion_readback(output)",
+        '                completion_readback(output)\n                save(Path(output) / "launch.json", configured)',
+    ),
+    (
+        "startup-completion-readback-native",
+        "app.py",
+        "actual = {key: controls.get(key) for key in expected}",
+        "actual = dict(expected)",
+    ),
+    (
+        "startup-exposure-warm-pending",
+        "ordinary_capture.py",
+        "pending = self.controls.get(key) is None",
+        "pending = True",
+    ),
+    (
+        "startup-exposure-warm-step",
+        "ordinary_capture.py",
+        "        pending = self.controls.get(key) is None",
+        "        self._step(2)\n        pending = self.controls.get(key) is None",
+    ),
+    (
+        "startup-completion-readback-call",
+        "app.py",
+        "                completion_readback(output)",
+        "                pass",
+    ),
+    (
+        "startup-completion-readback-rejection",
+        "app.py",
+        "    if not passed:\n        raise RuntimeError(",
+        "    if False:\n        raise RuntimeError(",
+    ),
+    (
+        "startup-completion-readback-evidence",
+        "app.py",
+        "dict(expected=expected, actual=actual, passed=passed)",
+        "dict(expected=expected, actual={}, passed=passed)",
+    ),
+    (
+        "startup-failed-seed-rejection",
+        "shader_cache.py",
+        'if not isinstance(metadata, dict) or metadata.get("source_run_passed") is not True:',
+        "if False:",
+    ),
+    ("startup-failed-seed-second-pass", "shader_cache.py", "if seed and not warmup:", "if seed:"),
+    (
+        "startup-finalize-missing-receipt-log",
+        "shader_cache.py",
+        "logging.getLogger(__name__).warning(",
+        "logging.getLogger(__name__).debug(",
+    ),
+    (
+        "startup-exposure-call",
+        "ordinary_capture.py",
+        "            self._wait_for_exposure()",
+        "            pass",
+    ),
+    (
+        "startup-exposure-products",
+        "ordinary_capture.py",
+        "                    product.hydra_texture.set_updates_enabled(True)",
+        "                    pass",
+    ),
+    (
+        "startup-exposure-deadline",
+        "ordinary_capture.py",
+        "time.monotonic() - started >= timeout_s",
+        "False",
+    ),
+    ("startup-exposure-step-limit", "ordinary_capture.py", "steps >= max_steps", "False"),
+    (
+        "startup-exposure-restore",
+        "ordinary_capture.py",
+        "                    product.hydra_texture.set_updates_enabled(False)",
+        "                    pass",
+    ),
+    (
+        "startup-cuda-environment",
+        "app.py",
+        'environment = {"CUDA_CACHE_PATH": str(cuda)} if portable else {}',
+        "environment = {}",
+    ),
+    (
+        "startup-bundle-digest",
+        "app.py",
+        "if digest_tree(copied) != expected:",
+        "if False:",
+    ),
+    (
+        "startup-cuda-copy",
+        "app.py",
+        '(staging / "cuda").rename(cuda)',
+        "cuda.mkdir()",
+    ),
+    (
+        "startup-cuda-receipt",
+        "shader_cache.py",
+        'if receipt.get("private_cuda_cache") != str(cuda):',
+        "if False:",
+    ),
+    (
+        "startup-cuda-cleanup",
+        "shader_cache.py",
+        "    shutil.rmtree(cuda, ignore_errors=True)",
+        "    pass",
+    ),
+    (
+        "startup-complete-cache",
+        "app.py",
+        'target = directory / ("cache" if portable else "nv_shadercache")',
+        'target = directory / "nv_shadercache"',
+    ),
+    (
+        "startup-portable-root",
+        "app.py",
+        "if actual is None or Path(actual).resolve() != directory.resolve():",
+        "if False:",
+    ),
+    (
+        "startup-parent-evaluation-finalize",
+        "../../../../../tools/simulator/benchmark_candidate.py",
+        'finalize(cache_config, Path(request["output"]), passed=code == 0)',
+        "pass",
+    ),
+    (
+        "startup-parent-smoke-finalize",
+        "../../../../../scripts/maintainer/public_smoke.py",
+        "finalize(cache_config, args.output, passed=passed)",
+        "pass",
+    ),
+    (
+        "startup-warmup-result",
+        "shader_cache.py",
+        "source_run_passed=bool(passed)",
+        "source_run_passed=True",
+    ),
+    (
+        "startup-warmup-seed",
+        "app.py",
+        "if warmup and seed is None:",
+        "if warmup:",
+    ),
+    (
+        "startup-parent-cleanup",
+        "shader_cache.py",
+        "    shutil.rmtree(target, ignore_errors=True)",
+        "    pass",
+    ),
+    ("startup-completion", "bootstrap.py", "zero_delay=True", "zero_delay=False"),
+    (
+        "startup-replay-cache",
+        "../../../../../scripts/maintainer/candidate_replay.py",
+        "shader_cache=self.shader_cache",
+        "shader_cache=None",
+    ),
+    (
+        "startup-cache-copy-config",
+        "shader_cache.py",
+        "seed=Path(seed).resolve() if seed else None,",
+        "seed=Path(output).resolve() if seed else None,",
+    ),
+    (
+        "startup-worker-cache",
+        "../../../../../tools/simulator/benchmark_candidate.py",
+        'runner.shader_cache = configuration(args, Path(request["output"]))',
+        "runner.shader_cache = None",
+    ),
+    (
+        "startup-smoke-cache",
+        "../../../../../scripts/maintainer/public_smoke.py",
+        "runner.shader_cache = configuration(args, work)",
+        "runner.shader_cache = None",
+    ),
+    (
+        "startup-child-cache",
+        "../../../../../tools/simulator/benchmark_candidate.py",
+        "command.extend(child_arguments(cache_options))",
+        "command.extend([])",
+    ),
+    (
+        "startup-smoke-child-cache",
+        "../../../../../scripts/maintainer/public_smoke.py",
+        "command.extend(child_arguments(args))",
+        "command.extend([])",
+    ),
+    (
         "public-smoke-entry-registration",
         "verification.py",
         '    "tools/simulator/benchmark_portable.py",\n',
@@ -2659,6 +2890,8 @@ def main():
                 "config-retained-tasks-guard",
             }:
                 tests = ["packages/tower-sim/tests/test_config_split.py"]
+            elif name.startswith("startup-"):
+                tests = ["packages/tower-sim/tests/test_renderer_startup.py"]
             elif name.startswith("scene-"):
                 tests = [
                     "packages/tower-sim/tests/test_scene_v2.py::" + test

@@ -10,9 +10,16 @@ import sys
 import time
 from contextlib import contextmanager
 from pathlib import Path
+from typing import Any
 
 from .experience import local_stock_experience, omit_viewport_overlays
 from .resources import save, sha
+
+RENDER_COMPLETION_ARGS = (
+    "--/app/updateOrder/checkForHydraRenderComplete=1000",
+    "--/app/renderer/waitIdle=true",
+    "--/app/hydraEngine/waitIdle=true",
+)
 
 
 def require_python312():
@@ -123,13 +130,7 @@ def grouped_runtime(
             ],
         }
         if zero_delay:
-            configured["extra_args"].extend(
-                [
-                    "--/app/updateOrder/checkForHydraRenderComplete=1000",
-                    "--/app/renderer/waitIdle=true",
-                    "--/app/hydraEngine/waitIdle=true",
-                ]
-            )
+            configured["extra_args"].extend(RENDER_COMPLETION_ARGS)
         if startup == "headless" and configured.get("headless", True):
             if not configured.get("experience"):
                 import isaacsim  # pyright: ignore[reportMissingImports]
@@ -145,6 +146,8 @@ def grouped_runtime(
         start = clock()
         session = factory(configured)
         try:
+            if zero_delay:
+                completion_readback(output)
             model_setup(session)
             save(
                 Path(output) / "startup.json",
@@ -160,6 +163,31 @@ def grouped_runtime(
         return session
 
     yield launch
+
+
+def completion_readback(output):
+    """Verify native settings after SimulationApp has consumed extra_args."""
+    import carb  # pyright: ignore[reportMissingImports]
+
+    expected = {
+        "/app/updateOrder/checkForHydraRenderComplete": 1000,
+        "/app/renderer/waitIdle": True,
+        "/app/hydraEngine/waitIdle": True,
+    }
+    controls = carb.settings.get_settings()
+    actual = {key: controls.get(key) for key in expected}
+    passed = all(
+        type(actual[key]) is type(value) and actual[key] == value for key, value in expected.items()
+    )
+    save(
+        Path(output) / "render-completion-readback.json",
+        dict(expected=expected, actual=actual, passed=passed),
+    )
+    if not passed:
+        raise RuntimeError(
+            "Renderer completion settings differ from requested values: " + str(actual)
+        )
+    return actual
 
 
 def gpu_readback(group):
@@ -198,54 +226,126 @@ def digest_tree(root):
 
 
 @contextmanager
-def private_shader_cache(*, seed, seed_sha, private_root, name, argv=None, clock=time.time):
+def private_shader_cache(
+    *,
+    seed,
+    seed_sha,
+    private_root,
+    name,
+    argv=None,
+    clock=time.time,
+    warmup=False,
+    portable=False,
+    warmup_destination=None,
+):
     """Append Kit flags to real argv before launch; remove owned files/flags on exit."""
     argv = sys.argv if argv is None else argv
     if not name or name in (".", "..") or Path(name).name != name:
         raise ValueError("Private cache name must be one path component")
     directory = Path(private_root) / name
-    target = directory / "nv_shadercache"
-    directory.mkdir(parents=True, exist_ok=False)
+    target = directory / ("cache" if portable else "nv_shadercache")
+    cuda = directory / "cuda-cache"
+    staging = directory / "seed-cache"
+    if portable:
+        from .verification import portable_root
+
+        actual = portable_root(argv)
+        if actual is None or Path(actual).resolve() != directory.resolve():
+            raise ValueError("Shader cache requires the worker portable root")
+        if target.exists() or cuda.exists() or staging.exists():
+            raise FileExistsError("Worker caches must be new")
+        if warmup_destination is not None and Path(warmup_destination).exists():
+            raise FileExistsError("Warm-up destination must be new")
+        directory.mkdir(parents=True, exist_ok=True)
+    else:
+        directory.mkdir(parents=True, exist_ok=False)
     started = clock()
     flags = []
     original = list(argv)
     try:
-        expected = Path(seed_sha).read_text()
-        shutil.copytree(seed, target)
-        if digest_tree(target) != expected:
-            raise RuntimeError("Private shader cache copy differs from the verified seed")
-        flags = [
-            f"--/rtx/shaderDb/driverAppShaderCachePath={target}",
-            f"--/rtx/shaderDb/driverShaderCachePath={target}",
-            "--/renderer/shadercache/driverDiskCache/sizeInMB=12000",
-        ]
+        if warmup and seed is None:
+            target.mkdir()
+            if portable:
+                cuda.mkdir()
+            expected = ""
+        else:
+            expected = Path(seed_sha).read_text()
+            copied = staging if portable else target
+            shutil.copytree(seed, copied)
+            if digest_tree(copied) != expected:
+                raise RuntimeError("Private shader cache copy differs from the verified seed")
+            if portable:
+                if set(p.name for p in staging.iterdir()) != {"kit", "cuda"} or not all(
+                    (staging / name).is_dir() for name in ("kit", "cuda")
+                ):
+                    raise ValueError("Seed must contain Kit and CUDA cache directories")
+                (staging / "kit").rename(target)
+                (staging / "cuda").rename(cuda)
+                staging.rmdir()
+        flags = (
+            []
+            if portable
+            else [
+                f"--/rtx/shaderDb/driverAppShaderCachePath={target}",
+                f"--/rtx/shaderDb/driverShaderCachePath={target}",
+                "--/renderer/shadercache/driverDiskCache/sizeInMB=12000",
+            ]
+        )
         argv.extend(flags)
         import hashlib
 
-        yield dict(
+        receipt: dict[str, Any] = dict(
             seed=str(seed),
             seed_sha256_list=hashlib.sha256(expected.encode()).hexdigest(),
             files=expected.count("\n"),
             private_cache=str(target),
             copy_and_verify_s=clock() - started,
-            driver_cache_size_mb=12000,
+            driver_cache_size_mb=None if portable else 12000,
             kit_args=flags,
             pid=os.getpid(),
         )
+        environment = {"CUDA_CACHE_PATH": str(cuda)} if portable else {}
+        with process_environment(
+            environment,
+            observe=(
+                "CUDA_CACHE_PATH",
+                "CUDA_CACHE_DISABLE",
+                "CUDA_CACHE_MAXSIZE",
+                "CUDA_FORCE_PTX_JIT",
+                "CUDA_DISABLE_PTX_JIT",
+            ),
+        ) as effective_environment:
+            if portable:
+                files = [p for p in cuda.rglob("*") if p.is_file()]
+                receipt.update(
+                    private_cuda_cache=str(cuda),
+                    cuda_kernel_cache_before=dict(
+                        path=str(cuda),
+                        file_count=len(files),
+                        size_bytes=sum(p.stat().st_size for p in files),
+                        environment=effective_environment,
+                    ),
+                )
+            yield receipt
     finally:
         argv[:] = original
-        shutil.rmtree(directory, ignore_errors=True)
+        if portable:
+            shutil.rmtree(staging, ignore_errors=True)
+        if not warmup:
+            shutil.rmtree(target if portable else directory, ignore_errors=True)
+            if portable:
+                shutil.rmtree(cuda, ignore_errors=True)
 
 
 @contextmanager
-def process_environment(values, *, unset=()):
+def process_environment(values, *, unset=(), observe=()):
     """Explicit process-boundary values, restored even on constructor failure."""
     previous = {key: os.environ.get(key) for key in {*values, *unset}}
     try:
         os.environ.update(values)
         for key in unset:
             os.environ.pop(key, None)
-        yield
+        yield {key: os.environ.get(key) for key in observe}
     finally:
         for key, value in previous.items():
             if value is None:
