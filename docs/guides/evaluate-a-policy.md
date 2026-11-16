@@ -15,22 +15,22 @@ uv run python tools/simulator/benchmark_assets.py download --assets /path/to/ass
 
 This downloads physical assets and calls `tower_sim.bench.data_release.download`
 for evaluation data, stored by default in `/path/to/assets/benchmark-2026.11.1`.
-The data locator still awaits owner pinning. Until it is pinned, the command
-fails with `data release not yet pinned; pass --data-root <dir>`.
-Obtain the exact release directory from the owner; do not substitute scene files.
-With that directory already available, use:
+The default is an anonymous, pinned and verified download from TOWER-Assets
+at revision `d78e4ac0b2bfc1e10a15d31ac7e7d723be2764f1` (tag `benchmark-2026.11.1`), as recorded in the release lock.
+No token or login is needed. Verify an existing download without network access:
 
 ```sh
-uv run python tools/simulator/benchmark_assets.py download --assets /path/to/assets --data-root /path/to/benchmark-2026.11.1
-uv run python tools/simulator/benchmark_assets.py verify --assets /path/to/assets --data-root /path/to/benchmark-2026.11.1
-uv run python tools/simulator/benchmark.py verify --benchmark 2026.11.1 --assets /path/to/assets --data-root /path/to/benchmark-2026.11.1
+uv run python tools/simulator/benchmark_assets.py verify --assets /path/to/assets
+uv run python tools/simulator/benchmark.py verify --benchmark 2026.11.1 --assets /path/to/assets
 ```
 
 With `--data-root`, download fetches physical assets and verifies the existing
 complete evaluation-data directory rather than downloading its contents.
-Verification checks `MANIFEST.json`, the exact file set, sizes and hashes.
-After downloading through a pinned locator, use the default data directory as
-`--data-root` in these verification commands and in the request below.
+The first verification command checks physical assets only. The second also
+verifies evaluation data at `<assets>/benchmark-2026.11.1`, including
+`MANIFEST.json`, the exact file set, sizes and hashes. No `--data-root` is needed
+for that default location; supply it to verify a different existing data directory.
+The request below passes the evaluation-data directory explicitly.
 A checksum mismatch is an error. See [asset terms](../../LICENSE-ASSETS).
 
 ## Check the environment and prepare a request
@@ -44,6 +44,9 @@ checkout clean, then check the interpreter:
 ```sh
 uv run python tools/simulator/benchmark.py check-environment --isaac-python /path/to/isaac/python
 ```
+
+On hosts without root, follow the [X11 library recipe](../reference/bench-public.md#x11-system-libraries)
+and use its process-scoped library path for this check and benchmark commands.
 
 Use **one runtime process per policy server**. Start the XPolicyLab server in its policy environment, following
 [OpenWAM_TOWER deployment](https://github.com/tower-benchmark/XPolicyLab/blob/tower-1.0.3/policy/OpenWAM_TOWER/README.md):
@@ -77,7 +80,7 @@ The same file must also contain the policy's `package_digest`, a
 
 ```sh
 uv run python tools/simulator/benchmark_portable.py prepare-request \
-  --benchmark 2026.11.1 --data-root /path/to/benchmark-2026.11.1 \
+  --benchmark 2026.11.1 --data-root /path/to/assets/benchmark-2026.11.1 \
   --assets /path/to/assets --task two-block-transfer-2 \
   --seeds 0 --gpu 0 --package /path/to/policy-package.json \
   --pilot-review /path/to/posture-review.json --policy-url ws://localhost:19000 \

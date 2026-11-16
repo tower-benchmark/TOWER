@@ -5,6 +5,63 @@ The public runtime uses `tower_sim.bench`, benchmark `2026.11.1`, data version
 The three wheels are `tower-sim==0.1.0`, `tower-eval==0.1.0`, and
 `nero-kinematics==0.2.0`. A release manifest identifies the exact build.
 
+## Install the pinned SDK
+
+Run from the checkout root. Install [uv](https://docs.astral.sh/uv/) and
+Micromamba first (to create the separate conda-forge prefixes). Isaac uses Python 3.12:
+
+```sh
+export PYTHONDONTWRITEBYTECODE=1
+uv venv --python 3.12 .venv-isaac61
+uv pip install --python .venv-isaac61/bin/python "isaacsim[all,extscache]==6.1.0" --default-index https://pypi.org/simple --index https://pypi.nvidia.com --index-strategy unsafe-best-match
+```
+
+Both public indexes and `unsafe-best-match` are required: first-index resolution
+can hide the required `mujoco-usd-converter==0.5.0` candidate on PyPI.
+Review and accept NVIDIA's license as described in the [Isaac guide](../isaac-sim.md).
+
+## X11 system libraries
+
+On Debian/Ubuntu, install the system prerequisite with `sudo apt-get install libxt6`.
+It supplies `libXt.so.6`, needed by the MaterialX/USD plugins even on headless hosts.
+After installing it, check the interpreter:
+
+```sh
+uv run python tools/simulator/benchmark.py check-environment --isaac-python .venv-isaac61/bin/python
+```
+
+Without root, install it in a separate conda-forge prefix:
+
+```sh
+micromamba create --prefix "$PWD/.isaac-system-libs" --override-channels -c conda-forge xorg-libxt -y
+mkdir -p .isaac-x11
+ln -sfn "$PWD/.isaac-system-libs/lib/libXt.so.6" .isaac-x11/libXt.so.6
+LD_LIBRARY_PATH="$PWD/.isaac-x11" ldd .isaac-x11/libXt.so.6
+LD_LIBRARY_PATH="$PWD/.isaac-x11" uv run python tools/simulator/benchmark.py check-environment --isaac-python .venv-isaac61/bin/python
+```
+
+If `ldd` reports missing X11 dependencies, add only those libraries as symlinks
+from `.isaac-system-libs/lib` into `.isaac-x11`, then repeat `ldd` and the check.
+For example, a missing `libSM.so.6` needs
+`ln -sfn "$PWD/.isaac-system-libs/lib/libSM.so.6" .isaac-x11/libSM.so.6`.
+Do not expose the entire conda library directory: it also contains compiler
+runtimes such as libgcc and libgomp that can override Isaac libraries.
+
+Use this X11-only, process-scoped `LD_LIBRARY_PATH` for benchmark invocations.
+The IK child inherits it too; validate the native acceptance tests and release
+identity probe with this same value. Do not add it to shell startup files.
+The check loads `libMaterialXRenderHw.so`, `libMaterialXRenderGlsl.so` and
+`libusd_usdBakeMtlx.so` without starting Kit or creating GPU contexts.
+A metadata-only version match is insufficient.
+
+The selected GPU chooses the render and physics device. The launcher deliberately
+unsets `CUDA_VISIBLE_DEVICES`; the SDK can create small CUDA contexts on other
+visible GPUs. On shared hosts, use whole-host reservation or container-level GPU
+isolation; `CUDA_VISIBLE_DEVICES` alone does not isolate this runtime.
+
+For the independent native solver, follow the complete
+[IK install and acceptance recipe](kinematics.md#install-and-check).
+
 ## Build and verify
 
 Build from a fresh, clean committed checkout. Keep caches outside bound trees:
@@ -15,8 +72,8 @@ GIT_LFS_SKIP_SMUDGE=1 git submodule update --init third_party/XPolicyLab
 uv build --wheel --out-dir dist packages/nero-kinematics
 uv build --wheel --out-dir dist packages/tower-sim
 uv build --wheel --out-dir dist src/tower-eval
-python -m scripts.maintainer.check_public_tree --wheel dist/tower_sim-0.1.0-py3-none-any.whl
-python -m scripts.maintainer.candidate_release --output dist/release-manifest.json
+uv run python -m scripts.maintainer.check_public_tree --wheel dist/tower_sim-0.1.0-py3-none-any.whl
+uv run python -m scripts.maintainer.candidate_release --output dist/release-manifest.json
 ```
 
 Install all three wheels in isolated package directories used by both the Isaac
@@ -45,8 +102,8 @@ Conda distributions are checked against their installed package manifests.
 ## Evaluation data
 
 ```sh
-python tools/simulator/benchmark_assets.py download --assets /path/to/assets --data-root /path/to/benchmark-2026.11.1
-python tools/simulator/benchmark.py verify --assets /path/to/assets --data-root /path/to/benchmark-2026.11.1
+python tools/simulator/benchmark_assets.py download --assets /path/to/assets
+python tools/simulator/benchmark.py verify --assets /path/to/assets
 python tools/simulator/benchmark.py describe
 python tools/simulator/benchmark_portable.py prepare-request --help
 python tools/simulator/benchmark.py run --help
@@ -54,8 +111,11 @@ python tools/simulator/benchmark.py run --help
 
 Each task has fifty fixed scenes, `scene-000` through `scene-049`. The request
 field `seeds` selects integer case numbers 0 through 49. It does not create scenes.
-The default data directory is `<assets>/benchmark-2026.11.1`. Before the dataset
-revision is pinned, supply the verified local staging directory with `--data-root`.
+The default data directory is `<assets>/benchmark-2026.11.1`. Downloads use the anonymous pinned TOWER-Assets revision in the release lock.
+`benchmark.py verify` checks physical assets and evaluation data at that default
+location. In contrast, `benchmark_assets.py verify --assets ...` checks only
+physical assets unless `--data-root` is supplied. Use `--data-root` to select
+an existing evaluation-data directory at a different location.
 CPU verification without assets checks metadata and reports zero verified payloads.
 
 Every trial records its benchmark, data version, request schema, package versions,

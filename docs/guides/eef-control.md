@@ -112,6 +112,8 @@ conda env create -p "$PWD/.venv-pin" -f packages/nero-kinematics/environment.yml
 .venv-pin/bin/python -c 'import pinocchio.casadi, casadi'
 ```
 
+For the `pink` method, also install [the pip requirements](../../packages/nero-kinematics/requirements-pip.txt) with `python -m pip install --no-deps -r packages/nero-kinematics/requirements-pip.txt` using the native prefix interpreter.
+
 Do not replace Isaac's NumPy or shared native libraries. Keep native dependencies
 in an isolated environment.
 

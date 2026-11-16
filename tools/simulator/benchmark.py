@@ -98,20 +98,22 @@ def posture_evidence(review, task, package_digest):
 
 
 def check_environment(python):
-    """Read installed distribution metadata without starting Kit or using a GPU."""
+    """Check SDK metadata and native material plugins without starting Kit."""
     result = subprocess.run(
-        [
-            str(python),
-            "-c",
-            "import importlib.metadata as m, json, sys; "
-            "print(json.dumps({'python': sys.version.split()[0], "
-            "'isaacsim': m.version('isaacsim')}))",
-        ],
+        [str(python), str(Path(__file__).with_name("isaac_environment_probe.py"))],
         capture_output=True,
         text=True,
-        check=True,
+        check=False,
     )
-    identity = json.loads(result.stdout)
+    if result.returncode:
+        raise RuntimeError(f"Isaac environment check failed:\n{result.stderr.strip()}")
+    lines = [line for line in result.stdout.splitlines() if line.strip()]
+    try:
+        identity = json.loads(lines[-1])
+    except (IndexError, json.JSONDecodeError) as exc:
+        raise RuntimeError(
+            "Isaac environment check requires valid JSON on the last non-empty stdout line"
+        ) from exc
     if identity["isaacsim"] != "6.1.0.0" or not identity["python"].startswith("3.12."):
         raise ValueError(f"Requires Isaac 6.1.0.0 / Python 3.12; found {identity}")
     # Version metadata is necessary, not sufficient: the request's runtime
@@ -129,7 +131,8 @@ def main(argv=None):
     inventory.add_argument("--data-root", type=Path)
     commands.add_parser("describe", help="Print the explicit benchmark settings")
     environment = commands.add_parser(
-        "check-environment", help="Check Isaac metadata without GPU use"
+        "check-environment",
+        help="Check Isaac metadata and load native material plugins without GPU use",
     )
     environment.add_argument("--isaac-python", type=Path, required=True)
     score = commands.add_parser("score", help="Score a recording into a new file")
