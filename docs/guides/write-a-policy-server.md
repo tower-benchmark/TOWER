@@ -33,11 +33,10 @@ timeout_s = 120
 
 The [TOWER ↔ XPolicyLab contract](../reference/policy-interface.md) defines required
 modalities, frames, action modes, batching and deployment. TOWER contains no
-policy server. `LegacyPredictAdapter` supports the HTTP
-`/health` and `/predict` protocol for compatible servers, with independent
-30 s / 300 s defaults. Health authorizes the package digest and prediction pins
-the complete health identity. See the reference above for configuration and
-error classification.
+policy server. Use one runtime process per server. The Isaac runtime uses atomic
+`INFER` followed by optional `get_prediction(env_idx)` calls per environment.
+Expose `get_identity` for startup authorization and retain identity on every
+endpoint and full prediction. See the reference for error categories and lifecycle.
 
 
 See the [policy interface](../reference/policy-interface.md) for units, frames and lifecycle.

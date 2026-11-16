@@ -91,7 +91,7 @@ def test_diagnostic_preparation_frozen_contract(field, tmp_path, monkeypatch):
     )
     request = dict(
         package=str(path),
-        policy_url="unused",
+        policy_url="ws://localhost:19000",
         task="task1-2",
         prompt=protocol["tasks"]["task1-2"]["prompt"],
     )
@@ -280,18 +280,18 @@ def test_rpc_duration_excludes_payload_encoding():
     )
 
     def predict(payload, *, headers, rpc_observer):
-        clock[0] = 10_000_000_000  # PNG/JSON preparation precedes frozen HTTP timer.
+        clock[0] = 10_000_000_000  # PNG decoding precedes the exchange timer.
         rpc_observer("rpc_start")
         clock[0] += 2_000_000_000
-        rpc_observer("rpc_end", http_status=200, server={"server_s": 1})
-        clock[0] += 5_000_000_000  # Identity checks follow the frozen HTTP timer.
+        rpc_observer("rpc_end", transport="websocket")
+        clock[0] += 5_000_000_000  # Identity checks follow the exchange timer.
         return {}
 
     metrics.predict(NS(predict=predict), {}, headers={"X-Baseline-Request-ID": "r"})
     assert events[-1]["rpc_s"] == 2.0
     assert metrics.stats["policy.rpc_elapsed_sum"] == [2.0, 1]
-    # Frozen baseline_metrics.http_json field order.
-    assert list(events[-1])[-4:] == ["request_id", "rpc_s", "http_status", "server"]
+    # Request identity and elapsed duration remain observable.
+    assert list(events[-1])[-3:] == ["request_id", "rpc_s", "transport"]
 
 
 def test_library_prepare_refuses_formal_runs(monkeypatch):

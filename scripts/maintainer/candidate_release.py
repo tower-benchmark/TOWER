@@ -17,6 +17,7 @@ from tower_sim.bench.verification import (
     CHECKOUT_TREES,
     PACKAGES,
     checkout_files,
+    checkout_source,
     digest,
     envelope,
     verify_checkout_layout,
@@ -28,6 +29,7 @@ from scripts.maintainer.candidate_replay import wheel_source_path
 
 def create(root, output):
     root, output = Path(root).resolve(), Path(output).resolve()
+    names = checkout_files(root)
     verify_checkout_layout(root)
     commit = subprocess.check_output(
         ["git", "-C", str(root), "rev-parse", "HEAD"], text=True
@@ -56,10 +58,7 @@ def create(root, output):
                 if archive.read(member) != original:
                     raise ValueError(f"Wheel differs from committed source: {member}")
         packages[name] = dict(version=version, wheel=wheel.name, sha256=digest(payload))
-    files = {
-        name: digest(subprocess.check_output(["git", "-C", str(root), "show", f"{commit}:{name}"]))
-        for name in checkout_files(root)
-    }
+    files = {name: digest(checkout_source(root, commit, name)) for name in names}
     body = dict(
         schema="tower-release-v2",
         public=envelope(),

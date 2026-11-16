@@ -35,7 +35,7 @@ def main(argv=None):
     prepare.add_argument("--gpu", type=int, default=0)
     prepare.add_argument("--package", type=Path, required=True)
     prepare.add_argument("--pilot-review", type=Path, required=True)
-    prepare.add_argument("--policy-url", required=True)
+    prepare.add_argument("--policy-url", required=True, help="XPolicyLab ws:// or wss:// endpoint")
     prepare.add_argument("--ik-python", type=Path, required=True)
     prepare.add_argument("--isaac-python", type=Path, required=True)
     run = sub.add_parser("run")

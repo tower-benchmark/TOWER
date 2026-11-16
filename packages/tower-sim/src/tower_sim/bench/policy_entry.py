@@ -12,6 +12,9 @@ from .tasks import validate_spec
 def validate_entry(request, rows, task):
     if request.get("command_replay", False):
         raise ValueError("Policy entrypoint cannot execute reference-replay requests")
+    from tower_eval.policies.runtime_ws import validate_url
+
+    validate_url(request["policy_url"])
     if not 1 <= len(rows) <= 10:
         raise ValueError("Candidate camera qualification supports 1..10 environments")
     if [row["candidate"]["seed"] for row in rows] != request["seeds"]:
@@ -37,6 +40,7 @@ def prepare(
     diagnostic=False,
     benchmark_protocol=None,
     verification=None,
+    client_root=None,
 ):
     from .verification import ReleaseVerification
 
@@ -62,6 +66,7 @@ def prepare(
         task=request["task"],
         metrics=metrics,
         solver=solver,
+        client_root=client_root,
     )
     try:
         health = metrics.call("startup.context_validation", worker.authorize)

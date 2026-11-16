@@ -45,12 +45,12 @@ def test_empty_controller_is_also_rejected(tmp_path):
 def test_typed_defaults_do_not_change_sparse_reports(tmp_path):
     path = tmp_path / "config.toml"
     path.write_text(
-        'output = "run"\n[policy]\nurl = "http://localhost"\n[policy.config]\npredict_timeout_s = 9\n'
+        'output = "run"\n[policy]\nurl = "ws://localhost"\n[policy.config]\nmax_connect_seconds = 9\n'
     )
     config = load_config(path)
     assert is_dataclass(config.environment) and is_dataclass(config.policy)
     assert is_dataclass(config.policy["config"])
-    assert config.policy.get("server", config.policy.get("url")) == "http://localhost"
+    assert config.policy.get("server", config.policy.get("url")) == "ws://localhost"
     assert config.to_dict() == {
         "schema": "tower-eval-v1",
         "seed": 0,
@@ -58,7 +58,7 @@ def test_typed_defaults_do_not_change_sparse_reports(tmp_path):
         "duration_seconds": 600.0,
         "output": tmp_path / "run",
         "environment": {},
-        "policy": {"url": "http://localhost", "config": {"predict_timeout_s": 9}},
+        "policy": {"url": "ws://localhost", "config": {"max_connect_seconds": 9}},
         "controller": {},
     }
 
@@ -76,8 +76,6 @@ client_root = "/some/client"
 max_connect_attempts = 3
 connect_timeout_s = 2
 max_connect_seconds = 5
-health_timeout_s = 4
-predict_timeout_s = 9
 """)
     policy = load_config(path).policy
     assert policy["config"].to_dict() == {
@@ -86,8 +84,6 @@ predict_timeout_s = 9
         "max_connect_attempts": 3,
         "connect_timeout_s": 2,
         "max_connect_seconds": 5,
-        "health_timeout_s": 4,
-        "predict_timeout_s": 9,
     }
 
 

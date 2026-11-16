@@ -629,12 +629,10 @@ dev = [
 eef = [
     { name = "nero-kinematics", extra = ["eef"] },
 ]
-legacy-predict = [
-    { name = "pillow" },
-]
 xpolicylab = [
     { name = "msgpack" },
     { name = "msgpack-numpy" },
+    { name = "pillow" },
     { name = "pydantic" },
     { name = "websockets" },
 ]
@@ -653,14 +651,14 @@ requires-dist = [
     { name = "numpy", specifier = ">=1.26,<3" },
     { name = "opencv-python-headless", marker = "extra == 'artifacts'", specifier = ">=4.10,<4.12" },
     { name = "opencv-python-headless", marker = "extra == 'dev'", specifier = ">=4.10,<4.12" },
-    { name = "pillow", marker = "extra == 'legacy-predict'", specifier = ">=10,<13" },
-    { name = "pydantic", marker = "extra == 'xpolicylab'", specifier = ">=2.5,<3" },
+    { name = "pillow", marker = "extra == 'xpolicylab'", specifier = ">=10,<13" },
+    { name = "pydantic", marker = "extra == 'xpolicylab'", specifier = ">=2.11,<3" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8,<9" },
     { name = "scipy", specifier = ">=1.11,<2" },
     { name = "websockets", marker = "extra == 'dev'", specifier = ">=15,<16" },
     { name = "websockets", marker = "extra == 'xpolicylab'", specifier = ">=15,<16" },
 ]
-provides-extras = ["xpolicylab", "legacy-predict", "eef", "artifacts", "dev"]
+provides-extras = ["xpolicylab", "eef", "artifacts", "dev"]
 
 [[package]]
 name = "tower-monorepo"

@@ -2,10 +2,10 @@
 
 1. Follow [installation](install.md) and run `tower smoke` in the evaluator environment.
 2. Set up [Isaac](../isaac-sim.md) and the [asset download steps](../guides/evaluate-a-policy.md#download-and-verify-assets).
-3. Serve your policy over the HTTP `/health` + `/predict` protocol
-   ([HTTP compatibility](../reference/policy-interface.md#http-compatibility)).
-   XPolicyLab WebSocket serving applies to `tower run` and in-process integrations;
-   the Isaac benchmark runtime does not consume it yet.
+3. Serve your policy over the XPolicyLab WebSocket protocol
+   ([Isaac runtime transport](../reference/policy-interface.md#isaac-benchmark-runtime)).
+   Use one runtime process per policy server. The Isaac runtime uses atomic
+   WebSocket inference and checks full-prediction evidence.
 4. Follow [evaluate a policy](../guides/evaluate-a-policy.md) to validate the request and launch.
 5. Keep the resolved configuration, scene and policy identities with results.
    Use [offline scoring](../guides/offline-scoring.md) for saved recordings.

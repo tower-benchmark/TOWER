@@ -114,7 +114,7 @@ def inputs(tmp_path, monkeypatch):
         isaac_python=isaac,
         ik_python=ik,
         gpu=0,
-        policy_url="unused",
+        policy_url="ws://localhost:19000",
     )
     path = public.prepare(args)
     return args, path, planned, recorded, release_identity

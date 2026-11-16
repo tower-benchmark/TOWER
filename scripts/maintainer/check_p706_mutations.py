@@ -710,27 +710,27 @@ MUTATIONS = (
     ),
     (
         "policy-package-authorization",
-        "../../../../../src/tower-eval/src/tower_eval/policies/legacy_predict.py",
-        ' or identity["package_digest"] != self.package_digest',
-        "",
-    ),
-    (
-        "policy-full-identity",
-        "../../../../../src/tower-eval/src/tower_eval/policies/legacy_predict.py",
-        'result["identity"] != self._health_identity\n'
-        '            or result["identity"] != self._latest_health_identity',
+        "../../../../../src/tower-eval/src/tower_eval/policies/runtime_ws.py",
+        'identity["package_digest"] != self.package_digest',
         "False",
     ),
     (
-        "policy-422-classification",
-        "../../../../../src/tower-eval/src/tower_eval/policies/legacy_predict.py",
-        'body.get("code") == "invalid_policy_output"',
+        "policy-full-identity",
+        "../../../../../src/tower-eval/src/tower_eval/policies/runtime_ws.py",
+        'result["identity"] != self._health_identity\n'
+        '                or result["identity"] != self._latest_health_identity',
+        "False",
+    ),
+    (
+        "policy-output-classification",
+        "../../../../../src/tower-eval/src/tower_eval/policies/runtime_ws.py",
+        'category == "PolicyOutputError"',
         "False",
     ),
     (
         "policy-aperture-classification",
-        "../../../../../src/tower-eval/src/tower_eval/policies/legacy_predict.py",
-        'body == {"code": "invalid_observation", "error": "Negative gripper aperture"}',
+        "../../../../../src/tower-eval/src/tower_eval/policies/runtime_ws.py",
+        'category == "ValueError" and message == "Negative gripper aperture"',
         "False",
     ),
     (
@@ -747,10 +747,10 @@ MUTATIONS = (
     ),
     ("policy-ik-rejected-evidence", "replay.py", 'if hasattr(exc, "diagnostics"):', "if False:"),
     (
-        "policy-mme-prefix",
+        "policy-mme-authorization",
         "policy.py",
-        'history=self.metrics.call("history.pack_request", self.histories[index].request, tick),',
-        "history={},",
+        "    def authorize(self):\n        raise ValueError(",
+        "    def authorize(self):\n        return {}\n        raise ValueError(",
     ),
     (
         "policy-no-reverse",
@@ -2462,12 +2462,123 @@ MUTATIONS += (
 )
 
 
+MUTATIONS += (
+    (
+        "policy-env-order",
+        "policy.py",
+        "for index in sorted(payloads):",
+        "for index in sorted(payloads, reverse=True):",
+    ),
+    (
+        "policy-repr-identity",
+        "../../../../../src/tower-eval/src/tower_eval/policies/runtime_ws.py",
+        'result["identity"] != self._health_identity',
+        'repr(result["identity"]) != repr(self._health_identity)',
+    ),
+    (
+        "policy-aperture-prefix",
+        "../../../../../src/tower-eval/src/tower_eval/policies/runtime_ws.py",
+        'message == "Negative gripper aperture"',
+        'message.startswith("Negative gripper aperture")',
+    ),
+    (
+        "policy-error-code",
+        "../../../../../src/tower-eval/src/tower_eval/policies/runtime_ws.py",
+        'if code in {"call_failed", "infer_failed"}:',
+        "if True:",
+    ),
+)
+
+
+MUTATIONS += (
+    (
+        "policy-timeout",
+        "../../../../../src/tower-eval/src/tower_eval/policies/runtime_ws.py",
+        "timeout_s=300.0",
+        "timeout_s=120.0",
+    ),
+    (
+        "policy-missing-prediction",
+        "../../../../../src/tower-eval/src/tower_eval/policies/runtime_ws.py",
+        'elif getattr(exc, "details", {}).get("exception_type") == "KeyError":',
+        "elif False:",
+    ),
+    (
+        "policy-row-metadata",
+        "../../../../../src/tower-eval/src/tower_eval/policies/runtime_ws.py",
+        "if key in row and row[key] != full[key]:",
+        "if False:",
+    ),
+    (
+        "policy-row-identity",
+        "../../../../../src/tower-eval/src/tower_eval/policies/runtime_ws.py",
+        'if row.get("identity") != result["identity"]:',
+        "if False:",
+    ),
+    (
+        "policy-png-format",
+        "../../../../../src/tower-eval/src/tower_eval/policies/runtime_ws.py",
+        'if image.format != "PNG":',
+        "if False:",
+    ),
+    (
+        "policy-transport-label",
+        "../../../../../src/tower-eval/src/tower_eval/policies/runtime_ws.py",
+        'transport="websocket"',
+        'transport="unknown"',
+    ),
+    (
+        "policy-aperture-type",
+        "../../../../../src/tower-eval/src/tower_eval/policies/runtime_ws.py",
+        'category == "ValueError" and message',
+        "message",
+    ),
+    (
+        "policy-identity-normalize",
+        "../../../../../src/tower-eval/src/tower_eval/policies/runtime_ws.py",
+        'normalize(self.bridge._call("get_identity"))',
+        'self.bridge._call("get_identity")',
+    ),
+    (
+        "policy-atomic-infer",
+        "../../../../../src/tower-eval/src/tower_eval/policies/runtime_ws.py",
+        "rows = self.bridge.infer(mapped)",
+        'self.bridge._call("update_obs", mapped)\n                    rows = self.bridge._call("get_action")',
+    ),
+)
+
+
+MUTATIONS += (
+    (
+        "policy-adapter-infer-wire",
+        "../../../../../src/tower-eval/src/tower_eval/policies/xpolicylab.py",
+        '        with contextlib.redirect_stdout(sys.stderr):\n            client = self._client\n            response = client._run(\n                client._client.infer(\n                    observation,\n                    trial_id=client.trial_id,\n                    action_case_id=client.action_case_id,\n                    repeat_index=client.repeat_index,\n                    step=client._step,\n                )\n            )\n            client._step += 1\n            return response.payload["actions"]\n',
+        '        self._call("update_obs", observation)\n        return self._call("get_action")\n',
+    ),
+    (
+        "policy-adapter-infer-step",
+        "../../../../../src/tower-eval/src/tower_eval/policies/xpolicylab.py",
+        "            client._step += 1",
+        "            pass",
+    ),
+    (
+        "policy-replay-request-limit",
+        "replay.py",
+        "concurrent_request_limit=1 if policy else min(16, env.n)",
+        "concurrent_request_limit=1 if policy else 0",
+    ),
+)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--prefix", help="Run one component and its unmutated test baseline")
     parser.add_argument("--partition", help="Disjoint mutation shard INDEX/COUNT, zero based")
     args = parser.parse_args()
-    selected = list(MUTATIONS)
+    selected = [row for row in MUTATIONS if not args.prefix or row[0].startswith(args.prefix)]
+    if not selected:
+        parser.error("No mutations selected")
     if args.partition:
         index, count = map(int, args.partition.split("/"))
         if not 0 <= index < count:
@@ -2559,6 +2670,18 @@ def main():
                 ]
             elif name.startswith("backend-") or name == "reference-tag-refusal":
                 tests = ["packages/tower-sim/tests/test_backend_move.py"]
+            elif name == "policy-baseline":
+                tests = [
+                    f"packages/tower-sim/tests/test_{part}.py"
+                    for part in (
+                        "policy_evaluation",
+                        "policy_lifecycle",
+                        "policy_protocol",
+                        "policy_review_fixes",
+                        "control_equivalence",
+                        "pure_equivalence",
+                    )
+                ]
             elif name != "baseline":
                 filename = next(row[1] for row in MUTATIONS if row[0] == name)
                 if filename in {"bootstrap.py", "environment.py", "app.py", "scene.py"}:
@@ -2596,11 +2719,19 @@ def main():
                         "tests/characterization/test_gpu_host_profile.py",
                         "tests/characterization/test_gpu_assemble.py",
                     ] + (tests if owners else [])
+            if name.startswith("policy-") or name == "baseline":
+                tests.append("src/tower-eval/tests/unit/test_ws_transport_parity.py")
+            if name == "policy-atomic-infer":
+                tests = [
+                    "src/tower-eval/tests/unit/test_ws_transport_parity.py::test_atomic_infer_prevents_interleaved_update"
+                ]
             result = subprocess.run(
                 [
                     sys.executable,
                     "-m",
                     "pytest",
+                    "-p",
+                    "no:cacheprovider",
                     *tests,
                     "-q",
                     "--tb=short",
@@ -2630,12 +2761,13 @@ def main():
             (args.output / f"{name}.log").write_text(result.stdout + result.stderr)
             return result.returncode
 
-        if run("contrib-baseline") != 0:
-            raise RuntimeError("Unmutated public contribution regressions must pass first")
-        if run("purge-baseline") != 0:
-            raise RuntimeError("Unmutated purge regressions must pass first")
-        if run("baseline") != 0:
-            raise RuntimeError("Unmutated suite must pass first")
+        if args.prefix == "policy-":
+            if run("policy-baseline") != 0:
+                raise RuntimeError("Unmutated policy suite must pass first")
+        else:
+            for baseline in ("contrib-baseline", "purge-baseline", "baseline"):
+                if run(baseline) != 0:
+                    raise RuntimeError(f"Unmutated {baseline} must pass first")
         if any(row[0] in SCENE_TESTS for row in selected) and run("scene-baseline") != 0:
             raise RuntimeError("Unmutated selected scene regressions must pass first")
         for name, filename, old, new in selected:
@@ -2652,6 +2784,7 @@ def main():
                         name=name,
                         file=str(path.relative_to(ROOT)),
                         line=source[: source.index(old)].count("\n") + 1,
+                        sites=source.count(old),
                         pytest_exit=code,
                         caught=code == 1,  # collection/crash is not detection
                     )

@@ -814,8 +814,8 @@ def execute(
                         stage=policy.stage if policy else "reference_command_replay",
                         simulated_seconds=tick / 400,
                         ended=ended,
-                        serialized_neural_inference=False,
-                        concurrent_request_limit=min(16, env.n),
+                        serialized_neural_inference=policy is not None,
+                        concurrent_request_limit=1 if policy else min(16, env.n),
                     ),
                 )
         metrics.end_loop()

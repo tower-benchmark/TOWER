@@ -2,14 +2,14 @@
 """Policy public API."""
 
 from .adapter import ActionChunk, PolicyAdapter
-from .legacy_predict import LegacyPredictAdapter, PolicyOutputError, PolicyTransportError
 from .local import LocalPolicyAdapter, ReferenceAdapter
+from .runtime_ws import PolicyOutputError, PolicyTransportError, RuntimePolicyAdapter
 from .xpolicylab import XPolicyLabAdapter
 
 __all__ = [
     "PolicyAdapter",
     "XPolicyLabAdapter",
-    "LegacyPredictAdapter",
+    "RuntimePolicyAdapter",
     "PolicyOutputError",
     "PolicyTransportError",
     "ActionChunk",

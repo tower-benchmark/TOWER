@@ -29,7 +29,22 @@ PACKAGE_MODULES = {
     "tower-eval": ("tower_eval",),
     "nero-kinematics": ("nero_kinematics", "nero_eef_ik"),
 }
-DEPENDENCIES = ("numpy", "scipy", "h5py", "Pillow", "PyYAML", "isaacsim")
+DEPENDENCIES = (
+    "numpy",
+    "scipy",
+    "h5py",
+    "Pillow",
+    "PyYAML",
+    "isaacsim",
+    "websockets",
+    "msgpack",
+    "msgpack-numpy",
+    "pydantic",
+    "pydantic-core",
+    "annotated-types",
+    "typing-extensions",
+    "typing-inspection",
+)
 IK_PINS = {"pin": "3.8.0", "casadi": "3.7.2", "pin-pink": "3.4.0", "numpy": "1.26.4"}
 CONDA_IK_PACKAGES = {
     "pin": ("pinocchio", "pinocchio-python", "libpinocchio"),
@@ -277,9 +292,53 @@ def git(root, *args):
     return subprocess.check_output(["git", "-C", str(root), *args])
 
 
+def client_revision(root, commit="HEAD"):
+    relative = "third_party/XPolicyLab"
+    entry = git(root, "ls-tree", commit, "--", relative).decode().split()
+    if not entry:
+        return None
+    client = Path(root) / relative
+    try:
+        top = Path(git(client, "rev-parse", "--show-toplevel").decode().strip()).resolve()
+    except (OSError, subprocess.CalledProcessError) as exc:
+        raise ValueError(
+            "Initialize the pinned XPolicyLab submodule before building a release"
+        ) from exc
+    if top != client.resolve():
+        raise ValueError("Initialize the pinned XPolicyLab submodule before building a release")
+    if entry[0] != "160000" or git(client, "rev-parse", "HEAD").decode().strip() != entry[2]:
+        raise ValueError("XPolicyLab checkout differs from pinned gitlink")
+    if git(client, "status", "--porcelain", "--untracked-files=all", "--", "client_server").strip():
+        raise ValueError("XPolicyLab client source must be clean")
+    return entry[2]
+
+
+def checkout_source(root, commit, name):
+    """Read committed bytes from the repository which owns the file."""
+    prefix = "third_party/XPolicyLab/"
+    if name.startswith(prefix):
+        revision = client_revision(root, commit)
+        if revision is None:
+            raise ValueError("Missing XPolicyLab gitlink")
+        return git(
+            Path(root) / "third_party/XPolicyLab", "show", f"{revision}:{name.removeprefix(prefix)}"
+        )
+    return git(root, "show", f"{commit}:{name}")
+
+
 def checkout_files(root):
-    """Exact tracked set, including non-Python runtime assets and subprocess entries."""
-    return git(root, "ls-files", "-z", "--", *CHECKOUT_TREES).decode().strip("\0").split("\0")
+    """Exact committed runtime file set, including the pinned WebSocket client."""
+    files = git(root, "ls-files", "-z", "--", *CHECKOUT_TREES).decode().strip("\0").split("\0")
+    revision = client_revision(root)
+    if revision is not None:
+        client = Path(root) / "third_party/XPolicyLab"
+        names = (
+            git(client, "ls-tree", "-r", "--name-only", "-z", revision, "--", "client_server")
+            .decode()
+            .split("\0")
+        )
+        files.extend(f"third_party/XPolicyLab/{name}" for name in names if name)
+    return files
 
 
 def verify_checkout(root, body):

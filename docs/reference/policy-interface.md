@@ -51,7 +51,8 @@ runtime robot configuration; the submodule maintains its training registry.
 
 Camera names are `right_front_camera`, `left_back_camera`, `left_wrist_camera`,
 and `back_wrist_camera`. Arrays are transported losslessly with msgpack; RGB
-channels are never swapped. The XPolicyLab server owns encoded-image decoding.
+channels are never swapped. TOWER always sends raw RGB arrays, which is what
+XPolicyLab policy servers accept by default; they reject encoded images.
 OpenWAM_TOWER applies the checkpoint's verified training image composition.
 No camera, EEF pose, or prompt is fabricated for real observations.
 
@@ -113,71 +114,73 @@ tensor batching is not validated. Each client is called from one thread, and
 owns its connection, trial identifiers and cleanup.
 
 
-## HTTP compatibility
+## Isaac benchmark runtime
 
-The Isaac benchmark runtime consumes HTTP `/health` and `/predict` through
-`LegacyPredictAdapter`. It does not consume XPolicyLab WebSocket messages yet.
-WebSocket serving applies to `tower run` integrations with a suitable environment
-and in-process integration; the generic CPU backend rejects it except for the
-explicit synthetic smoke fixture.
+**Use one runtime process per policy server.** Full-prediction caches are shared;
+concurrent runtime clients are unsupported even though INFER itself is atomic.
 
-The endpoint defaults are **30 seconds for health** and **300 seconds for
-prediction**. Configure `health_timeout_s` and `predict_timeout_s` directly or:
+The Isaac runtime uses `RuntimePolicyAdapter`, a thin wrapper around
+`XPolicyLabAdapter`, on one WebSocket connection per process. `policy_url` and
+`--policy-url` accept only `ws://` and `wss://`. The unreleased request schema
+remains `tower-public-benchmark-v2`; benchmark, data and scene identities do not change.
+INFER and get_prediction each have a 300-second request timeout. get_identity
+retains the old health timeout of 30 seconds. A failed exchange permits one
+reconnect attempt with a 180-second connect budget; connection attempts within
+that budget use TOWER XPolicyLabAdapter’s 10-second attempt timeout. Installed
+runtimes receive the pinned checkout client path explicitly. Release verification
+binds its client source files and the installed transport dependency records.
 
-```toml
-[policy]
-server = "http://localhost:19000"
+Before simulator startup, `get_identity` authorizes the package digest. Startup
+writes `policy-health.json` with `ready: true` and the full identity. Each prediction
+must equal both the first and latest startup identity, using existing dictionary
+equality rules, including all unknown and nested fields.
 
-[policy.config]
-health_timeout_s = 30
-predict_timeout_s = 300
-```
+A batch start sends `prepare_case` with episode seed and environment seed metadata,
+then `reset`. Each fixed tick visits active environments in index order and sends
+`INFER` (with `env_idx`), then `get_prediction(env_idx)` if supported. INFER
+updates observations and obtains actions under one server lock. An audit-prefix
+mismatch fails closed with a shared-server diagnostic. One environment's action
+rejection does not prevent later environments from receiving their actions.
+An infrastructure error stops requests for the remaining environments.
+`trial_end` closes the batch; cleanup failures are recorded separately in
+`policy-cleanup-errors.json` and do not invalidate recorded outcomes. OpenWAM_TOWER stores only observations, anchors and
+last predictions; reset clears those caches. Every inference uses seed 42.
 
-Both timeouts must be finite and positive. The runtime can use
-`LegacyPredictAdapter.from_config(config.policy, expected_identity=authorized_identity)`.
-This factory does not enable HTTP physics evaluation in the generic CPU CLI.
+Pixels are decoded from the exact validated archive PNG bytes and sent as raw
+RGB uint8 arrays. The server passes those arrays through its image decoder.
+The runtime adds the encoder frame tag to the three-field encoder observation.
+Controller responses are reconstructed from float64 endpoint rows. Floating
+arrays of other dtypes are rejected; full predictions are normalized to nested
+Python lists before prefix concatenation. All numeric and semantic validation
+remains in the unchanged controller, preserving rejection and evidence behavior. With
+`get_prediction`, all executed rows must match the full prediction bitwise;
+the remaining horizon and auxiliary fields are retained unchanged. Without that
+method, only available rows are recorded, with explicit `missing_evidence` fields.
+No unexecuted horizon or inference timing is synthesized.
 
-`GET /health` returns a JSON object with `ready` and `identity`; `ready` must
-be true. `POST /predict` sends JSON with `Content-Type: application/json`,
-including the authorized `package_digest`. A prediction returns `identity`,
-`mode`, `coordinate_frame`, `units`, `control_hz`, `execute_steps`,
-`j8_actuator_mask` and per-step `gripper_width_m`. Joint mode supplies
-`joint_encoder_targets`; EEF mode supplies `eef_encoder_targets` and
-`chunk_anchor_encoder`. The frame is `encoder_arm_base`. These HTTP response
-arrays are distinct from the WebSocket endpoint dictionaries above.
+Remote `PolicyOutputError` becomes an action failure. Remote `ValueError` with
+exact message `Negative gripper aperture` preserves the frozen input-rejection
+record without clipping or changing tolerances. Other model errors, unknown
+exception types, connection, timeout and protocol failures are infrastructure
+failures. Malformed wire structure fails before control. Identity-call errors
+are always infrastructure failures. Transport diagnostics retain code, message,
+exception type and request ID in `policy-error.json`. The server must expose
+`details.exception_type` in model errors.
 
-Health must report readiness and match `expected_identity["package_digest"]`.
-Other fields in the caller's expected identity are not authorization requirements.
-The adapter snapshots the complete first health identity, including nested and
-unknown fields. A repeated health read checks the package again; each prediction
-must match both the original and latest complete identity. Missing, added or
-changed fields fail even when the package digest is unchanged. Mutating a returned
-health response cannot alter a snapshot. Call `health` or `reset` before inference;
-a first `predict` also establishes health if needed. Each `reset` reads health;
-there is no reset RPC or client inference seed. Use a new adapter for a new identity.
+`rpc_start`, `rpc_end` and `policy.rpc_elapsed_sum` cover each environment's WS
+exchange, including full-prediction retrieval; payload preparation and response
+validation are outside the timer. `rpc_end` now records `transport: websocket`.
+Request IDs remain local metrics; transport headers and server profiling fields
+are removed. Native inference timing remains available in full predictions.
 
-RGB images use lossless base64 PNG encoding. Already encoded images and MME
-`history` pass through without re-encoding, resampling or reordering. The ordinary
-request contains the observation, `images` keyed by camera name, and `prompt`.
-MME adds `task`, `episode_id`, `observation_time_s` and complete-prefix `history`.
-`predict(..., headers=...)` forwards `X-Baseline-Request-ID`
-(`trial:scene_seed:physics_tick`) and `X-Baseline-Capture` (empty, `start`, or `stop`).
-The transport does not derive those headers from reset metadata or inference seed.
-`Content-Type` is sent first. The `act` convenience method sends no baseline headers.
-
-On prediction errors, `profiling` is removed before classification. HTTP 422
-`invalid_policy_output`, and HTTP 422 with the exact body
-`{"code": "invalid_observation", "error": "Negative gripper aperture"}`, raise
-`PolicyOutputError`. The latter rejects an action without clipping observations
-or changing tolerances. Other HTTP/input errors, timeouts, connection failures
-and truncated HTTP responses raise `PolicyTransportError`. Health errors are
-always transport failures. Malformed successful JSON raises the JSON decoder
-error; malformed HTTP error bodies remain transport failures with diagnostic text.
-
-`predict` returns successful parsed responses unchanged. The controller validates
-the executed prefix, finite targets, timing, frame, limits and IK before enqueue.
-NaN/Infinity in executed targets are action rejections; unused tail values are
-not newly validated by the transport. `act` decodes into `ActionChunk` and does
-not replace controller validation or coordinate conversion.
+MME-VLA packages fail authorization: an XPolicyLab MME adapter is not available
+in this release. Adding one with qualified history semantics is follow-up work.
 
 See the [control safety contract](../guides/eef-control.md#control-safety-contract).
+
+Untagged standard joint endpoints use the configured joint_absolute mode,
+encoder_arm_base frame, 10 Hz, row count as execute_steps, and a disabled J8 mask,
+matching decode_chunk defaults. EEF endpoints must explicitly supply mode, frame,
+control_hz, execute_steps and j8_actuator_mask; the runtime invents none of these.
+Audit-call failures are infrastructure failures, never observation rejections.
+Command replay retains its previous min(16, environment count) request-limit metadata.

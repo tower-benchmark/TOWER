@@ -5,12 +5,9 @@ from __future__ import annotations
 import collections
 import contextlib
 import functools
-import io
 import json
 import threading
 import time
-import urllib.error
-import urllib.request
 from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any, Protocol
@@ -151,12 +148,7 @@ class Metrics:
         self.flush()
 
     def predict(self, adapter, payload, *, headers):
-        """Observe the sole transport at its HTTP boundary, before identity checks.
-
-        Like frozen ``http_json``, ``rpc_s`` and ``policy.rpc_elapsed_sum`` cover
-        only the HTTP exchange, not payload encoding or identity checks, and
-        ``rpc_end`` keeps the frozen field order.
-        """
+        """Measure the per-environment WebSocket exchange before response validation."""
         request_id = headers["X-Baseline-Request-ID"]
         started = None
         timer = contextlib.ExitStack()
@@ -174,39 +166,6 @@ class Metrics:
 
         with timer:
             return adapter.predict(payload, headers=headers, rpc_observer=observe)
-
-    def http_json(self, request, *, urlopen=urllib.request.urlopen):
-        started = self.monotonic_ns()
-        result = status = None
-        rid = request.get_header("X-baseline-request-id")
-        self.emit("rpc_start", request_id=rid)
-        try:
-            with self.span("policy.rpc_elapsed_sum"):
-                try:
-                    with urlopen(request, timeout=300) as response:
-                        status, result = response.status, json.load(response)
-                except urllib.error.HTTPError as exc:
-                    status, raw = exc.code, exc.read()
-                    try:
-                        result = json.loads(raw)
-                    except (ValueError, UnicodeError):
-                        result = None
-                    if isinstance(result, dict) and "profiling" in result:
-                        raw = json.dumps(
-                            {k: v for k, v in result.items() if k != "profiling"}
-                        ).encode()
-                    raise urllib.error.HTTPError(
-                        exc.url, exc.code, exc.msg, exc.hdrs, io.BytesIO(raw)
-                    ) from exc
-            return result
-        finally:
-            self.emit(
-                "rpc_end",
-                request_id=rid,
-                rpc_s=(self.monotonic_ns() - started) / 1e9,
-                http_status=status,
-                server=result.get("profiling") if result else None,
-            )
 
     def flush(self):
         self.emit("stage_totals", totals=dict(self.stats))

@@ -394,7 +394,8 @@ def test_completed_replay_applies_public_import_closure(release, monkeypatch, tm
 
 
 @pytest.mark.parametrize("tampered_compat", [False, True])
-def test_release_builder_lists_committed_runtime_trees(release, tampered_compat):
+@pytest.mark.parametrize("gitlink", [False, True, "uninitialized"])
+def test_release_builder_lists_committed_runtime_trees(release, tampered_compat, gitlink):
     from scripts.maintainer.candidate_release import create
     from scripts.maintainer.candidate_replay import wheel_source_path
 
@@ -437,6 +438,36 @@ def test_release_builder_lists_committed_runtime_trees(release, tampered_compat)
         ],
         check=True,
     )
+    if gitlink:
+        client = root / "third_party/XPolicyLab"
+        source = client / "client_server/client.py"
+        source.parent.mkdir(parents=True)
+        source.write_text("synthetic = True\n")
+
+        def git(directory, *args):
+            return subprocess.check_output(["git", "-C", str(directory), *args])
+
+        git(client, "init")
+        for directory in (client, root):
+            git(directory, "add", ".")
+            git(
+                directory,
+                "-c",
+                "user.name=Synthetic",
+                "-c",
+                "user.email=fixture@example.test",
+                "commit",
+                "-m",
+                "synthetic gitlink",
+            )
+        if gitlink == "uninitialized":
+            import shutil
+
+            shutil.rmtree(client)
+            client.mkdir()
+            with pytest.raises(ValueError, match="Initialize the pinned XPolicyLab submodule"):
+                create(root, release.parent / "new-release.json")
+            return
     private = root / ".venv-isaac61/untracked.py"
     private.parent.mkdir()
     private.write_text("private interpreter file")
@@ -447,7 +478,9 @@ def test_release_builder_lists_committed_runtime_trees(release, tampered_compat)
     result = create(root, release.parent / "new-release.json")
     assert result["checkout_trees"] == list(v.CHECKOUT_TREES)
     assert result["checkout_files"] == {name: sha(root / name) for name in v.checkout_files(root)}
-    assert set(result["checkout_files"]) == {f"{tree}/bound.py" for tree in v.CHECKOUT_TREES}
+    assert set(result["checkout_files"]) == {f"{tree}/bound.py" for tree in v.CHECKOUT_TREES} | (
+        {"third_party/XPolicyLab/client_server/client.py"} if gitlink else set()
+    )
 
 
 def test_untracked_file_outside_runtime_trees_is_not_executable_authorization(release):
@@ -711,3 +744,44 @@ def test_shipped_nero_alias_is_bound_as_wheel_code(release, tmp_path, change):
         from scripts.maintainer.candidate_replay import wheel_source_path
 
         assert wheel_source_path(member) == "packages/nero-kinematics/src/" + member
+
+
+def test_release_binds_pinned_websocket_client(tmp_path):
+    root = tmp_path / "checkout"
+    root.mkdir()
+
+    def git(directory, *args):
+        return subprocess.check_output(["git", "-C", str(directory), *args])
+
+    def commit(directory):
+        git(directory, "add", ".")
+        git(
+            directory,
+            "-c",
+            "user.name=Synthetic",
+            "-c",
+            "user.email=fixture@example.test",
+            "commit",
+            "-m",
+            "synthetic fixture",
+        )
+
+    git(root, "init")
+    (root / "scripts").mkdir()
+    (root / "scripts/bound.py").write_text("value = 1\n")
+    client = root / "third_party/XPolicyLab"
+    client.mkdir(parents=True)
+    git(client, "init")
+    (client / "client_server").mkdir()
+    source = client / "client_server/client.py"
+    source.write_text("value = 1\n")
+    commit(client)
+    commit(root)
+    relative = "third_party/XPolicyLab/client_server/client.py"
+    assert relative in v.checkout_files(root)
+    source.write_text("value = 2\n")
+    with pytest.raises(ValueError, match="source must be clean"):
+        v.checkout_files(root)
+    commit(client)
+    with pytest.raises(ValueError, match="pinned gitlink"):
+        v.checkout_files(root)
