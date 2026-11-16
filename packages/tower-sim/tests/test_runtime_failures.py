@@ -80,7 +80,7 @@ def test_independent_renderer_failure_is_rejected_even_with_matching_pixels(kind
     # One healthy view just above the quality threshold; a flat reference is
     # within the historical MAE/bias tolerance but is still a renderer failure.
     pixels = np.full((4, 240, 320, 3), 5, np.uint8)
-    pixels[3, ::2] = 21
+    pixels[3, 0:240:2] = 21
     reference = pixels.copy()
     if kind == "all-failed":
         reference[3] = 13

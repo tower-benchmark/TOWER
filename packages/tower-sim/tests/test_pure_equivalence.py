@@ -53,7 +53,7 @@ def test_observation_delivery_equivalence(frozen_loader, monkeypatch, kind):
     ).DeliveryGuard()
     new = DeliveryGuard()
     pixels = np.full((4, 240, 320, 3), 40, np.uint8)
-    pixels[:, ::2] = 80
+    pixels[:, 0:240:2] = 80
     if kind in ("dark", "reference", "mismatch", "error"):
         pixels[0] = 7
     quality = {i: camera_quality(pixels[i]) for i in range(4)}
