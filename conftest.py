@@ -6,29 +6,11 @@ import pytest
 
 
 def pytest_addoption(parser):
-    parser.addoption(
-        "--long-replay-first",
-        action="store_true",
-        help="Start the measured longest public campaign replay before shorter tests",
-    )
     parser.addoption("--asset-root", type=Path, help="Public asset folder or staged upload root")
     parser.addoption("--golden-root", type=Path, help="Public golden folder or staged asset root")
     parser.addoption(
         "--v1-root", "--archive-root", type=Path, help="Explicit private archive export"
     )
-
-
-def pytest_collection_modifyitems(config, items):
-    if config.getoption("--long-replay-first"):
-        # Profiled on 2026-11-17: this replay dominated the public suite. Revisit
-        # the hint using CI's duration reports if the test or workload changes.
-        # Start it immediately with a small queue behind it (xdist load keeps
-        # at least two initial items per worker). Keep every item and assertion.
-        longest = (
-            "packages/tower-sim/tests/test_bench_scoring.py::"
-            "test_full_campaign_streams[task1-3-openwam-public]"
-        )
-        items.sort(key=lambda item: item.nodeid != longest)
 
 
 @pytest.fixture(scope="session")
