@@ -566,3 +566,14 @@ def test_malformed_release_commit(tmp_path):
     root, _, _ = fixture(tmp_path / "run", commit="malformed")
     with pytest.raises(ValueError, match="commit"):
         run_summary.aggregate([root], tmp_path / "out")
+
+
+def test_annotation_does_not_swallow_interrupts(tmp_path, monkeypatch):
+    from tower_eval import posture_flags
+
+    def interrupt(*args):
+        raise KeyboardInterrupt
+
+    monkeypatch.setattr(posture_flags, "flags", interrupt)
+    with pytest.raises(KeyboardInterrupt):
+        annotations.publish(tmp_path / "states", tmp_path / "score", tmp_path / "flags")
