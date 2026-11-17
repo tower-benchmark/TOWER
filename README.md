@@ -1,9 +1,5 @@
 <div align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/tower-logo-v1-dark.png">
-    <source media="(prefers-color-scheme: light)" srcset="docs/assets/tower-logo-v1.png">
-    <img src="docs/assets/tower-logo-v1.png" width="680" alt="TOWER">
-  </picture>
+  <img src="docs/assets/tower-logo-v1.png" alt="TOWER" width="720" />
 
   <h1>TOWER: Benchmarking Bimanual Manipulation across Simulation and Reality</h1>
   <p>Long-horizon tower manipulation, from atomic actions to coordinated bimanual tasks.</p>
