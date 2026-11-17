@@ -3036,16 +3036,21 @@ MUTATIONS += (
     (
         "public-aggregate-qualification",
         "run_summary.py",
-        "qualification=qualification(protocol)",
-        'qualification=binding.get("qualification", "unreviewed")',
+        "qualification=qualification(protocol, bundle)",
+        'qualification="posture-reviewed"',
     ),
     (
         "public-aggregate-sha",
         "run_summary.py",
-        'score_sha != status["source_hashes"]["score.json"]',
+        'score_sha != hashes["score.json"]',
         "False",
     ),
-    ("public-aggregate-duplicate", "run_summary.py", "if scene in seen:", "if False:"),
+    (
+        "public-aggregate-duplicate",
+        "run_summary.py",
+        "if seen.intersection(selected):",
+        "if False:",
+    ),
 )
 
 
@@ -3072,6 +3077,56 @@ MUTATIONS += (
         'report.get("ruleset", "bench-2026.11") != current["ruleset"]',
         "False",
     ),
+)
+
+
+MUTATIONS += (
+    (
+        "public-aggregate-retained-sha",
+        "run_summary.py",
+        "sha(inside(episode, name)) != digest",
+        "False",
+    ),
+    (
+        "public-aggregate-status-protocol",
+        "run_summary.py",
+        'status["protocol_sha256"] != bundle.request["protocol_sha256"]',
+        "False",
+    ),
+    (
+        "public-aggregate-status-package",
+        "run_summary.py",
+        'status["package_digest"] != current["package_digest"]',
+        "False",
+    ),
+    ("public-aggregate-status-seed", "run_summary.py", 'status["seed"] != seed', "False"),
+    ("public-aggregate-score-valid", "run_summary.py", 'report.get("valid") is not True', "False"),
+    (
+        "public-aggregate-score-task",
+        "run_summary.py",
+        'benchmark_task(report["task"]).id != task',
+        "False",
+    ),
+    (
+        "public-aggregate-required-evidence",
+        "run_summary.py",
+        "not REQUIRED.issubset(hashes)",
+        "False",
+    ),
+    (
+        "public-aggregate-committed-status",
+        "run_summary.py",
+        'read(batch / f"simulation/seed-{seed}/status.json", binding["sha256"])',
+        'read(batch / f"simulation/seed-{seed}/status.json")',
+    ),
+    ("public-aggregate-schema", "run_summary.py", "schema not in (UNREVIEWED, REVIEWED)", "False"),
+    (
+        "public-aggregate-review-flag",
+        "run_summary.py",
+        "review.get(name) is not True",
+        "not review.get(name)",
+    ),
+    ("public-aggregate-prepared-hash", "run_bundle.py", "if sha(path) != expected:", "if False:"),
 )
 
 

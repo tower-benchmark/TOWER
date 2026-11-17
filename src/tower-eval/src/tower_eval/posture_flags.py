@@ -8,7 +8,6 @@ import json
 from pathlib import Path
 from typing import Any, cast
 
-import h5py
 import numpy as np
 from scipy.spatial.transform import Rotation
 
@@ -26,6 +25,8 @@ def _classify(states, report):
     Base rotation must remain constant to within 0.001 radians. This tolerance
     accommodates recorded quaternion precision; it is not a grasp threshold.
     """
+    import h5py
+
     with h5py.File(states, "r") as handle:
         missing = sorted({"time", "eef", "eef_world"} - set(handle))
         if missing:
@@ -39,6 +40,8 @@ def _classify(states, report):
         times = cast(h5py.Dataset, handle["time"])[:]
         local = cast(h5py.Dataset, handle["eef"])[:]
         world = cast(h5py.Dataset, handle["eef_world"])[:]
+    if times.ndim != 1 or not np.isfinite(times).all() or np.any(np.diff(times) <= 0):
+        raise ValueError("TCP timestamps must be finite and strictly increasing")
     operations = []
     for operation in report.get("operations", []):
         arm = operation["arm"]
@@ -114,7 +117,7 @@ def _classify(states, report):
 def classify(states, report):
     try:
         return _classify(states, report)
-    except (OSError, KeyError, ValueError, IndexError, TypeError) as error:
+    except (ImportError, OSError, KeyError, ValueError, IndexError, TypeError) as error:
         return dict(
             schema="tower-posture-flags-v1",
             reference=REFERENCE,

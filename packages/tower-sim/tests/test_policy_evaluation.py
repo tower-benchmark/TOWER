@@ -337,3 +337,52 @@ def test_unreviewed_server_contract(authorization, monkeypatch, field):
         with pytest.raises(ValueError):
             prepare()
         assert closed == [True]
+
+
+def test_optional_annotation_after_durable_commit(tmp_path, monkeypatch):
+    from types import SimpleNamespace as NS
+
+    from tower_sim.bench import annotations
+
+    context = object.__new__(EvaluationContext)
+    context.rows = [dict(candidate=dict(seed=0, episode_spec={}), output=tmp_path)]
+    context.completed = {}
+    context.closed_archives = set()
+    context.duration_ticks = 20
+    context.task = "task6-2"
+    context.verification = None
+    context.package = dict(checkpoint_sha256="checkpoint", package_digest="package")
+    context.request = dict(protocol_sha256="protocol")
+    context.success_rule = "success"
+    context.scorer = NS(
+        recording=lambda *a: NS(status={}),
+        score=lambda r: dict(valid=True, scores=dict(g=0, p=0, s=0, D=0), protocol="p"),
+    )
+
+    def evidence_write(*args):
+        from tower_sim.bench.run_summary import REQUIRED
+
+        for name in REQUIRED - {"score.json"}:
+            path = tmp_path / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text("{}")
+        return tmp_path
+
+    context.write_evidence = evidence_write
+
+    def fail(*args):
+        assert context.completed[0]["sha256"] == sha(tmp_path / "status.json")
+        raise PermissionError("Optional annotation unavailable")
+
+    monkeypatch.setattr(annotations, "publish", fail)
+    rows = [dict(time=0), dict(time=0.05)]
+    context.finalize_trial(
+        0,
+        NS(records=[rows], env=NS(finger_geometry={})),
+        rows,
+        NS(times=[0, 0.05], close=lambda **k: None),
+        {},
+        {},
+        tick=20,
+    )
+    assert context.completed[0]["sha256"] == sha(tmp_path / "status.json")

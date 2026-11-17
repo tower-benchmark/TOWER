@@ -110,6 +110,9 @@ def test_documented_commands_use_registered_kit_workers(route, entry, tmp_path, 
     monkeypatch.setattr(benchmark, "runtime_request", lambda *a: nullcontext(path))
     prepared = []
     monkeypatch.setattr(public, "prepare", lambda *a, **kw: prepared.append(kw) or path)
+    from tower_sim.bench import run_bundle
+
+    monkeypatch.setattr(run_bundle, "retain", lambda *a: None)
     calls = []
 
     class WorkerLaunch(BaseException):

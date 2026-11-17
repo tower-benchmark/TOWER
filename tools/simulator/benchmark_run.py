@@ -38,30 +38,59 @@ def run(args):
     benchmark.require_eula(args.accept_eula)
     if not 1 <= args.batch_size <= 10:
         raise ValueError("Batch size must be 1..10")
+    from uuid import uuid4
+
+    from tower_sim.bench.run_bundle import retain, scene_ids
+
+    scene_ids(args.scenes)
     args.output.mkdir(parents=True, exist_ok=False)
-    batches, failed = [], False
-    for start in range(0, len(args.scenes), args.batch_size):
-        name = f"batch-{start // args.batch_size:03d}"
+    batches = [
+        dict(
+            id=f"batch-{start // args.batch_size:03d}",
+            seeds=args.scenes[start : start + args.batch_size],
+        )
+        for start in range(0, len(args.scenes), args.batch_size)
+    ]
+    save_exclusive(
+        args.output / "run.json",
+        dict(
+            schema="tower-benchmark-run-v1",
+            run_id=str(uuid4()),
+            task=args.task,
+            requested=args.scenes,
+            batches=batches,
+        ),
+    )
+    failed = False
+    for batch in batches:
+        name = batch["id"]
+        attempt = args.output / "attempts" / name
+        attempt.mkdir(parents=True)
+        save_exclusive(attempt / "started.json", dict(seeds=batch["seeds"]))
         inputs = SimpleNamespace(**vars(args))
-        inputs.seeds = args.scenes[start : start + args.batch_size]
+        inputs.seeds = batch["seeds"]
         inputs.output = args.output / "requests" / name
         inputs.run_output = args.output / "runs" / name
         inputs.isaac_python = Path(sys.executable)
-        path = benchmark_candidate.prepare(inputs, diagnostic=False)
+        error = None
         try:
+            path = benchmark_candidate.prepare(inputs, diagnostic=False)
+            retain(path, attempt)
             code = benchmark_candidate.launch(path, sys.executable, cache_options=args)
-        except Exception as error:  # noqa: BLE001 -- retain failed batch for aggregation
+        except Exception as exc:  # noqa: BLE001 -- preserve failed attempts, not interrupts
+            error = f"{type(exc).__name__}: {exc}"
             print(f"Batch {name} failed: {error}", file=sys.stderr)
             code = 1
-        inputs.run_output.mkdir(parents=True, exist_ok=True)
-        save_exclusive(inputs.run_output / "benchmark-request.json", benchmark.read(path))
-        batches.append(inputs.run_output)
+        save_exclusive(attempt / "finished.json", dict(returncode=code, error=error))
         if code:
             failed = True
             if not args.keep_going:
-                print("Scenes not yet run:", args.scenes[start + args.batch_size :])
+                remaining = args.scenes[args.scenes.index(batch["seeds"][-1]) + 1 :]
+                print("Scenes not yet run:", remaining)
                 break
-    aggregate(batches, args.output)
+    result = aggregate([args.output], args.output, initial=True)
+    print("Qualification:", result["qualification"])
+    print("Coverage:", result["coverage"])
     return int(failed)
 
 

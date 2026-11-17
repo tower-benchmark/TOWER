@@ -78,3 +78,45 @@ def test_missing_tcp(tmp_path):
     with h5py.File(path, "w"):
         pass
     assert classify(path, report())["status"] == "not_evaluated"
+
+
+@pytest.mark.parametrize("angle", [0, 180])
+@pytest.mark.parametrize("yaw", [-90, 90])
+def test_rotated_tilted_bases(tmp_path, angle, yaw):
+    path = recording(tmp_path, np.full(40, angle))
+    base = Rotation.from_euler("xyz", [3, -2, yaw], degrees=True).as_matrix()
+    with h5py.File(path, "r+") as stream:
+        world = stream["eef_world"][:]
+        local = world.copy()
+        local[:, :, 3:] = Rotation.from_matrix(
+            base.T @ Rotation.from_quat(world[:, 0, 3:]).as_matrix()
+        ).as_quat()[:, None]
+        # Rotate the ordinary horizontal reference with the base yaw.
+        turn = Rotation.from_euler("z", yaw, degrees=True)
+        world[:, :, 3:] = (turn * Rotation.from_quat(world[:, 0, 3:])).as_quat()[:, None]
+        local[:, :, 3:] = Rotation.from_matrix(
+            base.T @ Rotation.from_quat(world[:, 0, 3:]).as_matrix()
+        ).as_quat()[:, None]
+        stream["eef"][:] = local
+        stream["eef_world"][:] = world
+    result = classify(path, report())
+    assert result["status"] == ("ordinary" if angle == 0 else "reversed_grasp")
+
+
+@pytest.mark.parametrize("bad", [float("nan"), 0.0, -1.0])
+def test_bad_timing_is_not_evaluated(tmp_path, bad):
+    path = recording(tmp_path, np.full(40, 180))
+    with h5py.File(path, "r+") as stream:
+        stream["time"][1] = bad
+    assert classify(path, report())["status"] == "not_evaluated"
+
+
+def test_gap_breaks_sample_streak(tmp_path):
+    angles = np.zeros(40)
+    angles[2:7] = 180
+    path = recording(tmp_path, angles)
+    with h5py.File(path, "r+") as stream:
+        times = stream["time"][:]
+        times[4:] += 0.05
+        stream["time"][:] = times
+    assert classify(path, report())["status"] == "ordinary"

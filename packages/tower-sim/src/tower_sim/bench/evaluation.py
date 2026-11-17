@@ -260,6 +260,8 @@ class EvaluationContext:
             "finger-link-poses.npz",
             "finger-feedback.npz",
             "finger_geometry.json",
+            "camera-readback.json",
+            "runtime-sources-final.json",
             "score.json",
         ]
         if success:
@@ -303,15 +305,17 @@ class EvaluationContext:
         if self.verification is not None:
             status.update(self.verification.provenance)
         immutable(output / "status.json", status)
-        from tower_eval.posture_flags import flags
-
-        immutable(
-            output / "posture-flags.json",
-            flags(output / "episode/states.hdf5", output / "score.json"),
-        )
         self.completed[seed] = dict(
             path=str(output / "status.json"), sha256=sha(output / "status.json")
         )
+        try:
+            from .annotations import publish
+
+            publish(
+                output / "episode/states.hdf5", output / "score.json", output / "posture-flags.json"
+            )
+        except Exception:  # noqa: BLE001 -- annotations cannot revoke a committed trial
+            pass
 
     def invalidate_unfinished(
         self, index, evidence, commands, archive, camera_report, source_files, *, reason
