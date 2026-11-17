@@ -577,3 +577,88 @@ def test_annotation_does_not_swallow_interrupts(tmp_path, monkeypatch):
     monkeypatch.setattr(posture_flags, "flags", interrupt)
     with pytest.raises(KeyboardInterrupt):
         annotations.publish(tmp_path / "states", tmp_path / "score", tmp_path / "flags")
+
+
+@pytest.mark.parametrize(
+    "relative",
+    [
+        "run.json",
+        "attempts/batch-000",
+        "attempts/batch-000/started.json",
+        "attempts/batch-000/prepared.json",
+        "attempts/batch-000/request.json",
+        "runs/batch-000",
+        "runs/batch-000/result.json",
+        "runs/batch-000/worker-complete.json",
+        "runs/batch-000/simulation/batch-policy-results.json",
+        "runs/batch-000/simulation/seed-0",
+        "runs/batch-000/simulation/seed-0/status.json",
+        "runs/batch-000/simulation/seed-0/score.json",
+        "runs/batch-000/simulation/seed-0/camera-frames.hdf5",
+    ],
+)
+def test_external_evidence_links_rejected(tmp_path, relative):
+    root, _, _ = fixture(tmp_path / "run")
+    path = root / relative
+    external = tmp_path / "external"
+    path.rename(external)
+    path.symlink_to(external, target_is_directory=external.is_dir())
+    with pytest.raises(ValueError, match="escapes bundle"):
+        run_summary.aggregate([root], tmp_path / "out")
+    assert not (tmp_path / "out/score.json").exists()
+
+
+@pytest.mark.parametrize("relative", ["annotations", "annotations/scene-000.json", "score.json"])
+@pytest.mark.parametrize("initial", [False, True])
+def test_output_links_rejected_without_source_writes(tmp_path, relative, initial):
+    root, _, _ = fixture(tmp_path / "run")
+    output = root if initial else tmp_path / "out"
+    link = output / relative
+    link.parent.mkdir(parents=True, exist_ok=True)
+    destination = root / "injected.json" if relative.endswith(".json") else root / "attempts"
+    link.symlink_to(destination, target_is_directory=not relative.endswith(".json"))
+    before = {p.relative_to(root): p.read_bytes() for p in root.rglob("*") if p.is_file()}
+    with pytest.raises(ValueError, match="output contains a symlink"):
+        run_summary.aggregate([root], output, initial=initial)
+    assert before == {p.relative_to(root): p.read_bytes() for p in root.rglob("*") if p.is_file()}
+    assert not (root / "injected.json").exists()
+
+
+def test_internal_evidence_link_survives_relocation(tmp_path):
+    root, episode, _ = fixture(tmp_path / "run")
+    score = episode / "score.json"
+    score.rename(episode / "retained-score.json")
+    score.symlink_to("retained-score.json")
+    value = run_summary.aggregate([root], tmp_path / "out")
+    moved = tmp_path / "moved"
+    root.rename(moved)
+    assert run_summary.aggregate([moved], tmp_path / "out2") == value
+
+
+def test_cli_output_redirect_rejected(tmp_path):
+    import os
+    import subprocess
+    import sys
+
+    root, _, _ = fixture(tmp_path / "run")
+    output = tmp_path / "out"
+    output.mkdir()
+    (output / "annotations").symlink_to(root, target_is_directory=True)
+    before = {p.relative_to(root): p.read_bytes() for p in root.rglob("*") if p.is_file()}
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(ROOT / "tools/simulator/benchmark_run.py"),
+            "aggregate",
+            "--runs",
+            str(root),
+            "--output",
+            str(output),
+        ],
+        env=dict(os.environ, PYTHONDONTWRITEBYTECODE="1"),
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode != 0
+    assert "Aggregate output contains a symlink" in result.stderr
+    assert before == {p.relative_to(root): p.read_bytes() for p in root.rglob("*") if p.is_file()}

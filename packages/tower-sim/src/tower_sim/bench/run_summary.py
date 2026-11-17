@@ -160,7 +160,12 @@ def admitted(batch, request):
     # Use the parent's completion predicate, including valid nonzero teardown.
     from scripts.maintainer.candidate_policy import completion_state
 
-    batch_path = batch / "simulation/batch-policy-results.json"
+    # Validate all paths the shared parent predicate reads before calling it.
+    inside(batch, "worker-complete.json")
+    for seed in request["seeds"]:
+        episode = inside(batch, f"simulation/seed-{seed}")
+        inside(episode, "status.json")
+    batch_path = inside(batch, "simulation/batch-policy-results.json")
     if batch_path.is_file():
         for seed, binding in read(batch_path).get("committed_formal_trials", {}).items():
             if seed not in [str(n) for n in request["seeds"]]:
@@ -169,7 +174,7 @@ def admitted(batch, request):
             if binding["path"] != expected:
                 raise ValueError("Committed status path differs from request")
             read(batch / f"simulation/seed-{seed}/status.json", binding["sha256"])
-    result_path = batch / "result.json"
+    result_path = inside(batch, "result.json")
     if not result_path.is_file():
         return False, "Missing parent completion receipt"
     result = read(result_path)
@@ -213,6 +218,14 @@ def aggregate(runs, output, *, initial=False):
         for root in roots
     ):
         raise ValueError("Aggregate output must not be inside input evidence")
+    # Reject pre-existing redirects before any optional or authoritative write.
+    # This also protects the producer-only initial summary inside its run root.
+    destinations = [output / "score.json", output / "annotations"]
+    destinations += [output / "annotations" / f"scene-{n:03d}.json" for n in range(50)]
+    for destination in destinations:
+        if destination.is_symlink():
+            raise ValueError("Aggregate output contains a symlink")
+        inside(output, destination)
     output.mkdir(parents=True, exist_ok=True)
     if (output / "score.json").exists():
         raise ValueError("Aggregate output already exists")
@@ -222,7 +235,7 @@ def aggregate(runs, output, *, initial=False):
     task = None
     totals = dict(g=0, p=0, s=0, D=0, planned_g=0, planned_p=0)
     for root in roots:
-        plan = read(root / "run.json")
+        plan = read(inside(root, "run.json"))
         if plan.get("schema") != "tower-benchmark-run-v1":
             raise ValueError("Unsupported run schema")
         selected = scene_ids(plan["requested"])
@@ -243,22 +256,22 @@ def aggregate(runs, output, *, initial=False):
             ids = scene_ids(row["seeds"])
             source = dict(
                 run_id=plan["run_id"],
-                run_manifest_sha256=sha(root / "run.json"),
+                run_manifest_sha256=sha(inside(root, "run.json")),
                 batch=name,
                 scenes=ids,
                 state="not_run",
             )
             sources.append(source)
-            if not (attempt / "started.json").is_file():
+            if not inside(attempt, "started.json").is_file():
                 not_run += ids
                 continue
-            source["started_sha256"] = sha(attempt / "started.json")
-            if (attempt / "finished.json").is_file():
-                source["finished_sha256"] = sha(attempt / "finished.json")
-                source["finish"] = read(attempt / "finished.json")
+            source["started_sha256"] = sha(inside(attempt, "started.json"))
+            if inside(attempt, "finished.json").is_file():
+                source["finished_sha256"] = sha(inside(attempt, "finished.json"))
+                source["finish"] = read(inside(attempt, "finished.json"))
             attempted += ids
             source["state"] = "unprepared"
-            if not (attempt / "prepared.json").is_file():
+            if not inside(attempt, "prepared.json").is_file():
                 excluded += [
                     dict(
                         scene=s,
@@ -304,8 +317,8 @@ def aggregate(runs, output, *, initial=False):
                 batch_results_sha256=sha(batch / "simulation/batch-policy-results.json"),
             )
             for seed, scene in zip(protocol["seeds"], ids, strict=True):
-                episode = batch / "simulation" / f"seed-{seed}"
-                status_path = episode / "status.json"
+                episode = inside(batch, f"simulation/seed-{seed}")
+                status_path = inside(episode, "status.json")
                 committed = batch_report["committed_formal_trials"][str(seed)]
                 status = read(status_path)
                 if status.get("schema") != "tower-v4-standalone-policy-trial-v1":
@@ -329,7 +342,7 @@ def aggregate(runs, output, *, initial=False):
                 hashes = status["source_hashes"]
                 if not REQUIRED.issubset(hashes):
                     raise ValueError("Missing required retained evidence")
-                score_path = episode / "score.json"
+                score_path = inside(episode, "score.json")
                 score_sha = sha(score_path)
                 if score_sha != hashes["score.json"]:
                     raise ValueError("Aggregate score SHA mismatch")

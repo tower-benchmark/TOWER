@@ -64,10 +64,10 @@ def retain(request_path, attempt):
 class Bundle:
     def __init__(self, attempt):
         self.attempt = attempt
-        self.prepared = read(attempt / "prepared.json")
+        self.prepared = read(inside(attempt, "prepared.json"))
         if self.prepared.get("schema") != "tower-benchmark-attempt-v1":
             raise ValueError("Unsupported attempt schema")
-        self.request = read(attempt / "request.json", self.prepared["request_sha256"])
+        self.request = read(inside(attempt, "request.json"), self.prepared["request_sha256"])
 
     def path(self, original, expected):
         if not isinstance(expected, str) or re.fullmatch(r"[0-9a-f]{64}", expected) is None:

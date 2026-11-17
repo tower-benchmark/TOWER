@@ -3152,6 +3152,22 @@ MUTATIONS += (
 )
 
 
+MUTATIONS += (
+    (
+        "public-aggregate-path-containment",
+        "run_bundle.py",
+        "if not result.is_relative_to(root.resolve()):",
+        "if False:",
+    ),
+    (
+        "public-aggregate-output-symlink",
+        "run_summary.py",
+        "if destination.is_symlink():",
+        "if False:",
+    ),
+)
+
+
 def prepare_test_client():
     """Allow isolated runners to supply the pinned submodule's test snapshot."""
     snapshot_root = os.environ.get("TOWER_XPOLICYLAB_SNAPSHOT_ROOT")
