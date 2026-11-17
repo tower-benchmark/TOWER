@@ -34,7 +34,7 @@ jobs:
       OPENBLAS_NUM_THREADS: "1"
       MKL_NUM_THREADS: "1"
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
           submodules: false
@@ -44,10 +44,10 @@ jobs:
           GIT_LFS_SKIP_SMUDGE: "1"
         run: |
           git submodule update --init --depth 1 third_party/XPolicyLab
-      - uses: astral-sh/setup-uv@d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86 # v5.4.2
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
         with:
           version: "0.13.7"
-      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: ${{ matrix.python }}
       - run: uv sync --locked --all-packages
@@ -79,7 +79,7 @@ jobs:
         run: uv run --no-sync --with numpy==2.3.1 --with scipy==1.17.0 pytest tests/characterization -q -n auto --dist worksteal --durations=25 --junitxml=${{ runner.temp }}/pytest-results/numpy-isaac.xml
       - name: Upload test timings and results
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: pytest-results-${{ matrix.python }}
           path: ${{ runner.temp }}/pytest-results/
@@ -117,7 +117,7 @@ jobs:
       TOWER_REQUIRE_NATIVE_IK: "1"
       TOWER_NERO_URDF: ${{ github.workspace }}/packages/nero-kinematics/src/nero_kinematics/models/nero_sim_reference.urdf
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - uses: mamba-org/setup-micromamba@f457c30a868e4760d3a6fcea5f25dc655b8edf39 # v3.2.1
@@ -141,7 +141,7 @@ jobs:
           # dependency; the quality jobs run it. Native jobs keep the IK-relevant tests.
           python -m pytest src/tower-eval/tests/unit/kinematics tools/tests packages/nero-kinematics/tests packages/tower-sim/tests tests/characterization/test_ik.py --ignore=packages/tower-sim/tests/test_bench_scoring.py --junitxml=dist/eef-tests.xml
           python packages/nero-kinematics/examples/offline_check.py
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: native-eef-validation
@@ -162,7 +162,7 @@ jobs:
       TOWER_REQUIRE_NATIVE_IK: "1"
       TOWER_NERO_URDF: ${{ github.workspace }}/packages/nero-kinematics/src/nero_kinematics/models/nero_sim_reference.urdf
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - uses: mamba-org/setup-micromamba@f457c30a868e4760d3a6fcea5f25dc655b8edf39 # v3.2.1
@@ -183,7 +183,7 @@ jobs:
       - name: Run all IK characterization cases in the benchmark environment
         # Pure-Python campaign scoring replays run in the quality jobs.
         run: python -m pytest tests/characterization/test_ik.py packages/nero-kinematics/tests packages/tower-sim/tests --ignore=packages/tower-sim/tests/test_bench_scoring.py -ra --junitxml=benchmark-ik-tests.xml
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: benchmark-ik-validation
