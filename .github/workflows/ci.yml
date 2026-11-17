@@ -28,6 +28,11 @@ jobs:
     env:
       # .python-version pins 3.11 for local work; the matrix must override it for uv.
       UV_PYTHON: ${{ matrix.python }}
+      # pytest-xdist owns CPU parallelism. Prevent each worker's numerical
+      # libraries from starting another full pool of threads on the same CPUs.
+      OMP_NUM_THREADS: "1"
+      OPENBLAS_NUM_THREADS: "1"
+      MKL_NUM_THREADS: "1"
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
@@ -66,10 +71,20 @@ jobs:
         run: uv run --no-sync python -m scripts.maintainer.fetch_golden
       - name: Fetch public scene and asset fixtures by pinned hash
         run: uv run --no-sync python -m scripts.maintainer.fetch_public_test_data
-      - run: uv run --no-sync pytest -rx -n auto
+      - name: Run the full test suite
+        # Rebalance queued tests as workers finish replays of varying lengths.
+        run: uv run --no-sync pytest -rx -n auto --dist worksteal --durations=25 --junitxml=${{ runner.temp }}/pytest-results/full.xml
       - name: Characterization on the NumPy version matching Isaac 6.1
         if: matrix.python == '3.12'
-        run: uv run --no-sync --with numpy==2.3.1 --with scipy==1.17.0 pytest tests/characterization -q -n auto
+        run: uv run --no-sync --with numpy==2.3.1 --with scipy==1.17.0 pytest tests/characterization -q -n auto --dist worksteal --durations=25 --junitxml=${{ runner.temp }}/pytest-results/numpy-isaac.xml
+      - name: Upload test timings and results
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: pytest-results-${{ matrix.python }}
+          path: ${{ runner.temp }}/pytest-results/
+          if-no-files-found: ignore
+          retention-days: 14
       - run: uv run --no-sync --with usd-core==26.8 pytest tools/simulator/tests/test_material_contract.py
       - run: uv build --package nero-kinematics
       - run: uv build --package tower-eval

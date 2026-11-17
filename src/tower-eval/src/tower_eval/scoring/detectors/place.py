@@ -36,12 +36,27 @@ def stable_dwell(mask, poses, velocities, times, rules, *, computation=REFERENCE
 
 
 def support_mask(r, target, supporters, dimensions, candidate, rules):
-    """Support area and COM over the convex hull of current contact patches."""
+    """Support area and COM over the convex hull of current contact patches.
+
+    Supporter indices are snapshotted once, including when supplied as an
+    iterator. Poses, dimensions and rules must remain fixed during this call.
+    """
     supported = np.zeros(len(r.times), dtype=bool)
     quiet = (np.linalg.norm(r.velocities[:, target, :3], axis=1) <= rules.linear_velocity_m_s) & (
         np.linalg.norm(r.velocities[:, target, 3:], axis=1) <= rules.angular_velocity_rad_s
     )
+    supporters = tuple(supporters)
+    blocks = [target, *supporters]
+    previous_poses = None
+    previous_supported = False
     for k in np.flatnonzero(candidate & quiet):
+        # Within this call, dimensions, supporters and rules are fixed. Identical
+        # pose bytes therefore imply the same geometric decision. Keep only the
+        # last sample; do not quantize poses or retain state across calls.
+        pose_bytes = r.poses[k, blocks].tobytes()
+        if pose_bytes == previous_poses:
+            supported[k] = previous_supported
+            continue
         footprint, bottom, _ = block_geometry(r.poses[k, target], dimensions[target])
         patches = []
         for j in supporters:
@@ -56,6 +71,8 @@ def support_mask(r, target, supporters, dimensions, candidate, rules):
             ) >= rules.minimum_support_fraction and inside(
                 r.poses[k, target, :2], polygon(np.concatenate(patches)), rules.support_com_margin_m
             )
+        previous_poses = pose_bytes
+        previous_supported = supported[k]
     return supported
 
 
