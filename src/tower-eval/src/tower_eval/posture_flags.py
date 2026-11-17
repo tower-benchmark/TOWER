@@ -6,6 +6,7 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
+from typing import Any, cast
 
 import h5py
 import numpy as np
@@ -19,7 +20,7 @@ def sha256(path):
         return hashlib.file_digest(stream, "sha256").hexdigest()
 
 
-def classify(states, report):
+def _classify(states, report):
     """Evaluate engaged operation windows plus one second of recorded approach.
 
     Base rotation must remain constant to within 0.001 radians. This tolerance
@@ -35,13 +36,13 @@ def classify(states, report):
                 operations=[],
                 reason="Missing TCP evidence: " + ", ".join(missing),
             )
-        times = handle["time"][:]
-        local = handle["eef"][:]
-        world = handle["eef_world"][:]
+        times = cast(h5py.Dataset, handle["time"])[:]
+        local = cast(h5py.Dataset, handle["eef"])[:]
+        world = cast(h5py.Dataset, handle["eef_world"])[:]
     operations = []
     for operation in report.get("operations", []):
         arm = operation["arm"]
-        result = dict(
+        result: dict[str, Any] = dict(
             operation=operation["id"],
             arm=arm,
             status="not_evaluated",
@@ -108,6 +109,19 @@ def classify(states, report):
         operations=operations,
         **({"reason": "No operations"} if not operations else {}),
     )
+
+
+def classify(states, report):
+    try:
+        return _classify(states, report)
+    except (OSError, KeyError, ValueError, IndexError, TypeError) as error:
+        return dict(
+            schema="tower-posture-flags-v1",
+            reference=REFERENCE,
+            status="not_evaluated",
+            operations=[],
+            reason=f"Unusable TCP evidence: {type(error).__name__}: {error}",
+        )
 
 
 def flags(states, score):

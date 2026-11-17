@@ -236,11 +236,13 @@ def test_golden_posture_evidence(diagnostic_recording):
 def test_expert_recorded_posture(task):
     import os
 
+    import h5py
     from tower_eval.posture_flags import classify
     from tower_eval.scoring.api import score_recording
-    from tower_eval.scoring.recording import from_campaign_files
+    from tower_eval.scoring.recording import from_campaign_rows
 
     from scripts.maintainer.archive_root import ArchiveUnavailable
+    from scripts.maintainer.archive_scene import v1_scene
 
     configured = os.environ.get("TOWER_P706_RECORDED_ROOT")
     if not configured:
@@ -248,7 +250,90 @@ def test_expert_recorded_posture(task):
             "SKIP: supply --archive-root and TOWER_P706_RECORDED_ROOT for recorded TCP evidence"
         )
     run = next((Path(configured) / task / "simulation").glob("seed-*"))
-    report = score_recording(from_campaign_files(run, task), task, ruleset="bench-2026.11")
+    seed = int(run.name.removeprefix("seed-"))
+    spec = v1_scene(ROOT, task, seed)["candidate"]["episode_spec"]
+    with h5py.File(run / "episode/states.hdf5") as stream:
+        arrays = {key: np.asarray(stream[key]) for key in stream}
+    for name, key, field in (
+        ("finger-link-poses.npz", "finger_poses", "poses_m"),
+        ("finger-feedback.npz", "finger_forces", "forces_n"),
+    ):
+        with np.load(run / name, allow_pickle=False) as stream:
+            arrays[key] = stream[field]
+    rows = [{key: value[i] for key, value in arrays.items()} for i in range(len(arrays["time"]))]
+    geometry = json.loads((run / "finger_geometry.json").read_text())
+    report = score_recording(
+        from_campaign_rows(spec, rows, geometry), task, ruleset="bench-2026.11"
+    )
     result = classify(run / "episode/states.hdf5", report)
     assert result["operations"], result
     assert all(row["status"] == "ordinary" for row in result["operations"]), result
+
+
+@pytest.mark.parametrize(
+    "field",
+    [
+        None,
+        "ready",
+        "checkpoint_sha256",
+        "horizon",
+        "execute_steps",
+        "control_hz",
+        "denoise_steps",
+        "seed",
+    ],
+)
+def test_unreviewed_server_contract(authorization, monkeypatch, field):
+    from types import SimpleNamespace as NS
+
+    from tower_sim.bench import policy_entry
+    from tower_sim.bench.verification import ReleaseVerification
+
+    request, health, rows, task = authorization
+    path = Path(request["protocol"])
+    protocol = json.loads(path.read_text())
+    protocol["schema"] = "tower-public-benchmark-protocol-unreviewed-v1"
+    path.write_text(json.dumps(protocol))
+    request["protocol_sha256"] = sha(path)
+    runtime = Path(request["runtime_manifest"])
+    manifest = json.loads(runtime.read_text())
+    manifest["files"][str(path)] = sha(path)
+    runtime.write_text(json.dumps(manifest))
+    request["runtime_manifest_sha256"] = sha(runtime)
+    request.update(policy_url="ws://localhost:19000", prompt="test", task="task1-2")
+    health.update(ready=True)
+    health["identity"].update(
+        checkpoint_sha256="checkpoint",
+        horizon=32,
+        execute_steps=16,
+        control_hz=10,
+        denoise_steps=10,
+        seed=42,
+    )
+    if field == "ready":
+        health["ready"] = False
+    elif field:
+        health["identity"].pop(field)
+    closed = []
+    worker = NS(authorize=lambda: health, close=lambda: closed.append(True))
+    monkeypatch.setattr(policy_entry, "validate_entry", lambda *a: None)
+    monkeypatch.setattr(policy_entry.policy, "from_package", lambda **kw: worker)
+    monkeypatch.setattr(ReleaseVerification, "verify", lambda *a: None)
+    verification = object.__new__(ReleaseVerification)
+
+    def prepare():
+        return policy_entry.prepare(
+            rows,
+            task,
+            request,
+            metrics=NS(call=lambda name, fn: fn()),
+            solver=None,
+            verification=verification,
+        )
+
+    if field is None:
+        assert prepare()[0] is worker
+    else:
+        with pytest.raises(ValueError):
+            prepare()
+        assert closed == [True]
