@@ -63,3 +63,40 @@ Two-block transfer, 2 layers, uses the four-place hold rule
 | Task7 push direction | Fixed layer directions | Metadata direction when `evaluation_task` starts with `task7-`; otherwise historical fallback |
 | Task7-3 structural survival | Current support-height/orientation/footprint condition | Entire-recording collapse veto: loss below half minimum block dimension and tilt below 45°, latched |
 | Optional disturbance computation | Historical API always computes it | In-memory `include_disturbances=False` used by stop detectors |
+
+## Aggregate metrics
+
+`benchmark_run.py` writes `tower-benchmark-score-v1`. Only complete episodes
+contribute: GSR = sum(g) / sum(planned_g), PSR = sum(p) / sum(planned_p),
+LHPR = sum(g + p) / sum(planned_g + planned_p), TSR = sum(s) / trials,
+and ODR = sum(D) / sum(g + p + 1 - s). Zero denominators produce `null`.
+ODR may exceed one. Infrastructure failures are listed in `excluded` and do
+not count as policy failures. Per-scene score hashes are checked against
+`status.json`; original scorer reports are preserved.
+
+## Posture flags (reported, not scored)
+
+`tower-posture-flags-v1` reports recorded TCP posture independently of scores.
+The `tower-ordinary-tcp-reference-v1` frame uses world-down approach (TCP x)
+and the horizontal projection of arm-base minus-y for closing (TCP z).
+Base orientation is recovered from paired world/base TCP poses and must remain
+constant within 0.001 radians. Each operation uses its target intervals plus
+one second of approach. A closing dot at or below −0.5 for five consecutive
+20 Hz samples reports `reversed_grasp`; otherwise it reports `ordinary`.
+Missing windows or unusable TCP evidence report `not_evaluated`. The episode
+uses the worst operation result. Minimum closing and approach-down dots are
+informational. These flags never alter `bench-2026.11` scores or exit codes
+and do not replace maintainer review of contact geometry and trajectories.
+
+Metrics are explicitly conditional on eligible scored trials. Coverage distinguishes
+requested, attempted, scored, excluded and not-run scenes, with source attempts.
+`requested_complete` may be true for a subset; `full_task_coverage` requires 50
+eligible scenes. Exclusions are not zero-counted. Disclose incomplete coverage and
+retry history; local hash consistency does not authenticate a selected population.
+
+The closing-dot test is a geometric heuristic, not universal reversed-grasp
+recognition: a flipped axis far from the ordinary reference may miss the threshold.
+Five consecutive samples are a sample-count rule, not a measured 0.25-second dwell.
+An ordinary result does not approve task contact geometry or approach/carry motion.
+Malformed timing reports `not_evaluated`. Annotation import, computation and
+publication failures are nonfatal after authoritative trial commitment.

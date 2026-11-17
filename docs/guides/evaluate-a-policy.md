@@ -63,20 +63,77 @@ submodule with `GIT_LFS_SKIP_SMUDGE=1 git submodule update --init`.
 See the [runtime transport contract](../reference/policy-interface.md#isaac-benchmark-runtime).
 Supply its package identity file; TOWER does not download or start model weights.
 
-Diagnostic runs are the supported way to test a policy now. Run
-`tools/simulator/benchmark_diagnostic.py` with `--task`, one scene `--seed`,
-`--assets`, `--data-root`, `--package`, `--policy-url`, `--ik-python`, a new
-`--output` and `--accept-eula`, using the Isaac interpreter. This entrypoint
-selects diagnostic mode itself; no `--diagnostic` or `--pilot-review` is needed.
-It records per-episode status and `diagnostic-result.json`; the public entrypoint
-also writes `result.json` when implementation identity is available, with
-`score.json` when physical evidence is complete and scoring succeeds. These
-results remain diagnostic and do not approve a pilot or qualify a formal trial.
-Formal runs
-additionally require the posture review (`--pilot-review`); its per-task
-contact-frame reference and review tooling are not yet published and will follow.
+## Run the benchmark
 
-Formal request preparation requires a reviewed posture record
+Use the Isaac interpreter while the policy server is running:
+
+```sh
+/path/to/isaac/python tools/simulator/benchmark_run.py run \
+  --task cross-transfer-2 --assets /path/to/assets \
+  --data-root /path/to/assets/benchmark-2026.11.1 \
+  --package /path/to/package.json --policy-url ws://localhost:19000 \
+  --ik-python /path/to/ik/python --output /path/to/new-run --accept-eula
+```
+
+This evaluates all 50 released scenes under `bench-2026.11`, with no
+`--pilot-review`. The hash-bound protocol identifies the qualification as
+`unreviewed`. Scores use the unchanged benchmark rules. Automatic TCP posture
+flags are reported separately and never change scores or exit codes.
+
+Use `--scenes 0-49` or a subset such as `--scenes 3,7,10-12`. Sequential
+batches default to one scene; `--batch-size` accepts 1–10. The command stops at
+the first failed batch and prints scene ids not yet run. `--keep-going` runs
+the remaining batches. Neither mode retries automatically.
+
+The immutable `run.json` records all selected scenes before preparation. Each
+`attempts/batch-<id>` retains its start, bound inputs and completion or error record.
+Inputs are in `requests/batch-<id>` and recordings in
+`runs/batch-<id>/simulation/seed-<id>`. Each completed scene retains its original
+`score.json` and gains `posture-flags.json`. The top-level `score.json` aggregates
+complete episodes and lists infrastructure failures in `excluded`.
+
+For independent shards, use disjoint `--scenes` selections and fresh outputs,
+then combine their complete run bundles with:
+
+```sh
+uv run python tools/simulator/benchmark_run.py aggregate \
+  --runs /path/to/shard-1 /path/to/shard-2 --output /path/to/aggregate
+```
+
+Aggregation rejects duplicate scenes and mixed task, package, benchmark,
+ruleset or qualification. Keep the entire run directory, including `run.json`, `attempts/` and `runs/`.
+Retained input bytes are addressed by hash, so the bundle can be moved without
+rewriting historical paths. Aggregating a batch directory includes its original
+run's full selected set and attempt history.
+
+A retry uses `--scenes` and a new output with a distinct run id. Keep and disclose
+both attempts. Duplicate scenes are always rejected, including excluded plus
+valid attempts; arbitrary reruns cannot be combined into a clean full-task score.
+An attributed replacement policy is deferred. There is no latest-wins selection.
+
+Coverage lists requested, attempted, scored, excluded and not-run scenes and their
+sources. `requested_complete` means all selected scenes have eligible scores;
+`full_task_coverage` additionally requires all 50. A complete subset remains a
+subset. Metrics are conditional on eligible scored episodes; exclusions keep
+the frozen denominators unchanged. Transport and some policy-contract errors can
+be exclusions, so coverage disclosure cannot prevent deliberate selection or
+prove an unbiased all-task result. Report coverage and attempts with the metrics.
+Only parent-qualified durable completion admits a batch. Nonzero teardown alone
+does not disqualify complete evidence; execution-failed batches are not salvaged.
+
+## Debug one scene
+
+Use `tools/simulator/benchmark_diagnostic.py` with one `--seed` and the same
+asset, policy and runtime flags. It writes `diagnostic-result.json`,
+`result.json` and, when evidence is complete, `score.json`. Its results remain
+diagnostic and do not qualify a pilot.
+
+## Maintainer posture qualification
+
+Maintainers may supply `--pilot-review` to qualify a reviewed run. A review is
+not required for a public benchmark score. The reviewed path remains fail-closed.
+
+Reviewed request preparation requires a reviewed posture record
 (`tower-no-reversed-grasp-review-v1`): planned approach/carry and recorded
 approach-phase review, no reverse 180-degree grasp, and preserved task contact
 geometry, each bound to its evidence file by SHA-256.
@@ -86,7 +143,7 @@ The record must match `task` and `package_digest`, with true
 `reverse_180_grasp_absent` and `task_contact_geometry_preserved`. Its
 `planned_trajectory` and `recorded_approach_carry` objects bind actual reviewed
 files by absolute `path` and `sha256`; preparation does not create a review.
-The current CLI spells this required input `--pilot-review`.
+For this qualification, the CLI spells the required input `--pilot-review`.
 The same file must also contain the policy's `package_digest`, a
 `shared_spec_sha256` matching the canonical identity `efa69beb12a5bb972a2f570a9b2310f9dcfa852a91bd095295b205a66b8a0d03` (nero `command` profile `source_sha256`); see [shared IK specification identity](../reference/versioning.md#shared-ik-specification-identity), and true
 `passed`, `native_inference_qualified`, `scene_reference_review_passed` and

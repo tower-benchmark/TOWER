@@ -88,17 +88,19 @@ uv sync --locked --package tower-eval --extra xpolicylab
 uv run --package tower-eval tower smoke --policy xpolicylab://demo_policy
 ```
 
-Follow [evaluate a policy](docs/guides/evaluate-a-policy.md) to start your policy server and prepare the runtime. Then evaluate a scene with the Isaac interpreter while your policy server is running. `--accept-eula` records your acceptance of NVIDIA's license:
+Follow [evaluate a policy](docs/guides/evaluate-a-policy.md) to start your policy server and prepare the runtime. Then evaluate all 50 scenes of a task with the Isaac interpreter while your policy server is running. `--accept-eula` records your acceptance of NVIDIA's license:
 
 ```sh
-/path/to/isaac/python tools/simulator/benchmark_diagnostic.py \
-  --task cross-transfer-2 --seed 0 \
+/path/to/isaac/python tools/simulator/benchmark_run.py run \
+  --task cross-transfer-2 \
   --assets /path/to/assets --data-root /path/to/assets/benchmark-2026.11.1 \
   --package /path/to/package.json --policy-url ws://localhost:19000 \
-  --ik-python /path/to/ik/python --output /path/to/new-diagnostic --accept-eula
+  --ik-python /path/to/ik/python --output /path/to/new-run --accept-eula
 ```
 
-The run records per-episode status and writes `score.json` when scoring succeeds; the guide lists all output files.
+The run writes an aggregate `score.json`, per-scene scores and informational posture flags. Use `--scenes 3,7,10-12` for a subset.
+
+For single-scene debugging, use `tools/simulator/benchmark_diagnostic.py`; its results remain diagnostic.
 
 Keep input identities, resolved configuration, complete recordings and failure status with results. Model weights are not bundled; supply your own compatible policy.
 

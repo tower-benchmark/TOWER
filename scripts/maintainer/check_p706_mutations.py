@@ -9,6 +9,7 @@ import json
 import os
 import subprocess
 import sys
+import tarfile
 import tempfile
 from pathlib import Path
 
@@ -358,12 +359,12 @@ MUTATIONS = (
     (
         "public-recorded-posture-gate",
         "../../../../../tools/simulator/benchmark_candidate.py",
-        "        posture = benchmark.posture_evidence(\n"
-        '            read_bound(review["path"], review["sha256"]),\n'
-        '            request["task"],\n'
-        '            benchmark.read(request["package"])["package_digest"],\n'
-        "        )\n",
-        "        posture = []\n",
+        "            posture = benchmark.posture_evidence(\n"
+        '                read_bound(review["path"], review["sha256"]),\n'
+        '                request["task"],\n'
+        '                benchmark.read(request["package"])["package_digest"],\n'
+        "            )\n",
+        "            posture = []\n",
     ),
     (
         "public-ik-bounds",
@@ -2104,7 +2105,7 @@ MUTATIONS += (
     (
         "policy-ik-canonical-review",
         "evaluation.py",
-        "            == shared_spec_identity()\n",
+        "                == shared_spec_identity()\n",
         "",
     ),
 )
@@ -3007,7 +3008,189 @@ MUTATIONS += (
 )
 
 
+MUTATIONS += (
+    (
+        "public-unreviewed-schema",
+        "../../../../../tools/simulator/benchmark_candidate.py",
+        'settings.get("schema") != "tower-public-benchmark-protocol-unreviewed-v1"',
+        "True",
+    ),
+    (
+        "public-unreviewed-fail-closed",
+        "../../../../../tools/simulator/benchmark_candidate.py",
+        'settings.get("schema") != "tower-public-benchmark-protocol-unreviewed-v1"',
+        "False",
+    ),
+    (
+        "policy-unreviewed-schema",
+        "evaluation.py",
+        'self.protocol.get("schema") == "tower-public-benchmark-protocol-unreviewed-v1"',
+        "False",
+    ),
+    (
+        "policy-unreviewed-fail-closed",
+        "evaluation.py",
+        'self.protocol.get("schema") == "tower-public-benchmark-protocol-unreviewed-v1"',
+        "True",
+    ),
+    (
+        "public-aggregate-qualification",
+        "run_summary.py",
+        "qualification=qualification(protocol, bundle)",
+        'qualification="posture-reviewed"',
+    ),
+    (
+        "public-aggregate-sha",
+        "run_summary.py",
+        'score_sha != hashes["score.json"]',
+        "False",
+    ),
+    (
+        "public-aggregate-duplicate",
+        "run_summary.py",
+        "if seen.intersection(selected):",
+        "if False:",
+    ),
+)
+
+
+MUTATIONS += (
+    (
+        "policy-unreviewed-health",
+        "policy_entry.py",
+        "if diagnostic or unreviewed:",
+        "if diagnostic:",
+    ),
+)
+
+
+MUTATIONS += (
+    (
+        "public-aggregate-protocol-ruleset",
+        "run_summary.py",
+        'protocol.get("ruleset", "bench-2026.11") != "bench-2026.11"',
+        "False",
+    ),
+    (
+        "public-aggregate-report-ruleset",
+        "run_summary.py",
+        'report.get("ruleset", "bench-2026.11") != current["ruleset"]',
+        "False",
+    ),
+)
+
+
+MUTATIONS += (
+    (
+        "public-aggregate-retained-sha",
+        "run_summary.py",
+        "sha(inside(episode, name)) != digest",
+        "False",
+    ),
+    (
+        "public-aggregate-status-protocol",
+        "run_summary.py",
+        'status["protocol_sha256"] != bundle.request["protocol_sha256"]',
+        "False",
+    ),
+    (
+        "public-aggregate-status-package",
+        "run_summary.py",
+        'status["package_digest"] != current["package_digest"]',
+        "False",
+    ),
+    ("public-aggregate-status-seed", "run_summary.py", 'status["seed"] != seed', "False"),
+    ("public-aggregate-score-valid", "run_summary.py", 'report.get("valid") is not True', "False"),
+    (
+        "public-aggregate-score-task",
+        "run_summary.py",
+        'benchmark_task(report["task"]).id != task',
+        "False",
+    ),
+    (
+        "public-aggregate-required-evidence",
+        "run_summary.py",
+        "not REQUIRED.issubset(hashes)",
+        "False",
+    ),
+    (
+        "public-aggregate-committed-status",
+        "run_summary.py",
+        'read(batch / f"simulation/seed-{seed}/status.json", binding["sha256"])',
+        'read(batch / f"simulation/seed-{seed}/status.json")',
+    ),
+    ("public-aggregate-schema", "run_summary.py", "schema not in (UNREVIEWED, REVIEWED)", "False"),
+    (
+        "public-aggregate-review-flag",
+        "run_summary.py",
+        "review.get(name) is not True",
+        "not review.get(name)",
+    ),
+    ("public-aggregate-prepared-hash", "run_bundle.py", "if sha(path) != expected:", "if False:"),
+)
+
+
+MUTATIONS += (
+    (
+        "public-aggregate-checkpoint-format",
+        "run_summary.py",
+        'raise ValueError("Missing or malformed checkpoint identity")',
+        "pass",
+    ),
+    (
+        "public-aggregate-batch-package",
+        "run_summary.py",
+        'batch_report.get("checkpoint_package_digest") != common["package_digest"]',
+        "False",
+    ),
+    (
+        "public-aggregate-commit-format",
+        "run_summary.py",
+        'raise ValueError("Missing or malformed release commit")',
+        "pass",
+    ),
+)
+
+
+MUTATIONS += (
+    (
+        "public-aggregate-path-containment",
+        "run_bundle.py",
+        "if not result.is_relative_to(root.resolve()):",
+        "if False:",
+    ),
+    (
+        "public-aggregate-output-symlink",
+        "run_summary.py",
+        "if destination.is_symlink():",
+        "if False:",
+    ),
+)
+
+
+def prepare_test_client():
+    """Allow isolated runners to supply the pinned submodule's test snapshot."""
+    snapshot_root = os.environ.get("TOWER_XPOLICYLAB_SNAPSHOT_ROOT")
+    client = ROOT / "third_party/XPolicyLab"
+    if snapshot_root is None or (client / "client_server").is_dir():
+        return
+    revision = subprocess.check_output(
+        ["git", "rev-parse", "HEAD:third_party/XPolicyLab"], cwd=ROOT, text=True
+    ).strip()
+    snapshot = Path(snapshot_root) / (revision + ".tar")
+    with tarfile.open(snapshot) as archive:
+        # Test snapshots contain regular source files, never symlinks.
+        for member in archive.getmembers():
+            target = (client / member.name).resolve()
+            if not target.is_relative_to(client.resolve()) or not (
+                member.isfile() or member.isdir()
+            ):
+                raise ValueError("Unsafe policy test snapshot")
+        archive.extractall(client, filter="data")
+
+
 def main():
+    prepare_test_client()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--prefix", help="Run one component and its unmutated test baseline")
@@ -3073,6 +3256,7 @@ def main():
                         "runtime",
                         "worker",
                         "entrypoints",
+                        "benchmark_run",
                     )
                 ]
             elif name == "replay-patch-visibility":
@@ -3173,6 +3357,8 @@ def main():
                     sys.executable,
                     "-m",
                     "pytest",
+                    "-c",
+                    str(ROOT / "pyproject.toml"),
                     "-p",
                     "no:cacheprovider",
                     *tests,

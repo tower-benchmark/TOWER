@@ -536,3 +536,33 @@ def test_diagnostic_default_enters_public_data_preflight(monkeypatch, tmp_path):
     monkeypatch.setattr(v, "verify_data", preflight)
     with pytest.raises(ValueError, match="public data preflight reached"):
         score_physical_diagnostic(tmp_path, "task1-2")
+
+
+def test_unreviewed_prepare_and_check_request(inputs, capsys):
+    args, _, planned, recorded, _ = inputs
+    review = args.pilot_review
+    args.pilot_review = None
+    args.output = args.output.with_name("unreviewed")
+    path = public.prepare(args)
+    request = public.preflight(path)
+    settings = json.loads(Path(request["protocol"]).read_text())
+    assert settings["schema"] == "tower-public-benchmark-protocol-unreviewed-v1"
+    assert settings["qualification"] == "unreviewed"
+    assert "pilot_review" not in settings
+    files = json.loads(Path(request["runtime_manifest"]).read_text())["files"]
+    assert not set(map(str, [planned, recorded, review])) & files.keys()
+    public.command(NS(command="check-request", request=path))
+    assert json.loads(capsys.readouterr().out)["qualification"] == "unreviewed"
+
+
+@pytest.mark.parametrize("schema", [None, "unknown", "tower-public-benchmark-protocol-v1"])
+def test_only_explicit_unreviewed_schema_skips_review(inputs, schema):
+    args, _, _, _, _ = inputs
+    args.pilot_review = None
+    args.output = args.output.with_name("unreviewed")
+    path = public.prepare(args)
+    request = json.loads(path.read_text())
+    update_protocol(request, lambda p: p.update(schema=schema))
+    save_request(path, request)
+    with pytest.raises((KeyError, ValueError)):
+        public.preflight(path)

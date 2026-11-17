@@ -11,3 +11,9 @@ orientation hemisphere, and is bypassed by joint-absolute commands. A near-half
 turn or a tilted half turn can still reach native IK. This guard alone therefore
 does not establish task-specific contact or trajectory compliance. Unmodified
 EEF targets are attempted once; rejection ends the action without a flipped retry.
+
+Public benchmark runs do not require `--pilot-review`. Recorded TCP posture is
+reported in `posture-flags.json`, independently of scores and action mode.
+The automatic flag also covers joint commands and near-half-turn grasps; it
+does not replace maintainer contact and approach/carry review. See
+[posture flags](scoring.md#posture-flags-reported-not-scored).

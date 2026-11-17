@@ -178,6 +178,26 @@ def worker(args, *, verification=None, runner=None):
                 prepared.close()
 
 
+def completion_state(request):
+    """The durable formal completion contract, independent of teardown exit code."""
+    output = Path(request["output"])
+
+    def read(path):
+        return json.loads(path.read_text()) if path.is_file() else {}
+
+    completion = read(output / "worker-complete.json")
+    boundary = completion.get("completed") is True and completion.get("phase") == "teardown"
+    completed = (
+        boundary
+        and read(output / "simulation/batch-policy-results.json").get("completed")
+        and bool(request["seeds"])
+    )
+    for seed in request["seeds"]:
+        status = read(output / "simulation" / f"seed-{seed}" / "status.json")
+        completed = completed and status.get("valid_trial") and status.get("evidence_complete")
+    return boundary, completed
+
+
 def finish(request, returncode, *, diagnostic):
     """Run outside Kit: exit zero during exception cleanup is not completion."""
     output = Path(request["output"])
@@ -205,19 +225,7 @@ def finish(request, returncode, *, diagnostic):
         )
         return 0 if completed and all(completed) else 1
 
-    def read(path):
-        return json.loads(path.read_text()) if path.is_file() else {}
-
-    completion = read(output / "worker-complete.json")
-    boundary = completion.get("completed") is True and completion.get("phase") == "teardown"
-    completed = (
-        boundary
-        and read(output / "simulation/batch-policy-results.json").get("completed")
-        and bool(request["seeds"])
-    )
-    for seed in request["seeds"]:
-        status = read(output / "simulation" / f"seed-{seed}" / "status.json")
-        completed = completed and status.get("valid_trial") and status.get("evidence_complete")
+    boundary, completed = completion_state(request)
     save_exclusive(
         output / "result.json",
         dict(

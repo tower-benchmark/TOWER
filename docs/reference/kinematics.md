@@ -153,3 +153,9 @@ physical trajectories or replace their review.
 
 See the [control safety contract](../guides/eef-control.md#control-safety-contract)
 for scope, command bounds and required trajectory review.
+
+Public benchmark runs do not require `--pilot-review`. Recorded TCP posture is
+reported in `posture-flags.json`, independently of scores and action mode.
+The automatic flag also covers joint commands and near-half-turn grasps; it
+does not replace maintainer contact and approach/carry review. See
+[posture flags](scoring.md#posture-flags-reported-not-scored).

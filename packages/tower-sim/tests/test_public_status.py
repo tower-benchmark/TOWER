@@ -50,6 +50,8 @@ def test_formal_status_includes_identity_on_success_or_invalidation(
         "finger-feedback.npz",
         "finger_geometry.json",
         "camera-frames.hdf5",
+        "camera-readback.json",
+        "runtime-sources-final.json",
     ):
         path = output / name
         path.parent.mkdir(parents=True, exist_ok=True)

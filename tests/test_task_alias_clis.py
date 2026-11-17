@@ -351,3 +351,32 @@ def test_offline_cli_normalizes_alias_before_scheduling(monkeypatch, tmp_path):
     assert len(submitted) == 1
     scores = json.loads((tmp_path / "out/scores.json").read_text())
     assert list(scores.values()) == [{"task": "task6-2", "valid": True}]
+
+
+def test_multi_scene_task_alias(monkeypatch):
+    entry = importlib.import_module("benchmark_run")
+    captured = []
+    monkeypatch.setattr(entry, "run", lambda args: captured.append(args) or 0)
+    assert (
+        entry.main(
+            [
+                "run",
+                "--task",
+                "task6-2",
+                "--assets",
+                "assets",
+                "--package",
+                "package.json",
+                "--policy-url",
+                "ws://localhost:19000",
+                "--ik-python",
+                "python",
+                "--output",
+                "output",
+            ]
+        )
+        == 0
+    )
+    assert benchmark.resolve(captured[0].task).id == "extract-and-stack-2"
+    assert captured[0].scenes == list(range(50))
+    assert captured[0].pilot_review is None

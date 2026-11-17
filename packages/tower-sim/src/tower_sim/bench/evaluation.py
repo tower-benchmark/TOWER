@@ -86,35 +86,40 @@ class EvaluationContext:
             raise ValueError(
                 "Invalid evaluation evidence: self.protocol['authorization']['scene_selection'] == 'Current TOWER v4 scene'"
             )
-        review = read_bound(
-            self.protocol["pilot_review"]["path"], self.protocol["pilot_review"]["sha256"]
-        )
-        if not (
-            sha(self.protocol["pilot_review"]["path"]) == self.protocol["pilot_review"]["sha256"]
-        ):
-            raise ValueError(
-                "Invalid evaluation evidence: sha(self.protocol['pilot_review']['path']) == self.protocol['pilot_review']['sha256']"
+        if self.protocol.get("schema") == "tower-public-benchmark-protocol-unreviewed-v1":
+            if self.protocol["ik"]["shared_spec_sha256"] != shared_spec_identity():
+                raise ValueError("Protocol changes the canonical shared IK identity")
+        else:
+            review = read_bound(
+                self.protocol["pilot_review"]["path"], self.protocol["pilot_review"]["sha256"]
             )
-        if not (
-            review["passed"]
-            and review["native_inference_qualified"]
-            and (review["package_digest"] == self.package["package_digest"])
-        ):
-            raise ValueError(
-                "Invalid evaluation evidence: review['passed'] and review['native_inference_qualified'] and (review['package_digest'] == self.package['package_digest'])"
-            )
-        if not (review["scene_reference_review_passed"] and review["shared_ik_parity_passed"]):
-            raise ValueError(
-                "Invalid evaluation evidence: review['scene_reference_review_passed'] and review['shared_ik_parity_passed']"
-            )
-        if not (
-            self.protocol["ik"]["shared_spec_sha256"]
-            == review["shared_spec_sha256"]
-            == shared_spec_identity()
-        ):
-            raise ValueError(
-                "Invalid evaluation evidence: protocol and review must match the canonical shared IK identity"
-            )
+            if not (
+                sha(self.protocol["pilot_review"]["path"])
+                == self.protocol["pilot_review"]["sha256"]
+            ):
+                raise ValueError(
+                    "Invalid evaluation evidence: sha(self.protocol['pilot_review']['path']) == self.protocol['pilot_review']['sha256']"
+                )
+            if not (
+                review["passed"]
+                and review["native_inference_qualified"]
+                and (review["package_digest"] == self.package["package_digest"])
+            ):
+                raise ValueError(
+                    "Invalid evaluation evidence: review['passed'] and review['native_inference_qualified'] and (review['package_digest'] == self.package['package_digest'])"
+                )
+            if not (review["scene_reference_review_passed"] and review["shared_ik_parity_passed"]):
+                raise ValueError(
+                    "Invalid evaluation evidence: review['scene_reference_review_passed'] and review['shared_ik_parity_passed']"
+                )
+            if not (
+                self.protocol["ik"]["shared_spec_sha256"]
+                == review["shared_spec_sha256"]
+                == shared_spec_identity()
+            ):
+                raise ValueError(
+                    "Invalid evaluation evidence: protocol and review must match the canonical shared IK identity"
+                )
         from concurrent.futures import ThreadPoolExecutor
 
         def verify_bound_file(item):
@@ -255,6 +260,8 @@ class EvaluationContext:
             "finger-link-poses.npz",
             "finger-feedback.npz",
             "finger_geometry.json",
+            "camera-readback.json",
+            "runtime-sources-final.json",
             "score.json",
         ]
         if success:
@@ -301,6 +308,14 @@ class EvaluationContext:
         self.completed[seed] = dict(
             path=str(output / "status.json"), sha256=sha(output / "status.json")
         )
+        try:
+            from .annotations import publish
+
+            publish(
+                output / "episode/states.hdf5", output / "score.json", output / "posture-flags.json"
+            )
+        except Exception:  # noqa: BLE001 -- annotations cannot revoke a committed trial
+            pass
 
     def invalidate_unfinished(
         self, index, evidence, commands, archive, camera_report, source_files, *, reason
