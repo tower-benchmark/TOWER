@@ -18,7 +18,7 @@
     <img src="https://img.shields.io/badge/License-Apache--2.0-526D82?style=flat" alt="License Apache-2.0">
     <img src="https://img.shields.io/badge/TOWER%20assets-CC%20BY%204.0-526D82?style=flat" alt="TOWER-authored assets CC BY 4.0">
   </p>
-  <p><sub>Status: development package versions; diagnostic evaluation is supported now, and formal-run posture review tooling will follow. Model weights are not bundled.</sub></p>
+  <p><sub>Status: development package versions. Model weights are not bundled.</sub></p>
 </div>
 
 <p align="center">
@@ -88,9 +88,7 @@ uv sync --locked --package tower-eval --extra xpolicylab
 uv run --package tower-eval tower smoke --policy xpolicylab://demo_policy
 ```
 
-Follow [evaluate a policy](docs/guides/evaluate-a-policy.md) to start your policy server and prepare the runtime. Diagnostic runs are the supported way to test a policy now. Formal runs additionally require a reviewed posture record; the contact-frame references and review tooling are not yet published. The guide explains both paths and their prerequisites.
-
-A diagnostic run evaluates one scene with the Isaac interpreter while your policy server is running. `--accept-eula` records your acceptance of NVIDIA's license:
+Follow [evaluate a policy](docs/guides/evaluate-a-policy.md) to start your policy server and prepare the runtime. Then evaluate a scene with the Isaac interpreter while your policy server is running. `--accept-eula` records your acceptance of NVIDIA's license:
 
 ```sh
 /path/to/isaac/python tools/simulator/benchmark_diagnostic.py \
@@ -100,7 +98,7 @@ A diagnostic run evaluates one scene with the Isaac interpreter while your polic
   --ik-python /path/to/ik/python --output /path/to/new-diagnostic --accept-eula
 ```
 
-Results remain diagnostic and do not qualify a formal trial.
+The run records per-episode status and writes `score.json` when scoring succeeds; the guide lists all output files.
 
 Keep input identities, resolved configuration, complete recordings and failure status with results. Model weights are not bundled; supply your own compatible policy.
 
