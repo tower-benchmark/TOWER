@@ -20,7 +20,7 @@ xpolicylab = ["websockets>=15,<16", "msgpack>=1.0.8", "msgpack-numpy>=0.4.8", "p
 # Pinocchio CasADi bindings are provisioned with conda; PyPI pin requires NumPy 2.
 eef = ["nero-kinematics[eef]>=0.2,<0.3"]
 artifacts = ["h5py>=3.11,<4", "av>=14,<17", "opencv-python-headless>=4.10,<4.12"]
-dev = ["pytest>=8,<9", "websockets>=15,<16", "h5py>=3.11,<4", "av>=14,<17", "opencv-python-headless>=4.10,<4.12"]
+dev = ["pytest>=8,<10", "websockets>=15,<16", "h5py>=3.11,<4", "av>=14,<17", "opencv-python-headless>=4.10,<4.12"]
 
 [project.scripts]
 tower = "tower_eval.cli:main"
