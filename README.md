@@ -22,10 +22,10 @@
 </div>
 
 <p align="center">
-  <img src="docs/assets/tower-overview.jpg" width="1000" alt="Conceptual overview of TOWER: long-horizon tasks, Real2Sim alignment and paired evaluation.">
+  <img src="docs/assets/tower-overview.jpg" width="1000" alt="Overview of TOWER from the paper: dataset and task design, the Real2Sim simulator, and the paired REAL/SIM evaluation protocol.">
 </p>
 
-<p align="center"><sub><b>Illustrated overview (AI-generated; not experimental evidence).</b> Adapted from the TOWER paper: (A) six atomic actions compose long-horizon tasks, and a taller tower extends Task F from 8 to 16 operations; (B) the paper's Real2Sim pipeline combines scene reconstruction, camera alignment, dynamics alignment and friction calibration; (C) the paper pairs REAL and SIM evaluation of task progress and structural failures. Hardware and block arrangements are schematic. This repository provides the simulation benchmark; Real2Sim construction tooling and real-robot evaluation are not included.</sub></p>
+<p align="center"><sub><b>Overview of TOWER (figure from the paper).</b> (A) Dataset scale and task design: six atomic actions compose tasks; four key moments from an eight-operation Task F (2L) episode; taller towers extend the plan from 8 to 16 operations. (B) Real2Sim scene reconstruction, camera alignment, dynamics alignment and friction calibration. (C) Paired REAL/SIM evaluation: cross-domain progress correspondence, model comparisons and similar structural failures. Numbers in the figure come from the paper's experiments. This repository provides the simulation benchmark; the demonstration dataset, Real2Sim construction tooling and real-robot evaluation are not included.</sub></p>
 
 TOWER is a robotics simulation benchmark for long-horizon bimanual tower manipulation, with six task families at two tower heights. This distribution provides fixed-scene evaluation, policy integration and operation-level scoring for public benchmark revision **2026.11.1**; see [versioning](docs/reference/versioning.md).
 
