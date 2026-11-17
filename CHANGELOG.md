@@ -35,7 +35,7 @@
 - Bound release wheels, calibration data, dependency manifests and runtime evidence.
 - Joint/EEF controls, task scoring, camera verification and offline evaluation.
 - Includes only fixed-scene evaluation code.
-- Ordinary grasp and current approach/carry review requirements remain in force.
+- Maintainer qualification retains ordinary grasp and approach/carry review requirements.
 
 ### Public benchmark runs
 

@@ -126,3 +126,8 @@ Aggregate scores use `tower-benchmark-score-v1`; informational posture reports
 use `tower-posture-flags-v1` and `tower-ordinary-tcp-reference-v1`.
 The benchmark revision `2026.11.1`, ruleset `bench-2026.11`, package versions
 and data hashes are unchanged.
+
+Run selection uses `tower-benchmark-run-v1`; retained request bindings use
+`tower-benchmark-attempt-v1`. Keep these records with recordings for offline
+coverage, attempt lineage and relocatable aggregation. They establish local
+content consistency, not signed authenticity or protection against scene selection.

@@ -87,3 +87,16 @@ Missing windows or unusable TCP evidence report `not_evaluated`. The episode
 uses the worst operation result. Minimum closing and approach-down dots are
 informational. These flags never alter `bench-2026.11` scores or exit codes
 and do not replace maintainer review of contact geometry and trajectories.
+
+Metrics are explicitly conditional on eligible scored trials. Coverage distinguishes
+requested, attempted, scored, excluded and not-run scenes, with source attempts.
+`requested_complete` may be true for a subset; `full_task_coverage` requires 50
+eligible scenes. Exclusions are not zero-counted. Disclose incomplete coverage and
+retry history; local hash consistency does not authenticate a selected population.
+
+The closing-dot test is a geometric heuristic, not universal reversed-grasp
+recognition: a flipped axis far from the ordinary reference may miss the threshold.
+Five consecutive samples are a sample-count rule, not a measured 0.25-second dwell.
+An ordinary result does not approve task contact geometry or approach/carry motion.
+Malformed timing reports `not_evaluated`. Annotation import, computation and
+publication failures are nonfatal after authoritative trial commitment.

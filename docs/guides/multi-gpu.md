@@ -12,3 +12,7 @@ selections, `--gpu` and fresh output directories. Batches within each process
 are sequential. Use `benchmark_run.py aggregate --runs DIR... --output DIR`
 to combine shards; duplicate scenes or mixed qualifications are rejected.
 See [run the benchmark](evaluate-a-policy.md#run-the-benchmark).
+
+Keep complete run bundles. Runtime, release, data, package-file and checkpoint
+identities must match. Duplicate scenes remain errors even when one attempt was
+excluded. Report each failed/retried attempt separately; replacement is not supported.

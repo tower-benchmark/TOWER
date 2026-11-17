@@ -85,13 +85,15 @@ batches default to one scene; `--batch-size` accepts 1–10. The command stops a
 the first failed batch and prints scene ids not yet run. `--keep-going` runs
 the remaining batches. Neither mode retries automatically.
 
+The immutable `run.json` records all selected scenes before preparation. Each
+`attempts/batch-<id>` retains its start, bound inputs and completion or error record.
 Inputs are in `requests/batch-<id>` and recordings in
 `runs/batch-<id>/simulation/seed-<id>`. Each completed scene retains its original
 `score.json` and gains `posture-flags.json`. The top-level `score.json` aggregates
 complete episodes and lists infrastructure failures in `excluded`.
 
 For independent shards, use disjoint `--scenes` selections and fresh outputs,
-then combine them with:
+then combine their complete run bundles with:
 
 ```sh
 uv run python tools/simulator/benchmark_run.py aggregate \
@@ -99,10 +101,25 @@ uv run python tools/simulator/benchmark_run.py aggregate \
 ```
 
 Aggregation rejects duplicate scenes and mixed task, package, benchmark,
-ruleset or qualification. Keep request directories with recordings: their
-hash-bound protocols supply identity and qualification. To rerun rejected
-scenes, use `--scenes` and a new output; retain the failed attempts separately.
-Do not combine duplicate attempts in one aggregate.
+ruleset or qualification. Keep the entire run directory, including `run.json`, `attempts/` and `runs/`.
+Retained input bytes are addressed by hash, so the bundle can be moved without
+rewriting historical paths. Aggregating a batch directory includes its original
+run's full selected set and attempt history.
+
+A retry uses `--scenes` and a new output with a distinct run id. Keep and disclose
+both attempts. Duplicate scenes are always rejected, including excluded plus
+valid attempts; arbitrary reruns cannot be combined into a clean full-task score.
+An attributed replacement policy is deferred. There is no latest-wins selection.
+
+Coverage lists requested, attempted, scored, excluded and not-run scenes and their
+sources. `requested_complete` means all selected scenes have eligible scores;
+`full_task_coverage` additionally requires all 50. A complete subset remains a
+subset. Metrics are conditional on eligible scored episodes; exclusions keep
+the frozen denominators unchanged. Transport and some policy-contract errors can
+be exclusions, so coverage disclosure cannot prevent deliberate selection or
+prove an unbiased all-task result. Report coverage and attempts with the metrics.
+Only parent-qualified durable completion admits a batch. Nonzero teardown alone
+does not disqualify complete evidence; execution-failed batches are not salvaged.
 
 ## Debug one scene
 

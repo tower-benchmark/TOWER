@@ -98,7 +98,7 @@ Follow [evaluate a policy](docs/guides/evaluate-a-policy.md) to start your polic
   --ik-python /path/to/ik/python --output /path/to/new-run --accept-eula
 ```
 
-The run writes an aggregate `score.json`, per-scene scores and informational posture flags. Use `--scenes 3,7,10-12` for a subset. No posture review is required.
+The run writes an aggregate `score.json`, per-scene scores and informational posture flags. Use `--scenes 3,7,10-12` for a subset.
 
 For single-scene debugging, use `tools/simulator/benchmark_diagnostic.py`; its results remain diagnostic.
 
