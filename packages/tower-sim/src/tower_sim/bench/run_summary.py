@@ -1,5 +1,6 @@
 """Read-only aggregation of durable benchmark attempts; metrics are conditional."""
 
+import re
 from pathlib import Path
 
 from tower_eval.tasks import benchmark_task
@@ -82,6 +83,11 @@ def identity(bundle):
         bundle.path(path, digest)
     package_sha = runtime["files"][request["package"]]
     package = bundle.read(request["package"], package_sha)
+    checkpoint = package.get("checkpoint_sha256")
+    if not isinstance(checkpoint, str) or re.fullmatch(r"[0-9a-f]{64}", checkpoint) is None:
+        raise ValueError("Missing or malformed checkpoint identity")
+    if not isinstance(package.get("package_digest"), str) or not package["package_digest"]:
+        raise ValueError("Missing package identity")
     public = protocol["public"]
     if public != request["public"] or public.get("schema") != "tower-public-envelope-v1":
         raise ValueError("Public identity mismatch")
@@ -96,6 +102,11 @@ def identity(bundle):
     ):
         if not public.get(key):
             raise ValueError("Missing public identity")
+    if (
+        not isinstance(public["commit"], str)
+        or re.fullmatch(r"[0-9a-f]{40}", public["commit"]) is None
+    ):
+        raise ValueError("Missing or malformed release commit")
     frozen = envelope(benchmark=public["benchmark"])
     for key in ("data_version", "request_schema", "packages", "data_manifest_sha256"):
         if public[key] != frozen[key]:
@@ -280,7 +291,10 @@ def aggregate(runs, output, *, initial=False):
                 ]
                 continue
             batch_report = read(batch / "simulation/batch-policy-results.json")
-            if batch_report.get("public") != common["public"]:
+            if (
+                batch_report.get("public") != common["public"]
+                or batch_report.get("checkpoint_package_digest") != common["package_digest"]
+            ):
                 raise ValueError("Batch public identity mismatch")
             source.update(
                 state="completed",

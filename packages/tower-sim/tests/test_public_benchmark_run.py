@@ -35,7 +35,7 @@ def test_scene_selection(entry):
             entry.parse_scenes(bad)
 
 
-def fixture(root, seed=0, *, extra=(), complete=True, checkpoint="checkpoint"):
+def fixture(root, seed=0, *, extra=(), complete=True, checkpoint="c" * 64, commit="a" * 40):
     root.mkdir(parents=True)
     work = root / "requests/batch-000"
     work.mkdir(parents=True)
@@ -46,7 +46,7 @@ def fixture(root, seed=0, *, extra=(), complete=True, checkpoint="checkpoint"):
     from tower_sim.bench.verification import envelope
 
     public = envelope()
-    public["commit"] = "a" * 40
+    public["commit"] = commit
     release = work / "release.json"
     write(release, dict(schema="tower-release-v2", commit=public["commit"]))
     public["release_manifest_sha256"] = sha(release)
@@ -142,6 +142,7 @@ def fixture(root, seed=0, *, extra=(), complete=True, checkpoint="checkpoint"):
         dict(
             completed=complete,
             diagnostic_only=False,
+            checkpoint_package_digest="package",
             public=public,
             committed_formal_trials={
                 str(seed): dict(
@@ -263,7 +264,7 @@ def test_strict_duplicates_and_identity(tmp_path):
     two, _, _ = fixture(tmp_path / "two")
     with pytest.raises(ValueError, match="Duplicate"):
         run_summary.aggregate([one, two], tmp_path / "duplicate")
-    three, _, _ = fixture(tmp_path / "three", seed=1, checkpoint="different")
+    three, _, _ = fixture(tmp_path / "three", seed=1, checkpoint="e" * 64)
     with pytest.raises(ValueError, match="Mixed"):
         run_summary.aggregate([one, three], tmp_path / "mixed")
 
@@ -542,3 +543,26 @@ def test_launch_failure_retains_prelaunch_request(entry, monkeypatch, tmp_path, 
         == 1
     )
     assert len(calls) == (2 if keep else 1)
+
+
+@pytest.mark.parametrize("checkpoint", [None, "", "malformed"])
+def test_missing_checkpoint_identity(tmp_path, checkpoint):
+    root, _, _ = fixture(tmp_path / "run", checkpoint=checkpoint)
+    with pytest.raises(ValueError, match="checkpoint"):
+        run_summary.aggregate([root], tmp_path / "out")
+
+
+def test_batch_package_identity(tmp_path):
+    root, _, batch = fixture(tmp_path / "run")
+    path = batch / "simulation/batch-policy-results.json"
+    body = json.loads(path.read_text())
+    body["checkpoint_package_digest"] = "other"
+    write(path, body)
+    with pytest.raises(ValueError, match="identity"):
+        run_summary.aggregate([root], tmp_path / "out")
+
+
+def test_malformed_release_commit(tmp_path):
+    root, _, _ = fixture(tmp_path / "run", commit="malformed")
+    with pytest.raises(ValueError, match="commit"):
+        run_summary.aggregate([root], tmp_path / "out")

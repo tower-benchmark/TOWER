@@ -3130,6 +3130,28 @@ MUTATIONS += (
 )
 
 
+MUTATIONS += (
+    (
+        "public-aggregate-checkpoint-format",
+        "run_summary.py",
+        'raise ValueError("Missing or malformed checkpoint identity")',
+        "pass",
+    ),
+    (
+        "public-aggregate-batch-package",
+        "run_summary.py",
+        'batch_report.get("checkpoint_package_digest") != common["package_digest"]',
+        "False",
+    ),
+    (
+        "public-aggregate-commit-format",
+        "run_summary.py",
+        'raise ValueError("Missing or malformed release commit")',
+        "pass",
+    ),
+)
+
+
 def prepare_test_client():
     """Allow isolated runners to supply the pinned submodule's test snapshot."""
     snapshot_root = os.environ.get("TOWER_XPOLICYLAB_SNAPSHOT_ROOT")
