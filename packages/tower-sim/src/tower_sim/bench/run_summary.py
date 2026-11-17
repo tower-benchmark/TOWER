@@ -2,6 +2,7 @@
 
 import re
 from pathlib import Path
+from typing import Any
 
 from tower_eval.tasks import benchmark_task
 
@@ -73,7 +74,7 @@ def qualification(protocol, bundle):
     return expected
 
 
-def identity(bundle):
+def identity(bundle) -> tuple[dict, dict[str, Any]]:
     request = bundle.request
     protocol = bundle.field("protocol")
     runtime = bundle.field("runtime_manifest")
@@ -387,7 +388,9 @@ def aggregate(runs, output, *, initial=False):
         excluded=[s["scene"] for s in excluded],
         not_run=not_run,
     )
-    coverage = {key: dict(ids=sorted(value), count=len(value)) for key, value in groups.items()}
+    coverage: dict[str, Any] = {
+        key: dict(ids=sorted(value), count=len(value)) for key, value in groups.items()
+    }
     coverage.update(
         requested_complete=len(scenes) == len(requested), full_task_coverage=len(scenes) == 50
     )
