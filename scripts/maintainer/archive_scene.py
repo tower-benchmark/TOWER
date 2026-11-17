@@ -310,6 +310,8 @@ def dropped_key_reads(root):
     dropped = field_contract()["dropped"]
     keys = {p.rsplit("/", 1)[-1] for p in dropped}
     non_scene_reads = {
+        # This is a batch completion receipt, not a scene lineage field.
+        ("packages/tower-sim/src/tower_sim/bench/run_summary.py", "rows", "diagnostic_only"),
         ("packages/tower-sim/src/tower_sim/bench/evaluation.py", "request", "manifest"),
         ("tools/simulator/benchmark.py", "request", "manifest"),
         ("tools/simulator/benchmark_candidate.py", "request", "manifest"),
