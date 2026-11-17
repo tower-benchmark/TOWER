@@ -3264,6 +3264,8 @@ def main():
                     sys.executable,
                     "-m",
                     "pytest",
+                    "-c",
+                    str(ROOT / "pyproject.toml"),
                     "-p",
                     "no:cacheprovider",
                     *tests,
