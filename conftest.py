@@ -20,9 +20,10 @@ def pytest_addoption(parser):
 
 def pytest_collection_modifyitems(config, items):
     if config.getoption("--long-replay-first"):
-        # This full-history replay dominates public CI. Starting it immediately
-        # overlaps it with the shorter tests; keep every item and assertion.
-        # Use xdist load scheduling with small chunks so it gets its own worker.
+        # Profiled on 2026-11-17: this replay dominated the public suite. Revisit
+        # the hint using CI's duration reports if the test or workload changes.
+        # Start it immediately with a small queue behind it (xdist load keeps
+        # at least two initial items per worker). Keep every item and assertion.
         longest = (
             "packages/tower-sim/tests/test_bench_scoring.py::"
             "test_full_campaign_streams[task1-3-openwam-public]"
