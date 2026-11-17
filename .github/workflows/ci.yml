@@ -72,8 +72,9 @@ jobs:
       - name: Fetch public scene and asset fixtures by pinned hash
         run: uv run --no-sync python -m scripts.maintainer.fetch_public_test_data
       - name: Run the full test suite
-        # Rebalance queued tests when long golden replays leave a worker busy.
-        run: uv run --no-sync pytest -rx -n auto --dist worksteal --durations=25 --junitxml=${{ runner.temp }}/pytest-results/full.xml
+        # Start the longest replay immediately; small batches keep the remaining
+        # workers busy without trapping many short tests behind that replay.
+        run: uv run --no-sync pytest -rx -n auto --dist load --maxschedchunk=1 --long-replay-first --durations=25 --junitxml=${{ runner.temp }}/pytest-results/full.xml
       - name: Characterization on the NumPy version matching Isaac 6.1
         if: matrix.python == '3.12'
         run: uv run --no-sync --with numpy==2.3.1 --with scipy==1.17.0 pytest tests/characterization -q -n auto --dist worksteal --durations=25 --junitxml=${{ runner.temp }}/pytest-results/numpy-isaac.xml
