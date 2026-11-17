@@ -9,6 +9,7 @@ import json
 import os
 import subprocess
 import sys
+import tarfile
 import tempfile
 from pathlib import Path
 
@@ -3058,7 +3059,29 @@ MUTATIONS += (
 )
 
 
+def prepare_test_client():
+    """Allow isolated runners to supply the pinned submodule's test snapshot."""
+    snapshot_root = os.environ.get("TOWER_XPOLICYLAB_SNAPSHOT_ROOT")
+    client = ROOT / "third_party/XPolicyLab"
+    if snapshot_root is None or (client / "client_server").is_dir():
+        return
+    revision = subprocess.check_output(
+        ["git", "rev-parse", "HEAD:third_party/XPolicyLab"], cwd=ROOT, text=True
+    ).strip()
+    snapshot = Path(snapshot_root) / (revision + ".tar")
+    with tarfile.open(snapshot) as archive:
+        # Test snapshots contain regular source files, never symlinks.
+        for member in archive.getmembers():
+            target = (client / member.name).resolve()
+            if not target.is_relative_to(client.resolve()) or not (
+                member.isfile() or member.isdir()
+            ):
+                raise ValueError("Unsafe policy test snapshot")
+        archive.extractall(client, filter="data")
+
+
 def main():
+    prepare_test_client()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--prefix", help="Run one component and its unmutated test baseline")
