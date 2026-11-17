@@ -101,3 +101,10 @@ def test_link_checker_detects_missing_file_and_anchor(tmp_path):
 if __name__ == "__main__":
     test_internal_links()
     print("Internal documentation links passed")  # noqa: T201 — standalone check
+
+
+def test_readme_uses_public_multi_scene_benchmark():
+    text = (ROOT / "README.md").read_text()
+    assert "benchmark_run.py run" in text
+    assert "benchmark_diagnostic.py" in text
+    assert "--pilot-review" not in text

@@ -136,3 +136,14 @@ def test_aggregate_mixed_and_faked_qualification(tmp_path):
     fake = batch(tmp_path, 2, qualification="posture-reviewed")
     with pytest.raises(ValueError, match="Qualification"):
         run_summary.aggregate([fake], tmp_path / "fake")
+
+
+def test_shard_root_ignores_kit_and_metrics(tmp_path):
+    root = tmp_path / "shard"
+    runs = root / "runs"
+    runs.mkdir(parents=True)
+    batch(runs)
+    (runs / "batch-0-kit").mkdir()
+    (runs / "batch-0.metrics.jsonl").write_text("{}")
+    result = run_summary.aggregate([root], tmp_path / "out")
+    assert result["metrics"]["trials"] == 1

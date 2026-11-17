@@ -1,6 +1,7 @@
 """Isaac-free aggregation of hash-bound benchmark episodes."""
 
 import json
+import re
 from pathlib import Path
 
 from tower_eval.posture_flags import flags
@@ -28,7 +29,13 @@ def aggregate(runs, output):
     batches = []
     for directory in map(Path, runs):
         if (directory / "runs").is_dir():
-            batches.extend(sorted((directory / "runs").iterdir()))
+            batches.extend(
+                sorted(
+                    path
+                    for path in (directory / "runs").iterdir()
+                    if re.fullmatch(r"batch-\d+", path.name) and path.is_dir()
+                )
+            )
         else:
             batches.append(directory)
     for batch in batches:
