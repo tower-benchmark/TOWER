@@ -125,11 +125,11 @@ release identifiers null because they do not authorize simulation.
 ## Control and review contract
 
 Preparation binds protocol, scenes, assets, policy identity, release, dependencies
-and current posture-review evidence. Reject reverse 180-degree symmetric grasps;
+and, for maintainer qualification, current posture-review evidence. Reject reverse 180-degree symmetric grasps;
 never retry with a reversed target. Preserve each task's contact geometry. Review
 planned approach/carry trajectories and recorded approach phases before accepting
-a benchmark run. An old pass or the absence of a symmetry flag is insufficient.
-Supply the posture-review document with the public `--pilot-review` option.
+a posture-reviewed run. An old pass or the absence of a symmetry flag is insufficient.
+Maintainers supply the posture-review document with `--pilot-review`.
 
 Command bounds remain the real normal IK soft bounds intersected with simulation
 URDF bounds, inset by 1.5 degrees, with J2 Tower hard limits inset by 5 degrees.
@@ -148,3 +148,9 @@ for the scope of runtime posture checks and the distinct control limits.
 The WebSocket extra requires `pydantic>=2.11,<3`, whose dependencies include
 `typing-inspection`. This makes the installed dependency manifest consistent
 with the supported extra; older Pydantic installations must be upgraded.
+
+Public benchmark runs do not require `--pilot-review`. Recorded TCP posture is
+reported in `posture-flags.json`, independently of scores and action mode.
+The automatic flag also covers joint commands and near-half-turn grasps; it
+does not replace maintainer contact and approach/carry review. See
+[posture flags](scoring.md#posture-flags-reported-not-scored).

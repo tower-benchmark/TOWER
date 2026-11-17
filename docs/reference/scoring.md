@@ -63,3 +63,27 @@ Two-block transfer, 2 layers, uses the four-place hold rule
 | Task7 push direction | Fixed layer directions | Metadata direction when `evaluation_task` starts with `task7-`; otherwise historical fallback |
 | Task7-3 structural survival | Current support-height/orientation/footprint condition | Entire-recording collapse veto: loss below half minimum block dimension and tilt below 45°, latched |
 | Optional disturbance computation | Historical API always computes it | In-memory `include_disturbances=False` used by stop detectors |
+
+## Aggregate metrics
+
+`benchmark_run.py` writes `tower-benchmark-score-v1`. Only complete episodes
+contribute: GSR = sum(g) / sum(planned_g), PSR = sum(p) / sum(planned_p),
+LHPR = sum(g + p) / sum(planned_g + planned_p), TSR = sum(s) / trials,
+and ODR = sum(D) / sum(g + p + 1 - s). Zero denominators produce `null`.
+ODR may exceed one. Infrastructure failures are listed in `excluded` and do
+not count as policy failures. Per-scene score hashes are checked against
+`status.json`; original scorer reports are preserved.
+
+## Posture flags (reported, not scored)
+
+`tower-posture-flags-v1` reports recorded TCP posture independently of scores.
+The `tower-ordinary-tcp-reference-v1` frame uses world-down approach (TCP x)
+and the horizontal projection of arm-base minus-y for closing (TCP z).
+Base orientation is recovered from paired world/base TCP poses and must remain
+constant within 0.001 radians. Each operation uses its target intervals plus
+one second of approach. A closing dot at or below −0.5 for five consecutive
+20 Hz samples reports `reversed_grasp`; otherwise it reports `ordinary`.
+Missing windows or unusable TCP evidence report `not_evaluated`. The episode
+uses the worst operation result. Minimum closing and approach-down dots are
+informational. These flags never alter `bench-2026.11` scores or exit codes
+and do not replace maintainer review of contact geometry and trajectories.

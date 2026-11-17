@@ -135,9 +135,15 @@ Use `nero_kinematics.posture_evidence`/`solve_grasp` for task-relative checks.
 Scope: `TowerEnv` and `DualModeController` perform no posture check. The Isaac
 learned-policy route applies only an exact-flip tripwire to EEF targets
 ([policy route limits](../reference/bench-policy.md)); it does not reject an
-orientation hemisphere, and joint-absolute commands bypass it. Benchmark request
-preparation instead requires a reviewed posture record. Learned-rollout posture
+orientation hemisphere, and joint-absolute commands bypass it. Maintainer qualification
+instead requires a reviewed posture record. Learned-rollout posture
 compliance rests on review of the planned approach/carry and recorded approach
 phases. No runtime check establishes posture acceptance.
 
 See the benchmark [control and review contract](../reference/bench-public.md#control-and-review-contract) for required recorded posture evidence.
+
+Public benchmark runs do not require `--pilot-review`. Recorded TCP posture is
+reported in `posture-flags.json`, independently of scores and action mode.
+The automatic flag also covers joint commands and near-half-turn grasps; it
+does not replace maintainer contact and approach/carry review. See
+[posture flags](../reference/scoring.md#posture-flags-reported-not-scored).

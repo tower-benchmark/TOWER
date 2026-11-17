@@ -115,3 +115,14 @@ WebSockets. `policy_url` and `--policy-url` keep their names. This is a runtime
 transport revision, with no benchmark, data or scene identity change. See the
 [Isaac runtime contract](policy-interface.md#isaac-benchmark-runtime) for lifecycle,
 response reconstruction, metrics and MME availability.
+
+## Benchmark run schemas
+
+The unreviewed request protocol is
+`tower-public-benchmark-protocol-unreviewed-v1`; the reviewed protocol remains
+`tower-public-benchmark-protocol-v1`. Only the explicit unreviewed schema skips
+maintainer review. Missing or other schemas still require full review.
+Aggregate scores use `tower-benchmark-score-v1`; informational posture reports
+use `tower-posture-flags-v1` and `tower-ordinary-tcp-reference-v1`.
+The benchmark revision `2026.11.1`, ruleset `bench-2026.11`, package versions
+and data hashes are unchanged.

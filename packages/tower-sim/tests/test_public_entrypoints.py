@@ -78,6 +78,7 @@ def test_public_entries_record_startup_bytes(entry, monkeypatch):
         ("portable-smoke", PORTABLE),
         ("portable-prepare-request", None),
         ("diagnostic", "tools/simulator/benchmark_candidate.py"),
+        ("multi-scene", "tools/simulator/benchmark_candidate.py"),
         ("candidate-policy-worker", "scripts/maintainer/candidate_policy.py"),
     ],
 )
@@ -90,7 +91,17 @@ def test_documented_commands_use_registered_kit_workers(route, entry, tmp_path, 
     diagnostic = importlib.import_module("benchmark_diagnostic")
     from scripts.maintainer import candidate_policy
 
-    request = dict(output=str(tmp_path / "output"), task="task4-2", seeds=[0], gpu=0, public={})
+    protocol = tmp_path / "protocol.json"
+    protocol.write_text("{}")
+    request = dict(
+        output=str(tmp_path / "output"),
+        task="task4-2",
+        seeds=[0],
+        gpu=0,
+        public={},
+        protocol=str(protocol),
+        protocol_sha256=sha(protocol),
+    )
     path = tmp_path / "request.json"
     path.write_text(json.dumps(request))
     monkeypatch.setattr(public, "preflight", lambda *a, **kw: request)
@@ -101,7 +112,7 @@ def test_documented_commands_use_registered_kit_workers(route, entry, tmp_path, 
     monkeypatch.setattr(public, "prepare", lambda *a, **kw: prepared.append(kw) or path)
     calls = []
 
-    class WorkerLaunch(Exception):
+    class WorkerLaunch(BaseException):
         pass
 
     def child(argv, **kw):
@@ -137,6 +148,21 @@ def test_documented_commands_use_registered_kit_workers(route, entry, tmp_path, 
             "--output",
             str(tmp_path / "output"),
         ]
+        if route == "multi-scene":
+            return importlib.import_module("benchmark_run").main(
+                [
+                    "run",
+                    *argv,
+                    "--scenes",
+                    "0,1",
+                    "--package",
+                    "package",
+                    "--ik-python",
+                    "python",
+                    "--policy-url",
+                    "ws://localhost",
+                ]
+            )
         if route == "diagnostic":
             return diagnostic.main(
                 argv
@@ -179,4 +205,4 @@ def test_documented_commands_use_registered_kit_workers(route, entry, tmp_path, 
         script = next(Path(arg).resolve() for arg in calls[0] if str(arg).endswith(".py"))
         assert script == ROOT / entry
         assert entry in verification.ENTRYPOINTS
-    assert bool(prepared) == (route in {"portable-prepare-request", "diagnostic"})
+    assert bool(prepared) == (route in {"portable-prepare-request", "diagnostic", "multi-scene"})

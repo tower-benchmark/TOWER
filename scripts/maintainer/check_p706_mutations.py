@@ -358,12 +358,12 @@ MUTATIONS = (
     (
         "public-recorded-posture-gate",
         "../../../../../tools/simulator/benchmark_candidate.py",
-        "        posture = benchmark.posture_evidence(\n"
-        '            read_bound(review["path"], review["sha256"]),\n'
-        '            request["task"],\n'
-        '            benchmark.read(request["package"])["package_digest"],\n'
-        "        )\n",
-        "        posture = []\n",
+        "            posture = benchmark.posture_evidence(\n"
+        '                read_bound(review["path"], review["sha256"]),\n'
+        '                request["task"],\n'
+        '                benchmark.read(request["package"])["package_digest"],\n'
+        "            )\n",
+        "            posture = []\n",
     ),
     (
         "public-ik-bounds",
@@ -2104,7 +2104,7 @@ MUTATIONS += (
     (
         "policy-ik-canonical-review",
         "evaluation.py",
-        "            == shared_spec_identity()\n",
+        "                == shared_spec_identity()\n",
         "",
     ),
 )
@@ -3007,6 +3007,47 @@ MUTATIONS += (
 )
 
 
+MUTATIONS += (
+    (
+        "public-unreviewed-schema",
+        "../../../../../tools/simulator/benchmark_candidate.py",
+        'settings.get("schema") != "tower-public-benchmark-protocol-unreviewed-v1"',
+        "True",
+    ),
+    (
+        "public-unreviewed-fail-closed",
+        "../../../../../tools/simulator/benchmark_candidate.py",
+        'settings.get("schema") != "tower-public-benchmark-protocol-unreviewed-v1"',
+        "False",
+    ),
+    (
+        "policy-unreviewed-schema",
+        "evaluation.py",
+        'self.protocol.get("schema") == "tower-public-benchmark-protocol-unreviewed-v1"',
+        "False",
+    ),
+    (
+        "policy-unreviewed-fail-closed",
+        "evaluation.py",
+        'self.protocol.get("schema") == "tower-public-benchmark-protocol-unreviewed-v1"',
+        "True",
+    ),
+    (
+        "public-aggregate-qualification",
+        "run_summary.py",
+        "qualification=qualification(protocol)",
+        'qualification=binding.get("qualification", "unreviewed")',
+    ),
+    (
+        "public-aggregate-sha",
+        "run_summary.py",
+        'score_sha != status["source_hashes"]["score.json"]',
+        "False",
+    ),
+    ("public-aggregate-duplicate", "run_summary.py", "if scene in seen:", "if False:"),
+)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
@@ -3073,6 +3114,7 @@ def main():
                         "runtime",
                         "worker",
                         "entrypoints",
+                        "benchmark_run",
                     )
                 ]
             elif name == "replay-patch-visibility":

@@ -183,3 +183,72 @@ def test_review_and_protocol_cannot_agree_on_a_noncanonical_ik(authorization, mo
     monkeypatch.setattr(evaluation, "shared_spec_identity", lambda: "different canonical identity")
     with pytest.raises(ValueError, match="canonical shared IK identity"):
         EvaluationContext(request, health, rows, task)
+
+
+@pytest.mark.parametrize(
+    "schema", ["tower-public-benchmark-protocol-unreviewed-v1", None, "unknown"]
+)
+def test_evaluation_schema_gate(authorization, schema):
+    request, health, rows, task = authorization
+    path = Path(request["protocol"])
+    protocol = read_json_for_test = json.loads(path.read_text())
+    protocol.pop("pilot_review")
+    protocol["schema"] = schema
+    path.write_text(json.dumps(read_json_for_test))
+    request["protocol_sha256"] = sha(path)
+    runtime = Path(request["runtime_manifest"])
+    files = json.loads(runtime.read_text())
+    files["files"][str(path)] = sha(path)
+    runtime.write_text(json.dumps(files))
+    request["runtime_manifest_sha256"] = sha(runtime)
+    if schema == "tower-public-benchmark-protocol-unreviewed-v1":
+        EvaluationContext(request, health, rows, task)
+        protocol["ik"]["shared_spec_sha256"] = "wrong"
+        path.write_text(json.dumps(protocol))
+        request["protocol_sha256"] = sha(path)
+        with pytest.raises(ValueError, match="IK"):
+            EvaluationContext(request, health, rows, task)
+    else:
+        with pytest.raises((KeyError, ValueError)):
+            EvaluationContext(request, health, rows, task)
+
+
+@pytest.mark.archive
+def test_golden_posture_evidence(diagnostic_recording):
+    from tower_eval.posture_flags import classify
+
+    _, run, _ = diagnostic_recording
+    report = json.loads(
+        (
+            ROOT / "tests/golden/benchmark-2026.11/task6-2-openwam.benchmark-score-cli.json"
+        ).read_text()
+    )
+    result = classify(run / "episode/states.hdf5", report)
+    # The published physical golden omits TCP arrays. Never invent a pass.
+    assert result["status"] == "not_evaluated"
+    assert result["reason"] == "Missing TCP evidence: eef, eef_world"
+
+
+@pytest.mark.archive
+@pytest.mark.parametrize(
+    "task", [f"task{n}-{layers}" for n in (1, 2, 4, 5, 6, 7) for layers in (2, 3)]
+)
+def test_expert_recorded_posture(task):
+    import os
+
+    from tower_eval.posture_flags import classify
+    from tower_eval.scoring.api import score_recording
+    from tower_eval.scoring.recording import from_campaign_files
+
+    from scripts.maintainer.archive_root import ArchiveUnavailable
+
+    configured = os.environ.get("TOWER_P706_RECORDED_ROOT")
+    if not configured:
+        raise ArchiveUnavailable(
+            "SKIP: supply --archive-root and TOWER_P706_RECORDED_ROOT for recorded TCP evidence"
+        )
+    run = next((Path(configured) / task / "simulation").glob("seed-*"))
+    report = score_recording(from_campaign_files(run, task), task, ruleset="bench-2026.11")
+    result = classify(run / "episode/states.hdf5", report)
+    assert result["operations"], result
+    assert all(row["status"] == "ordinary" for row in result["operations"]), result

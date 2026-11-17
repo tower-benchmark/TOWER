@@ -36,3 +36,10 @@
 - Joint/EEF controls, task scoring, camera verification and offline evaluation.
 - Includes only fixed-scene evaluation code.
 - Ordinary grasp and current approach/carry review requirements remain in force.
+
+### Public benchmark runs
+
+Added full-task and subset benchmark runs, sequential batching and shard
+aggregation without mandatory pilot review. Automatic recorded TCP posture
+flags are informational. Maintainer qualification remains fail-closed; benchmark
+revision, scoring rules, data hashes and package versions are unchanged.

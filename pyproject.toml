@@ -82,6 +82,7 @@ ignore = ["E501", "B905", "UP024"]
 # Entry points disable bytecode before importing checkout modules.
 "tools/simulator/benchmark_environment.py" = ["E402"]
 "tools/simulator/benchmark_diagnostic.py" = ["E402"]
+"tools/simulator/benchmark_run.py" = ["E402"]
 "tools/simulator/benchmark.py" = ["E402"]
 "tools/simulator/benchmark_candidate.py" = ["E402"]
 "tools/simulator/benchmark_portable.py" = ["E402"]

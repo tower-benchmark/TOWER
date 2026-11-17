@@ -153,14 +153,17 @@ def preflight(path, *, diagnostic=False):
         for key, value in policy.items():
             if settings["policy"].get("hz" if key == "control_hz" else key) != value:
                 raise ValueError(f"Policy contract differs: {key}")
-        review = settings["pilot_review"]
-        posture = benchmark.posture_evidence(
-            read_bound(review["path"], review["sha256"]),
-            request["task"],
-            benchmark.read(request["package"])["package_digest"],
-        )
+        review_inputs = []
+        if settings.get("schema") != "tower-public-benchmark-protocol-unreviewed-v1":
+            review = settings["pilot_review"]
+            posture = benchmark.posture_evidence(
+                read_bound(review["path"], review["sha256"]),
+                request["task"],
+                benchmark.read(request["package"])["package_digest"],
+            )
+            review_inputs = [review["path"], *posture]
         files = read_bound(request["runtime_manifest"], request["runtime_manifest_sha256"])["files"]
-        for name in (request["manifest"], request["package"], review["path"], *posture):
+        for name in (request["manifest"], request["package"], *review_inputs):
             if files.get(str(Path(name).resolve())) != sha(name):
                 raise ValueError("Unbound evaluation input or posture evidence")
         for name, digest in files.items():
@@ -262,28 +265,43 @@ def prepare(args, *, diagnostic=False):
         ik_bounds_sha256=sha(spec),
     )
     if not diagnostic:
-        package, review = benchmark.read(args.package), benchmark.read(args.pilot_review)
-        for field in (
-            "passed",
-            "native_inference_qualified",
-            "scene_reference_review_passed",
-            "shared_ik_parity_passed",
-        ):
-            if review.get(field) is not True:
-                raise ValueError(f"Pilot review has not passed {field}")
-        if (
-            review.get("package_digest") != package["package_digest"]
-            or review.get("shared_spec_sha256") != spec_identity
-        ):
-            raise ValueError("Pilot review belongs to different policy/IK inputs")
-        posture = benchmark.posture_evidence(review, task_id, package["package_digest"])
+        package = benchmark.read(args.package)
+        review_inputs = []
+        review_binding = {}
+        if getattr(args, "pilot_review", None) is not None:
+            review = benchmark.read(args.pilot_review)
+            for field in (
+                "passed",
+                "native_inference_qualified",
+                "scene_reference_review_passed",
+                "shared_ik_parity_passed",
+            ):
+                if review.get(field) is not True:
+                    raise ValueError(f"Pilot review has not passed {field}")
+            if (
+                review.get("package_digest") != package["package_digest"]
+                or review.get("shared_spec_sha256") != spec_identity
+            ):
+                raise ValueError("Pilot review belongs to different policy/IK inputs")
+            posture = benchmark.posture_evidence(review, task_id, package["package_digest"])
+            review_inputs = [args.pilot_review, *posture]
+            review_binding = dict(
+                pilot_review=dict(
+                    path=str(args.pilot_review.resolve()), sha256=sha(args.pilot_review)
+                )
+            )
         policy = dict(contract["policy"])
         policy["hz"] = policy.pop("control_hz")
         protocol = work / "protocol.json"
         save_exclusive(
             protocol,
             dict(
-                schema="tower-public-benchmark-protocol-v1",
+                schema=(
+                    "tower-public-benchmark-protocol-v1"
+                    if review_binding
+                    else "tower-public-benchmark-protocol-unreviewed-v1"
+                ),
+                qualification="posture-reviewed" if review_binding else "unreviewed",
                 public=envelope(release_identity, benchmark=benchmark_version),
                 task=task_id,
                 seeds=args.seeds,
@@ -293,13 +311,11 @@ def prepare(args, *, diagnostic=False):
                 package_digest=package["package_digest"],
                 policy=policy,
                 authorization={"scene_selection": "Current TOWER v4 scene"},
-                pilot_review=dict(
-                    path=str(args.pilot_review.resolve()), sha256=sha(args.pilot_review)
-                ),
+                **review_binding,
                 ik=dict(shared_spec_sha256=spec_identity),
             ),
         )
-        inputs = [scenes, protocol, args.package, args.pilot_review, *posture]
+        inputs = [scenes, protocol, args.package, *review_inputs]
         inputs += [p for p in (work / "scenes").rglob("*") if p.is_file()]
         manifest = work / "input-manifest.json"
         save_exclusive(
@@ -396,6 +412,14 @@ def command(args):
                 json.dumps(
                     dict(
                         passed=True,
+                        qualification=(
+                            "unreviewed"
+                            if read_bound(request["protocol"], request["protocol_sha256"]).get(
+                                "schema"
+                            )
+                            == "tower-public-benchmark-protocol-unreviewed-v1"
+                            else "posture-reviewed"
+                        ),
                         task=request["task"],
                         canonical_task_id=benchmark.resolve(request["task"]).id,
                         seeds=request["seeds"],

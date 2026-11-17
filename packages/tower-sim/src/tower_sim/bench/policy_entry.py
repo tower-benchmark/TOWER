@@ -70,7 +70,14 @@ def prepare(
     )
     try:
         health = metrics.call("startup.context_validation", worker.authorize)
-        if diagnostic:
+        from .verification import read as read_bound
+
+        unreviewed = (
+            not diagnostic
+            and read_bound(request["protocol"], request["protocol_sha256"]).get("schema")
+            == "tower-public-benchmark-protocol-unreviewed-v1"
+        )
+        if diagnostic or unreviewed:
             validate_diagnostic_health(health, package)
         evaluation = None
         if not diagnostic:
