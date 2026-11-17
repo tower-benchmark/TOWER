@@ -33,7 +33,10 @@ def support(r, candidate=None, *, supporters=(1,), dimensions=DIMENSIONS, rules=
 @pytest.mark.parametrize("dtype", [np.float32, np.float64])
 @pytest.mark.parametrize("moving_block", [0, 1])
 @pytest.mark.parametrize("movement", ["translation", "rotation"])
-def test_changed_target_or_supporter_matches_uncached_samples(dtype, moving_block, movement):
+@pytest.mark.parametrize("layout", ["contiguous", "strided", "reversed"])
+def test_changed_target_or_supporter_matches_uncached_samples(
+    dtype, moving_block, movement, layout
+):
     r = recording(dtype)
     # Supported, unsupported, supported again: neither false nor true decisions
     # may leak into a different configuration, even with an unchanged target.
@@ -41,6 +44,13 @@ def test_changed_target_or_supporter_matches_uncached_samples(dtype, moving_bloc
         r.poses[2:4, moving_block, 0] += 0.3
     else:
         r.poses[2:4, moving_block, 3:] = [0, np.sqrt(0.5), 0, np.sqrt(0.5)]
+    if layout == "strided":
+        # Keep the same logical values in a view with non-contiguous storage.
+        r.poses = np.repeat(r.poses, 2, axis=0)[::2]
+        r.velocities = np.repeat(r.velocities, 2, axis=0)[::2]
+    elif layout == "reversed":
+        r.poses = r.poses[::-1]
+        r.velocities = r.velocities[::-1]
     expected = []
     for k in range(len(r.times)):
         single = SimpleNamespace(
@@ -95,6 +105,24 @@ def test_reuse_is_exact_and_does_not_round_poses(monkeypatch):
     monkeypatch.setattr(place, "block_geometry", counted)
     assert support(r).all()
     assert len(calls) == 6  # Recompute for a one-bit change and for signed zero.
+
+
+def test_supporter_iterator_is_snapshotted_for_every_sample():
+    # Unlike the old exhausted-iterator behavior, an iterator names a fixed set
+    # of supporters for the entire call, exactly like the production list input.
+    np.testing.assert_array_equal(support(recording(), supporters=iter([1])), [True] * 6)
+
+
+def test_empty_and_ineligible_samples_do_not_evaluate_geometry(monkeypatch):
+    def unexpected(*args):
+        pytest.fail("Ineligible samples must not evaluate support geometry")
+
+    monkeypatch.setattr(place, "block_geometry", unexpected)
+    r = recording()
+    assert not support(r, np.zeros(len(r.times), dtype=bool)).any()
+    r.times, r.poses, r.velocities = r.times[:0], r.poses[:0], r.velocities[:0]
+    result = support(r)
+    assert result.dtype == np.bool_ and result.shape == (0,)
 
 
 def test_rules_dimensions_and_supporters_are_not_reused_across_calls():

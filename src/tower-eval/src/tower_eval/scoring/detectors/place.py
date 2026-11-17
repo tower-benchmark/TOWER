@@ -36,7 +36,11 @@ def stable_dwell(mask, poses, velocities, times, rules, *, computation=REFERENCE
 
 
 def support_mask(r, target, supporters, dimensions, candidate, rules):
-    """Support area and COM over the convex hull of current contact patches."""
+    """Support area and COM over the convex hull of current contact patches.
+
+    Supporter indices are snapshotted once, including when supplied as an
+    iterator. Poses, dimensions and rules must remain fixed during this call.
+    """
     supported = np.zeros(len(r.times), dtype=bool)
     quiet = (np.linalg.norm(r.velocities[:, target, :3], axis=1) <= rules.linear_velocity_m_s) & (
         np.linalg.norm(r.velocities[:, target, 3:], axis=1) <= rules.angular_velocity_rad_s
