@@ -41,6 +41,8 @@ def aggregate(runs, output):
     for batch in batches:
         binding = json.loads((batch / "benchmark-request.json").read_text())
         protocol = read_bound(binding["protocol"], binding["protocol_sha256"])
+        if protocol.get("ruleset", "bench-2026.11") != "bench-2026.11":
+            raise ValueError("Mixed or unsupported ruleset")
         current = dict(
             benchmark=protocol["public"]["benchmark"],
             ruleset="bench-2026.11",
@@ -87,6 +89,8 @@ def aggregate(runs, output):
             if sha(states) != status["source_hashes"]["episode/states.hdf5"]:
                 raise ValueError("Aggregate states SHA mismatch")
             report = json.loads(score_path.read_text())
+            if report.get("ruleset", "bench-2026.11") != current["ruleset"]:
+                raise ValueError("Scene ruleset differs from benchmark")
             if (
                 report.get("valid") is not True
                 or benchmark_task(report["task"]).id != current["task"]

@@ -147,3 +147,25 @@ def test_shard_root_ignores_kit_and_metrics(tmp_path):
     (runs / "batch-0.metrics.jsonl").write_text("{}")
     result = run_summary.aggregate([root], tmp_path / "out")
     assert result["metrics"]["trials"] == 1
+
+
+@pytest.mark.parametrize("location", ["protocol", "score"])
+def test_aggregate_rejects_changed_ruleset(tmp_path, location):
+    root = batch(tmp_path)
+    episode = root / "simulation/seed-0"
+    path = root / "protocol.json" if location == "protocol" else episode / "score.json"
+    body = json.loads(path.read_text())
+    body["ruleset"] = "paper-v1"
+    path.write_text(json.dumps(body))
+    if location == "protocol":
+        binding = root / "benchmark-request.json"
+        body = json.loads(binding.read_text())
+        body["protocol_sha256"] = sha(path)
+        binding.write_text(json.dumps(body))
+    else:
+        status = episode / "status.json"
+        body = json.loads(status.read_text())
+        body["source_hashes"]["score.json"] = sha(path)
+        status.write_text(json.dumps(body))
+    with pytest.raises(ValueError, match="ruleset"):
+        run_summary.aggregate([root], tmp_path / "out")

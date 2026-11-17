@@ -3059,6 +3059,22 @@ MUTATIONS += (
 )
 
 
+MUTATIONS += (
+    (
+        "public-aggregate-protocol-ruleset",
+        "run_summary.py",
+        'protocol.get("ruleset", "bench-2026.11") != "bench-2026.11"',
+        "False",
+    ),
+    (
+        "public-aggregate-report-ruleset",
+        "run_summary.py",
+        'report.get("ruleset", "bench-2026.11") != current["ruleset"]',
+        "False",
+    ),
+)
+
+
 def prepare_test_client():
     """Allow isolated runners to supply the pinned submodule's test snapshot."""
     snapshot_root = os.environ.get("TOWER_XPOLICYLAB_SNAPSHOT_ROOT")
