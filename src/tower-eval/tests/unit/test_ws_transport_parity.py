@@ -554,6 +554,38 @@ def test_two_clients_atomic_infer_and_mismatched_audit(monkeypatch):
                 adapter.close()
 
 
+@pytest.mark.parametrize("width", [4, 5])
+def test_shared_clients_receive_full_prediction_in_same_response(monkeypatch, width):
+    from concurrent.futures import ThreadPoolExecutor
+
+    with service(monkeypatch) as (server, model, calls):
+        adapters = [RuntimePolicyAdapter(server.url, expected_identity=IDENTITY) for _ in range(width)]
+        observations = [payload(i + 2, 640) for i in range(width)]
+        for obs in observations:
+            obs["env_idx"] = 0  # Client-local indices overlap, observations differ.
+        try:
+            expected = [adapters[0].predict(obs) for obs in observations]
+            monkeypatch.setenv("TOWER_REQUIRE_ATOMIC_PREDICTION", "1")
+            start = len(calls)
+            with ThreadPoolExecutor(width) as pool:
+                for _ in range(5):
+                    results = list(pool.map(lambda p: p[0].predict(p[1]), zip(adapters, observations)))
+                    for got, want in zip(results, expected):
+                        exact(got, want)
+            assert calls[start:].count("update_obs") == width * 5
+            assert calls[start:].count("get_action") == width * 5
+            assert calls[start:].count("get_prediction") == width * 5
+            model.predict_with_evidence = lambda obs: {"actions": []}
+            with pytest.raises(PolicyTransportError, match="must include a full prediction"):
+                adapters[0].predict(observations[0])
+            model.predict_with_evidence = None
+            with pytest.raises(PolicyTransportError, match="no model method named"):
+                adapters[0].predict(observations[0])
+        finally:
+            for adapter in adapters:
+                adapter.close()
+
+
 @pytest.mark.parametrize("category", ["PolicyOutputError", "ValueError", "KeyError"])
 def test_audit_errors_are_transport(monkeypatch, category):
     with service(monkeypatch) as (server, model, calls):

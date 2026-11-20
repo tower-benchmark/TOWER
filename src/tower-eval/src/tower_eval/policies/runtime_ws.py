@@ -1,7 +1,7 @@
 """Benchmark response contract over XPolicyLab's WebSocket transport.
 
-Deploy one runtime process per policy server. INFER is atomic, but a server's
-optional prediction cache is shared between clients.
+Shared OpenWAM workers opt in to one locked RPC for actions and audit data.
+The legacy split RPC path is only suitable for an exclusive policy server.
 """
 
 from __future__ import annotations
@@ -9,6 +9,7 @@ from __future__ import annotations
 import base64
 import copy
 import io
+import os
 from typing import Any
 from urllib.parse import urlsplit
 
@@ -228,22 +229,33 @@ class RuntimePolicyAdapter:
             if rpc_observer:
                 rpc_observer("rpc_start")
             try:
-                try:
-                    rows = self.bridge.infer(mapped)
-                except Exception as exc:
-                    raise map_error(exc, request_id) from exc
-                try:
-                    full = self.bridge._call("get_prediction", int(observation.get("env_idx", 0)))
-                except Exception as exc:
-                    if getattr(getattr(exc, "code", None), "value", None) == "invalid_frame":
-                        full = None
-                    elif getattr(exc, "details", {}).get("exception_type") == "KeyError":
-                        raise ValueError(
-                            f"missing prediction for env {observation.get('env_idx', 0)} "
-                            "(shared server or policy bug)"
-                        ) from exc
-                    else:
-                        raise transport_error(exc, request_id) from exc
+                if os.environ.get("TOWER_REQUIRE_ATOMIC_PREDICTION") == "1":
+                    try:
+                        response = self.bridge._call("predict_with_evidence", mapped)
+                    except Exception as exc:
+                        raise map_error(exc, request_id) from exc
+                    if not isinstance(response, dict) or not isinstance(
+                        response.get("prediction"), dict
+                    ):
+                        raise ValueError("Atomic policy response must include a full prediction")
+                    rows, full = response["actions"], response["prediction"]
+                else:
+                    try:
+                        rows = self.bridge.infer(mapped)
+                    except Exception as exc:
+                        raise map_error(exc, request_id) from exc
+                    try:
+                        full = self.bridge._call("get_prediction", int(observation.get("env_idx", 0)))
+                    except Exception as exc:
+                        if getattr(getattr(exc, "code", None), "value", None) == "invalid_frame":
+                            full = None
+                        elif getattr(exc, "details", {}).get("exception_type") == "KeyError":
+                            raise ValueError(
+                                f"missing prediction for env {observation.get('env_idx', 0)} "
+                                "(shared server or policy bug)"
+                            ) from exc
+                        else:
+                            raise transport_error(exc, request_id) from exc
             finally:
                 if rpc_observer:
                     rpc_observer("rpc_end", transport="websocket")
