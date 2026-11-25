@@ -25,7 +25,9 @@ FORBIDDEN = re.compile(
             r"/" + "Users/",
             "aliy" + "un",
             "jenga" + "_sim",
-            r"(?:10|192\.168|172\.(?:1[6-9]|2[0-9]|3[01]))(?:\.\d{1,3}){2,3}",
+            # Scan substrings too: filenames and escaped JSON may adjoin an address.
+            r"(?:10(?:\.\d{1,3}){3}|192\.168(?:\.\d{1,3}){2}|"
+            r"172\.(?:1[6-9]|2[0-9]|3[01])(?:\.\d{1,3}){2})",
             "gh" + "p_[A-Za-z0-9]+",
             "github" + "_pat_[A-Za-z0-9]+",
         )
@@ -35,6 +37,42 @@ FORBIDDEN = re.compile(
 
 def check_text(value: Any, name: str) -> None:
     assert not FORBIDDEN.search(str(value)), f"Private metadata in {name}"
+
+
+@pytest.mark.parametrize("version", ["10.3.3", "v10.3.3", "192.168.1", "172.16.1"])
+def test_privacy_scan_accepts_three_component_versions(version):
+    check_text(f"uses: astral-sh/setup-uv@commit # {version}", "workflow")
+
+
+@pytest.mark.parametrize(
+    "octets", [(10, 0, 0, 1), (192, 168, 1, 2), (172, 16, 0, 1), (172, 31, 255, 254)]
+)
+@pytest.mark.parametrize(
+    "wrapper",
+    [
+        "{}",
+        "http://{}:8080/path",
+        '"{}"',
+        "host={}",
+        "Address {}.",
+        "recording_{}.json",
+        "node_{}",
+        "recording_{}_trace.json",
+        r'{{"server":"\n{}"}}',
+        r'{{"server":"\t{}"}}',
+    ],
+)
+def test_privacy_scan_rejects_private_ipv4(octets, wrapper):
+    address = ".".join(map(str, octets))
+    with pytest.raises(AssertionError, match="Private metadata"):
+        check_text(wrapper.format(address), "fixture")
+
+
+@pytest.mark.parametrize(
+    "octets", [(8, 8, 8, 8), (172, 15, 0, 1), (172, 32, 0, 1), (192, 169, 1, 2)]
+)
+def test_privacy_scan_accepts_public_ipv4(octets):
+    check_text(".".join(map(str, octets)), "fixture")
 
 
 @pytest.mark.golden
