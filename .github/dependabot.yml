@@ -6,6 +6,9 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    # Native solver changes need separate validation against the frozen IK environments.
+    ignore:
+      - dependency-name: casadi
     groups:
       python-dependencies:
         patterns: ["*"]

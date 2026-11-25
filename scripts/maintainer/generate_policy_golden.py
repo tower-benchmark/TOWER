@@ -86,7 +86,7 @@ def prediction(obs) -> dict[str, Any]:
     joints[:, :, 0] = np.arange(32)[:, None] / 10000
     joints[0, 0, 0] = -0.0
     widths = np.tile([np.nextafter(0.05, 1), 0.04], (32, 1))
-    result = dict(
+    result: dict[str, Any] = dict(
         mode=mode,
         coordinate_frame="encoder_arm_base",
         control_hz=10,

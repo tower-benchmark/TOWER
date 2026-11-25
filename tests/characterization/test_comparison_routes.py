@@ -352,7 +352,9 @@ def test_equal_sample_counts_require_equal_timestamps(tmp_path: Path) -> None:
         trace = tmp_path / name / "task1-2/trace.npz"
         with np.load(trace) as stream:
             arrays = {key: np.repeat(stream[key][:1], 3, axis=0) for key in ("qpos", "blocks")}
-        np.savez_compressed(trace, time=[0.0, middle, 0.1], **arrays)
+        np.savez_compressed(
+            trace, time=[0.0, middle, 0.1], qpos=arrays["qpos"], blocks=arrays["blocks"]
+        )
         path = tmp_path / name / "summary.json"
         document = support.read(path)
         document["trials"][0].update(samples=3, trace_sha256=support.sha(trace))
