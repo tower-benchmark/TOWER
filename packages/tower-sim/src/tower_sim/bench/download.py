@@ -10,6 +10,8 @@ from http.client import IncompleteRead
 from pathlib import Path
 from urllib.error import HTTPError, URLError
 
+from .resources import sha
+
 RETRY_ERRORS = (URLError, ConnectionError, TimeoutError, ssl.SSLError, IncompleteRead)
 RETRY_EVENTS: list[dict] = []
 ATTEMPTS = 5
@@ -20,8 +22,8 @@ def download_file(url, target, expected, *, size=None, opener):
     target = Path(target)
     if (
         target.is_file()
-        and hashlib.sha256(target.read_bytes()).hexdigest() == expected
         and (size is None or target.stat().st_size == size)
+        and sha(target) == expected
     ):
         return
     target.parent.mkdir(parents=True, exist_ok=True)

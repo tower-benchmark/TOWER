@@ -35,6 +35,15 @@ def test_scene_selection(entry):
             entry.parse_scenes(bad)
 
 
+def test_out_of_bounds_scene_range_is_rejected_before_expansion(entry, monkeypatch):
+    def unexpected_range(*args):
+        pytest.fail("Scene range bounds must be checked before expansion")
+
+    monkeypatch.setattr(entry, "range", unexpected_range, raising=False)
+    with pytest.raises(argparse.ArgumentTypeError, match="Expected unique scenes"):
+        entry.parse_scenes("0-1000000000")
+
+
 def fixture(root, seed=0, *, extra=(), complete=True, checkpoint="c" * 64, commit="a" * 40):
     root.mkdir(parents=True)
     work = root / "requests/batch-000"
