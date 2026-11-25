@@ -88,7 +88,7 @@ def test_retries_are_bounded_and_never_publish(tmp_path):
     assert len(calls) == 5 and not list(tmp_path.iterdir())
 
 
-def test_verified_files_resume_and_bad_bytes_are_not_retried(tmp_path):
+def test_verified_files_resume_and_bad_bytes_are_not_retried(tmp_path, monkeypatch):
     payload = b"verified"
     target = tmp_path / "payload"
     target.write_bytes(payload)
@@ -98,13 +98,18 @@ def test_verified_files_resume_and_bad_bytes_are_not_retried(tmp_path):
         calls.append(1)
         return io.BytesIO(payload)
 
-    download.download_file(
-        "https://example.invalid/payload",
-        target,
-        hashlib.sha256(payload).hexdigest(),
-        size=len(payload),
-        opener=opener,
-    )
+    def reject_whole_file_read(path):
+        pytest.fail(f"Cached asset verification read all of {path.name} at once")
+
+    with monkeypatch.context() as patch:
+        patch.setattr(type(target), "read_bytes", reject_whole_file_read)
+        download.download_file(
+            "https://example.invalid/payload",
+            target,
+            hashlib.sha256(payload).hexdigest(),
+            size=len(payload),
+            opener=opener,
+        )
     assert not calls
     target.write_bytes(b"tampered")
     download.download_file(

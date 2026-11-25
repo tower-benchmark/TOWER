@@ -16,14 +16,12 @@ def parse_scenes(value):
     try:
         scenes = []
         for part in value.split(","):
-            bounds = part.split("-")
-            if len(bounds) == 1:
-                scenes.append(int(part))
-            elif len(bounds) == 2 and int(bounds[0]) <= int(bounds[1]):
-                scenes.extend(range(int(bounds[0]), int(bounds[1]) + 1))
-            else:
+            bounds = [int(bound) for bound in part.split("-")]
+            start, stop = bounds[0], bounds[-1]
+            if len(bounds) > 2 or not 0 <= start <= stop < 50:
                 raise ValueError
-        if not scenes or len(set(scenes)) != len(scenes) or any(n < 0 or n > 49 for n in scenes):
+            scenes.extend(range(start, stop + 1))
+        if len(set(scenes)) != len(scenes):
             raise ValueError
     except ValueError as error:
         raise argparse.ArgumentTypeError("Expected unique scenes 0..49, e.g. 3,7,10-12") from error
