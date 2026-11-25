@@ -14,8 +14,8 @@ python3 tests/docs/test_internal_links.py
 ```
 
 The link check uses only Python's standard library and also runs under pytest.
-The documentation CI job is paused until December 1, 2026; local builds remain
-required during the pause. Remove the temporary environment when finished.
+Documentation CI runs the link check and strict build on pull requests in the
+public repository. Remove the temporary environment when finished.
 
 Before building wheels, set `export PYTHONDONTWRITEBYTECODE=1`. Benchmark
 entry points disable bytecode writes too, but wheel builds run separately.
