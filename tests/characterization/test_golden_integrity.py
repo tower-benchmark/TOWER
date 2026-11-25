@@ -25,8 +25,9 @@ FORBIDDEN = re.compile(
             r"/" + "Users/",
             "aliy" + "un",
             "jenga" + "_sim",
-            r"(?<![\w.])(?:10(?:\.\d{1,3}){3}|192\.168(?:\.\d{1,3}){2}|"
-            r"172\.(?:1[6-9]|2[0-9]|3[01])(?:\.\d{1,3}){2})(?![\w]|\.\d)",
+            # Scan substrings too: filenames and escaped JSON may adjoin an address.
+            r"(?:10(?:\.\d{1,3}){3}|192\.168(?:\.\d{1,3}){2}|"
+            r"172\.(?:1[6-9]|2[0-9]|3[01])(?:\.\d{1,3}){2})",
             "gh" + "p_[A-Za-z0-9]+",
             "github" + "_pat_[A-Za-z0-9]+",
         )
@@ -46,7 +47,21 @@ def test_privacy_scan_accepts_three_component_versions(version):
 @pytest.mark.parametrize(
     "octets", [(10, 0, 0, 1), (192, 168, 1, 2), (172, 16, 0, 1), (172, 31, 255, 254)]
 )
-@pytest.mark.parametrize("wrapper", ["{}", "http://{}:8080/path", '"{}"', "host={}", "Address {}."])
+@pytest.mark.parametrize(
+    "wrapper",
+    [
+        "{}",
+        "http://{}:8080/path",
+        '"{}"',
+        "host={}",
+        "Address {}.",
+        "recording_{}.json",
+        "node_{}",
+        "recording_{}_trace.json",
+        r'{{"server":"\n{}"}}',
+        r'{{"server":"\t{}"}}',
+    ],
+)
 def test_privacy_scan_rejects_private_ipv4(octets, wrapper):
     address = ".".join(map(str, octets))
     with pytest.raises(AssertionError, match="Private metadata"):
