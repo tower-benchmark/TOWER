@@ -14,7 +14,7 @@ dependencies = ["numpy>=1.26,<3", "scipy>=1.11,<2"]
 
 [project.optional-dependencies]
 # Pinocchio CasADi bindings and IPOPT come from the reviewed conda environments.
-eef = ["casadi==3.8.2"]
+eef = ["casadi==3.7.2"]
 
 [project.scripts]
 eef-to-joint = "nero_eef_ik.__main__:main"
